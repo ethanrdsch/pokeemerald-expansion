@@ -4588,6 +4588,10 @@ static void SetMoveTypeIcons(void)
             {
                 type = TYPE_WATER;
             }
+            else if (gMovesInfo[summary->moves[i]].soundMove && ability == ABILITY_FLAMING_VOICE)
+            {
+                type = TYPE_FIRE;
+            }
             else if (summary->moves[i] == MOVE_AURA_WHEEL && GetMonData(mon, MON_DATA_SPECIES) == SPECIES_MORPEKO_HANGRY)
             {
                 type = TYPE_DARK;
@@ -4712,6 +4716,10 @@ static void SetNewMoveTypeIcon(void)
             else if (gMovesInfo[sMonSummaryScreen->newMove].soundMove && ability == ABILITY_LIQUID_VOICE)
             {
                 type = TYPE_WATER;
+            }
+            else if (gMovesInfo[sMonSummaryScreen->newMove].soundMove && ability == ABILITY_FLAMING_VOICE)
+            {
+                type = TYPE_FIRE;
             }
             else if (sMonSummaryScreen->newMove == MOVE_AURA_WHEEL && GetMonData(mon, MON_DATA_SPECIES) == SPECIES_MORPEKO_HANGRY)
             {

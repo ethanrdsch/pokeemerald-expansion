@@ -9160,6 +9160,10 @@ static inline u32 CalcMoveBasePowerAfterModifiers(u32 move, u32 battlerAtk, u32 
         if (gMovesInfo[move].soundMove)
             modifier = uq4_12_multiply(modifier, UQ_4_12(1.2));
         break;
+    case ABILITY_FLAMING_VOICE:
+        if (gMovesInfo[move].soundMove)
+            modifier = uq4_12_multiply(modifier, UQ_4_12(1.2));
+        break;
     case ABILITY_STEELY_SPIRIT:
         if (moveType == TYPE_STEEL)
             modifier = uq4_12_multiply(modifier, UQ_4_12(1.5));

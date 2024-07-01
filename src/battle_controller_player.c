@@ -1943,6 +1943,10 @@ static void MoveSelectionDisplayMoveType(u32 battler)
     {
         type = TYPE_WATER;
     }
+    else if (gMovesInfo[move].soundMove && ability == ABILITY_FLAMING_VOICE)
+    {
+        type = TYPE_FIRE;
+    }
     else if (move == MOVE_AURA_WHEEL && gBattleMons[battler].species == SPECIES_MORPEKO_HANGRY)
     {
         type = TYPE_DARK;
