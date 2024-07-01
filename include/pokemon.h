@@ -503,6 +503,7 @@ struct MoveInfo
     u32 lightMove:1; // boosted by Illuminate, absorbed by Photon Absorb
     u32 lazyMove:1; // Moves that can be used during Truant loafing turn (Slack Off, Yawn, Rest)
     u32 kickingMove:1; // boosted by Iron Sole
+    u32 keratinMove:1; // boosted by Crushing Keratin (beak, horn, scale, drill, stab moves)
 
     // Ban flags
     u32 gravityBanned:1;

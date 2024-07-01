@@ -9225,6 +9225,10 @@ static inline u32 CalcMoveBasePowerAfterModifiers(u32 move, u32 battlerAtk, u32 
         if (gMovesInfo[move].lightMove)
            modifier = uq4_12_multiply(modifier, UQ_4_12(1.3));
         break;
+    case ABILITY_CRUSHING_KERATIN:
+        if (gMovesInfo[move].keratinMove)
+            modifier = uq4_12_multiply(modifier, UQ_4_12(1.5));
+        break;
     }
 
     // field abilities
