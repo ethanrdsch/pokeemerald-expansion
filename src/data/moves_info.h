@@ -17133,7 +17133,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_DYNAMAX] =
         .name = COMPOUND_STRING("Life Dew"),
         .description = COMPOUND_STRING(
             "Restores up to 25% max HP\n"
-            "of the user and allies.");
+            "of the user and allies."),
         .effect = EFFECT_JUNGLE_HEALING,
         .power = 0,
         .type = TYPE_WATER,
