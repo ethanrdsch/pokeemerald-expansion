@@ -2070,7 +2070,7 @@ static const struct TrainerMon sParty_Koichi[] = {
     .lvl = 24,
     .species = SPECIES_FLAREON,
     .ability = ABILITY_GUTS,
-    .moves = {MOVE_THUNDERBOLT, MOVE_NONE, MOVE_NONE, MOVE_NONE},
+    .moves = {MOVE_WILL_O_WISP, MOVE_NONE, MOVE_NONE, MOVE_NONE},
     .heldItem = ITEM_POKE_BALL,
     },
     {
@@ -2078,7 +2078,7 @@ static const struct TrainerMon sParty_Koichi[] = {
     .lvl = 24,
     .species = SPECIES_FLAREON,
     .ability = ABILITY_GUTS,
-    .moves = {MOVE_THUNDERBOLT, MOVE_NONE, MOVE_NONE, MOVE_NONE},
+    .moves = {MOVE_NUZZLE, MOVE_NONE, MOVE_NONE, MOVE_NONE},
     .heldItem = ITEM_POKE_BALL,
     }
 };

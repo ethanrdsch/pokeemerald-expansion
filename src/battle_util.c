@@ -6450,6 +6450,7 @@ bool32 CanSleep(u32 battler)
       || ability == ABILITY_COMATOSE
       || ability == ABILITY_PURIFYING_SALT
       || ability == ABILITY_WONDER_SKIN
+      || ability == ABILITY_PURE_CRYSTAL
       || ability == ABILITY_FLOWER_VEIL
       || gSideStatuses[GetBattlerSide(battler)] & SIDE_STATUS_SAFEGUARD
       || gBattleMons[battler].status1 & STATUS1_ANY
@@ -6471,6 +6472,7 @@ bool32 CanBePoisoned(u32 battlerAttacker, u32 battlerTarget)
      || ability == ABILITY_COMATOSE
      || ability == ABILITY_PURIFYING_SALT
      || ability == ABILITY_WONDER_SKIN
+     || ability == ABILITY_PURE_CRYSTAL
      || ability == ABILITY_FLOWER_VEIL
      || IsAbilityOnSide(battlerTarget, ABILITY_PASTEL_VEIL)
      || IsAbilityStatusProtected(battlerTarget)
@@ -6493,6 +6495,7 @@ bool32 CanBeBurned(u32 battler)
       || ability == ABILITY_THERMAL_EXCHANGE
       || ability == ABILITY_PURIFYING_SALT
       || ability == ABILITY_WONDER_SKIN
+      || ability == ABILITY_PURE_CRYSTAL
       || ability == ABILITY_FLOWER_VEIL
       || IsAbilityStatusProtected(battler)
       || IsBattlerTerrainAffected(battler, STATUS_FIELD_MISTY_TERRAIN))
@@ -6510,6 +6513,7 @@ bool32 CanBeParalyzed(u32 battler)
         || ability == ABILITY_COMATOSE
         || ability == ABILITY_PURIFYING_SALT
         || ability == ABILITY_WONDER_SKIN
+        || ability == ABILITY_PURE_CRYSTAL
         || ability == ABILITY_FLOWER_VEIL
         || gBattleMons[battler].status1 & STATUS1_ANY
         || IsAbilityStatusProtected(battler)
@@ -6529,6 +6533,7 @@ bool32 CanBeFrozen(u32 battler)
       || ability == ABILITY_COMATOSE
       || ability == ABILITY_PURIFYING_SALT
       || ability == ABILITY_WONDER_SKIN
+      || ability == ABILITY_PURE_CRYSTAL
       || ability == ABILITY_FLOWER_VEIL
       || ability == ABILITY_SUN_SALUTE
       || gBattleMons[battler].status1 & STATUS1_ANY
@@ -6548,6 +6553,7 @@ bool32 CanGetFrostbite(u32 battler)
       || ability == ABILITY_COMATOSE
       || ability == ABILITY_PURIFYING_SALT
       || ability == ABILITY_WONDER_SKIN
+      || ability == ABILITY_PURE_CRYSTAL
       || ability == ABILITY_FLOWER_VEIL
       || gBattleMons[battler].status1 & STATUS1_ANY
       || IsAbilityStatusProtected(battler)
