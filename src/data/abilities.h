@@ -444,14 +444,14 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
     {
         .name = _("Plus"),
         .description = COMPOUND_STRING("+50% Sp.Atk if ally has\nPlus/Minus. + Transistor."),
-        .aiRating = 0,
+        .aiRating = 6,
     },
 
     [ABILITY_MINUS] =
     {
         .name = _("Minus"),
         .description = COMPOUND_STRING("+50% Sp.Atk if ally has\nPlus/Minus. + Volt Absorb."),
-        .aiRating = 0,
+        .aiRating = 7,
     },
 
     [ABILITY_FORECAST] =
@@ -1108,7 +1108,7 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
     {
         .name = _("Wonder Skin"),
         .description = COMPOUND_STRING("Immune to harmful status\nconditions."),
-        .aiRating = 4,
+        .aiRating = 6,
         .breakable = TRUE,
     },
 
@@ -2598,5 +2598,92 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
         .cantBeCopied = TRUE,
         .cantBeSwapped = TRUE,
         .cantBeTraced = TRUE,
+    },
+
+    // new abilities
+    [ABILITY_IRON_SOLE] =
+    {
+        .name = _("Iron Sole"),
+        .description = COMPOUND_STRING("30% damage boost for\nkicking moves."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_SELF_SUFFICIENT] =
+    {
+        .name = _("Self Sufficient"),
+        .description = COMPOUND_STRING("Heal 1/16 of max HP at the\nend of each turn."),
+        .aiRating = 8,
+    },
+
+    [ABILITY_SUN_SALUTE] =
+    {
+        .name = _("Sun Salute"),
+        .description = COMPOUND_STRING("Fire immunity. Always acts\nas if in harsh sunlight."),
+        .aiRating = 9,
+    },
+
+    [ABILITY_ELITE_PRECISION] =
+    {
+        .name = _("Elite Precision"),
+        .description = COMPOUND_STRING("Moves with high crit ratios\nalways crit."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_SAGE_POWER] =
+    {
+        .name = _("Sage Power"),
+        .description = COMPOUND_STRING("Boosts Sp. Atk by 50%, but\nonly use first used move."),
+        .aiRating = 4,
+    },
+
+    [ABILITY_REFLECTIVE] =
+    {
+        .name = _("Reflective"),
+        .description = COMPOUND_STRING("Attacker takes 1/8 max HP\ndmg when hit specially."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_PURE_CRYSTAL] =
+    {
+        .name = _("Pure Crystal"),
+        .description = COMPOUND_STRING("Immune to harmful status\nconditions."),
+        .aiRating = 6,
+        .breakable = TRUE,
+    },
+
+    [ABILITY_ARTILLERY] =
+    {
+        .name = _("Artillery"),
+        .description = COMPOUND_STRING("Boosts damage of ball and\nbomb moves by 50%."),
+        .aiRating = 7,
+    },
+
+    [ABILITY_VERSATILE] =
+    {
+        .name = _("Versatile"),
+        .description = COMPOUND_STRING("Moves always use higher\nattacking stat."),
+        .aiRating = 4,
+    },
+
+    [ABILITY_SOUL_ABSORB] =
+    {
+        .name = _("Soul Absorb"),
+        .description = COMPOUND_STRING("Heals 25% of max HP when\nhit with a Ghost move."),
+        .aiRating = 7,
+        .breakable = TRUE,
+    },
+
+    [ABILITY_CRUSHING_KERATIN] =
+    {
+        .name = _("Crushing Keratin"),
+        .description = COMPOUND_STRING("+50% power to scale, drill,\nbeak, horn, and stab moves."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_FLAMING_VOICE] =
+    {
+        .name = _("Flaming Voice"),
+        .description = COMPOUND_STRING("Makes sound moves Fire,\nand gives a 20% dmg boost."),
+        .aiRating = 5,
     },
 };

@@ -1939,7 +1939,8 @@ s32 CalcCritChanceStageArgs(u32 battlerAtk, u32 battlerDef, u32 move, bool32 rec
     }
     else if (gStatuses3[battlerAtk] & STATUS3_LASER_FOCUS
         || gMovesInfo[gCurrentMove].alwaysCriticalHit
-        || (abilityAtk == ABILITY_MERCILESS && gBattleMons[battlerDef].status1 & STATUS1_PSN_ANY))
+        || (abilityAtk == ABILITY_MERCILESS && gBattleMons[battlerDef].status1 & STATUS1_PSN_ANY)
+        || (abilityAtk == ABILITY_ELITE_PRECISION && gMovesInfo[gCurrentMove].criticalHitStage))
     {
         critChance = -2;
     }
