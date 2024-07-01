@@ -774,6 +774,15 @@ s32 AI_WhichMoveBetter(u32 move1, u32 move2, u32 battlerAtk, u32 battlerDef, s32
             return 0;
     }
 
+    // Check if special moves hurt.
+    if (defAbility == ABILITY_REFLECTIVE)
+    {
+        if (IS_MOVE_SPECIAL(move1) && !IS_MOVE_SPECIAL(move2))
+            return 1;
+        if (IS_MOVE_SPECIAL(move2) && !IS_MOVE_SPECIAL(move1))
+            return 0;
+    }
+
     // Check additional effects.
     effect1 = AI_IsMoveEffectInMinus(battlerAtk, battlerDef, move1, noOfHitsToKo);
     effect2 = AI_IsMoveEffectInMinus(battlerAtk, battlerDef, move2, noOfHitsToKo);
