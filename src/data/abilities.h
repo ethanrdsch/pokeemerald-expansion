@@ -2686,4 +2686,11 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
         .description = COMPOUND_STRING("Makes sound moves Fire,\nand gives a 20% dmg boost."),
         .aiRating = 5,
     },
+
+    [ABILITY_STARRY_FIST] =
+    {
+        .name = _("Starry Fist"),
+        .description = COMPOUND_STRING("Punches: +1 crit, 2x effect\nchance.+50% dmg, use Sp.Atk."),
+        .aiRating = 7,
+    }
 };

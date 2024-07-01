@@ -2067,10 +2067,10 @@ static const struct TrainerMon sParty_Kiyo[] = {
 static const struct TrainerMon sParty_Koichi[] = {
     {
     .iv = TRAINER_PARTY_IVS(12, 12, 12, 12, 12, 12),
-    .lvl = 100,
+    .lvl = 10,
     .species = SPECIES_JIRACHI,
     .ability = ABILITY_GUTS,
-    .moves = {MOVE_SHADOW_BALL, MOVE_NONE, MOVE_NONE, MOVE_NONE},
+    .moves = {MOVE_SPLASH, MOVE_NONE, MOVE_NONE, MOVE_NONE},
     .heldItem = ITEM_POKE_BALL,
     }
 };

@@ -504,6 +504,7 @@ struct MoveInfo
     u32 lazyMove:1; // Moves that can be used during Truant loafing turn (Slack Off, Yawn, Rest)
     u32 kickingMove:1; // boosted by Iron Sole
     u32 keratinMove:1; // boosted by Crushing Keratin (beak, horn, scale, drill, stab moves)
+    u32 clawMove:1; // boosted and made special by Power Claws
 
     // Ban flags
     u32 gravityBanned:1;
