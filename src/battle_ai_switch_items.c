@@ -357,6 +357,11 @@ static bool32 FindMonThatAbsorbsOpponentsMove(u32 battler, bool32 emitResult)
         absorbingTypeAbilities[0] = ABILITY_SAP_SIPPER;
         numAbsorbingAbilities = 1;
     }
+    else if (gMovesInfo[gLastLandedMoves[battler]].type == TYPE_GHOST)
+    {
+        absorbingTypeAbilities[0] = ABILITY_SOUL_ABSORB;
+        numAbsorbingAbilities = 1;
+    }
     else
     {
         return FALSE;

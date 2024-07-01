@@ -398,6 +398,10 @@ bool32 IsDamageMoveUsable(u32 move, u32 battlerAtk, u32 battlerDef)
         if (moveType == TYPE_FIRE)
             return TRUE;
         break;
+    case ABILITY_SOUL_ABSORB:
+        if (moveType == TYPE_GHOST)
+            return TRUE;
+        break;
     case ABILITY_SOUNDPROOF:
         if (gMovesInfo[move].soundMove)
             return TRUE;
