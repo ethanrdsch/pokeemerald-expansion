@@ -4656,6 +4656,15 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                 effect++;
             }
             break;
+        case ABILITY_ELECTROMAGNET:
+            if (!(gStatuses3[battler] & STATUS3_MAGNET_RISE))
+            {
+                gStatuses3[battler] |= STATUS3_MAGNET_RISE;
+                gDisableStructs[gBattlerAttacker].magnetRiseTimer = 5;
+                BattleScriptPushCursorAndCallback(BattleScript_EffectMagnetRiseAbility);
+                effect++;
+            }
+            break;
         case ABILITY_INTIMIDATE:
             if (!gSpecialStatuses[battler].switchInAbilityDone)
             {

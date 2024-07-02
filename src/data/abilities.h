@@ -2700,4 +2700,11 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
         .description = COMPOUND_STRING("Claw moves use Sp. Atk +30%\npower, don't make contact."),
         .aiRating = 7,
     },
+
+    [ABILITY_ELECTROMAGNET] =
+    {
+        .name = _("Electromagnet"),
+        .description = COMPOUND_STRING("On switch-in, sets Magnet\nRise for 5 turns."),
+        .aiRating = 6,
+    },
 };

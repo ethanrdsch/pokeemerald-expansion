@@ -507,6 +507,7 @@ extern const u8 BattleScript_AromaVeilProtectsRet[];
 extern const u8 BattleScript_EffectMudSportAbility[];
 extern const u8 BattleScript_EffectWaterSportAbility[];
 extern const u8 BattleScript_EffectAquaRingAbility[];
+extern const u8 BattleScript_EffectMagnetRiseAbility[];
 
 // zmoves
 extern const u8 BattleScript_ZMoveActivateDamaging[];

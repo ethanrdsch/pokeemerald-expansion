@@ -5458,6 +5458,26 @@ BattleScript_EffectAquaRingAbility::
 	call BattleScript_ActivateAquaRingAbilities
 	end3
 
+BattleScript_ActivateMagnetRiseAbilities:
+	savetarget
+	setbyte gBattlerTarget, 0
+BattleScript_ActivateMagnetRiseAbilities_Loop:
+	copybyte sBATTLER, gBattlerTarget
+BattleScript_ActivateMagnetRiseAbilities_Increment:
+	addbyte gBattlerTarget, 1
+	jumpifbytenotequal gBattlerTarget, gBattlersCount, BattleScript_ActivateMagnetRiseAbilities_Loop
+	restoretarget
+	return
+
+BattleScript_EffectMagnetRiseAbility::
+	pause B_WAIT_TIME_SHORT
+	call BattleScript_AbilityPopUp
+	waitstate
+	printstring STRINGID_PKMNLEVITATEDONELECTROMAGNETISM
+	waitmessage B_WAIT_TIME_SHORT
+	call BattleScript_ActivateMagnetRiseAbilities
+	end3
+
 BattleScript_EffectPoisonFang::
 	setmoveeffect MOVE_EFFECT_TOXIC
 	goto BattleScript_EffectHit
