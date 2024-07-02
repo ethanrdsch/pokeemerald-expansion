@@ -1924,6 +1924,8 @@ static void MoveSelectionDisplayMoveType(u32 battler)
                  || (ability == ABILITY_REFRIGERATE && (ateType = TYPE_ICE))
                  || (ability == ABILITY_AERILATE && (ateType = TYPE_FLYING))
                  || ((ability == ABILITY_GALVANIZE) && (ateType = TYPE_ELECTRIC))
+                 || ((ability == ABILITY_FLORALIZE) && (ateType = TYPE_GRASS))
+                 || ((ability == ABILITY_TERRALATE) && (ateType = TYPE_GROUND))
                 )
              )
     {

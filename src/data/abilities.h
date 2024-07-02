@@ -2707,4 +2707,18 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
         .description = COMPOUND_STRING("On switch-in, sets Magnet\nRise for 5 turns."),
         .aiRating = 6,
     },
+
+    [ABILITY_FLORALIZE] =
+    {
+        .name = _("Floralize"),
+        .description = COMPOUND_STRING("Normal moves become Grass\nand get a 20% power boost."),
+        .aiRating = 8,
+    },
+
+    [ABILITY_TERRALATE] =
+    {
+        .name = _("Terralate"),
+        .description = COMPOUND_STRING("Normal moves become Ground\nand get a 20% power boost."),
+        .aiRating = 8,
+    },
 };
