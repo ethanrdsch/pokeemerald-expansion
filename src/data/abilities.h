@@ -2692,5 +2692,12 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
         .name = _("Starry Fist"),
         .description = COMPOUND_STRING("Punches: +1 crit, 2x effect\nchance.+50% dmg, use Sp.Atk."),
         .aiRating = 7,
-    }
+    },
+
+    [ABILITY_POWER_CLAWS] =
+    {
+        .name = _("Power Claws"),
+        .description = COMPOUND_STRING("Claw moves use Sp. Atk +30%\npower, don't make contact."),
+        .aiRating = 7,
+    },
 };

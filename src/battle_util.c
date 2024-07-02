@@ -8410,7 +8410,8 @@ bool32 IsMoveMakingContact(u32 move, u32 battlerAtk)
     }
     else if ((atkHoldEffect == HOLD_EFFECT_PUNCHING_GLOVE && gMovesInfo[move].punchingMove)
            || atkHoldEffect == HOLD_EFFECT_PROTECTIVE_PADS
-           || GetBattlerAbility(battlerAtk) == ABILITY_LONG_REACH)
+           || GetBattlerAbility(battlerAtk) == ABILITY_LONG_REACH
+           || (GetBattlerAbility(battlerAtk) == ABILITY_POWER_CLAWS && gMovesInfo[move].clawMove))
     {
         return FALSE;
     }
@@ -9238,6 +9239,10 @@ static inline u32 CalcMoveBasePowerAfterModifiers(u32 move, u32 battlerAtk, u32 
         if (gMovesInfo[move].keratinMove)
             modifier = uq4_12_multiply(modifier, UQ_4_12(1.5));
         break;
+    case ABILITY_POWER_CLAWS:
+        if (gMovesInfo[move].clawMove)
+            modifier = uq4_12_multiply(modifier, UQ_4_12(1.3));
+        break;
     }
 
     // field abilities
@@ -9434,19 +9439,15 @@ static inline u32 CalcAttackStat(u32 move, u32 battlerAtk, u32 battlerDef, u32 m
             atkStage = gBattleMons[battlerAtk].statStages[STAT_SPATK];
         }
     }
-    else if (atkAbility == ABILITY_STARRY_FIST)
+    else if (atkAbility == ABILITY_STARRY_FIST && gMovesInfo[move].punchingMove)
     {
-		if (gMovesInfo[move].punchingMove)
-        {
-            atkStat  = gBattleMons[battlerAtk].spAttack;
-            atkStage = gBattleMons[battlerAtk].statStages[STAT_SPATK];
-        }
-        else
-        {
-            atkStat  = gBattleMons[battlerAtk].attack;
-            atkStage = gBattleMons[battlerAtk].statStages[STAT_ATK];
-        }
-
+        atkStat  = gBattleMons[battlerAtk].spAttack;
+        atkStage = gBattleMons[battlerAtk].statStages[STAT_SPATK];
+    }
+    else if (atkAbility == ABILITY_POWER_CLAWS && gMovesInfo[move].clawMove)
+    {
+        atkStat  = gBattleMons[battlerAtk].spAttack;
+        atkStage = gBattleMons[battlerAtk].statStages[STAT_SPATK];
     }
     else
     {
