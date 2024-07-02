@@ -2068,9 +2068,9 @@ static const struct TrainerMon sParty_Koichi[] = {
     {
     .iv = TRAINER_PARTY_IVS(12, 12, 12, 12, 12, 12),
     .lvl = 100,
-    .species = SPECIES_FERROTHORN,
-    .ability = ABILITY_IRON_BARBS,
-    .moves = {MOVE_EARTHQUAKE, MOVE_NONE, MOVE_NONE, MOVE_NONE},
+    .species = SPECIES_EXPLOUD,
+    .ability = ABILITY_SOUNDPROOF,
+    .moves = {MOVE_SPLASH, MOVE_NONE, MOVE_NONE, MOVE_NONE},
     .heldItem = ITEM_POKE_BALL,
     }
 };

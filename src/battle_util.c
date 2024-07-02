@@ -5907,6 +5907,16 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                 effect++;
             }
             break;
+        case ABILITY_SOUND_THERAPY:
+            if (gMovesInfo[gCurrentMove].soundMove 
+                && !(gHitMarker & HITMARKER_UNABLE_TO_USE_MOVE)
+                && gCurrentMove != MOVE_HEAL_BELL)
+            {
+                BattleScriptPushCursor();
+                gBattlescriptCurrInstr = BattleScript_SoundTherapy;
+                effect++;
+            }
+            break;
         }
         break;
     case ABILITYEFFECT_MOVE_END_OTHER: // Abilities that activate on *another* battler's moveend: Dancer, Soul-Heart, Receiver, Symbiosis

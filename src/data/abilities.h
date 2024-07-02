@@ -2721,4 +2721,11 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
         .description = COMPOUND_STRING("Normal moves become Ground\nand get a 20% power boost."),
         .aiRating = 8,
     },
+
+    [ABILITY_SOUND_THERAPY] =
+    {
+        .name = _("Sound Therapy"),
+        .description = COMPOUND_STRING("Triggers Heal Bell effect\nafter using a sound move."),
+        .aiRating = 5,
+    },
 };
