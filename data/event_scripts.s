@@ -1076,3 +1076,5 @@ EventScript_VsSeekerChargingDone::
 	.include "data/maps/NewBirchsLab/scripts.inc"
 
 	.include "data/maps/LittlerootTown_TestPokemonCenter/scripts.inc"
+
+	.include "data/maps/PorytilesTutorialMap/scripts.inc"
