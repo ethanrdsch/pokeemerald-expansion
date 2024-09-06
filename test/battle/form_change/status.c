@@ -3,12 +3,41 @@
 
 SINGLE_BATTLE_TEST("Shaymin-Sky reverts to Shaymin-Land when frozen or frostbitten")
 {
+<<<<<<< HEAD
     ASSUME(MoveHasAdditionalEffect(MOVE_POWDER_SNOW, MOVE_EFFECT_FREEZE_OR_FROSTBITE));
+=======
+    u32 move;
+
+    PARAMETRIZE { move = MOVE_POWDER_SNOW; }
+    PARAMETRIZE { move = MOVE_EMBER; }
+    PARAMETRIZE { move = MOVE_THUNDERSHOCK; }
+    PARAMETRIZE { move = MOVE_POISON_STING; }
+    PARAMETRIZE { move = MOVE_POISON_FANG; }
+
+>>>>>>> 9bd5601b5c085a70111f0fc4eaf7d98e43adbfa8
     GIVEN {
+        ASSUME(MoveHasAdditionalEffect(MOVE_POWDER_SNOW, MOVE_EFFECT_FREEZE_OR_FROSTBITE));
+        ASSUME(MoveHasAdditionalEffect(MOVE_EMBER, MOVE_EFFECT_BURN));
+        ASSUME(MoveHasAdditionalEffect(MOVE_THUNDERSHOCK, MOVE_EFFECT_PARALYSIS));
+        ASSUME(MoveHasAdditionalEffect(MOVE_POISON_STING, MOVE_EFFECT_POISON));
+        ASSUME(MoveHasAdditionalEffect(MOVE_POISON_FANG, MOVE_EFFECT_TOXIC));
         PLAYER(SPECIES_SHAYMIN_SKY);
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
+<<<<<<< HEAD
         TURN { MOVE(opponent, MOVE_POWDER_SNOW); }
+=======
+        TURN { MOVE(opponent, move); }
+    } SCENE {
+        ANIMATION(ANIM_TYPE_MOVE, move, opponent);
+        if (move == MOVE_POWDER_SNOW) {
+            FREEZE_OR_FROSTBURN_STATUS(player, TRUE);
+            NOT HP_BAR(player); // Regression caused by Mimikyu form change
+            MESSAGE("Shaymin transformed!");
+        } else {
+            NOT MESSAGE("Shaymin transformed!");
+        }
+>>>>>>> 9bd5601b5c085a70111f0fc4eaf7d98e43adbfa8
     } THEN {
         EXPECT_EQ(player->species, SPECIES_SHAYMIN_LAND);
     }

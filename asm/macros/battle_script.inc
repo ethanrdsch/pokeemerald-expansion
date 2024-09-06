@@ -710,8 +710,9 @@
 	.byte 0x7c
 	.endm
 
-	.macro setrain
+	.macro setfieldweather weather:req
 	.byte 0x7d
+	.byte \weather
 	.endm
 
 	.macro setreflect
@@ -833,11 +834,11 @@
 	.byte 0x94
 	.endm
 
-	.macro setsandstorm
+	.macro unused_95
 	.byte 0x95
 	.endm
 
-	.macro weatherdamage
+	.macro unused_96
 	.byte 0x96
 	.endm
 
@@ -1005,7 +1006,7 @@
 	.4byte \jumpInstr
 	.endm
 
-	.macro setsunny
+	.macro unused_bb
 	.byte 0xbb
 	.endm
 
@@ -1080,7 +1081,7 @@
 	.byte 0xc7
 	.endm
 
-	.macro sethail
+	.macro unused_c8
 	.byte 0xc8
 	.endm
 
@@ -1350,6 +1351,22 @@
 	.endm
 
 @ callnative macros
+	.macro savetarget
+	callnative BS_SaveTarget
+	.endm
+
+	.macro restoretarget
+	callnative BS_RestoreTarget
+	.endm
+
+	.macro saveattacker
+	callnative BS_SaveAttacker
+	.endm
+
+	.macro restoreattacker
+	callnative BS_RestoreAttacker
+	.endm
+
 	.macro metalburstdamagecalculator failInstr:req
 	callnative BS_CalcMetalBurstDmg
 	.4byte \failInstr
@@ -1407,10 +1424,6 @@
 
 	.macro tryrevertweatherform
 	callnative BS_TryRevertWeatherForm
-	.endm
-
-	.macro setsnow
-	callnative BS_SetSnow
 	.endm
 
 	.macro applysaltcure battler:req
@@ -1505,18 +1518,10 @@
 	.4byte \jumpInstr
 	.endm
 
-	.macro jumpifrodaffected battler:req, jumpInstr:req
-	callnative BS_JumpIfRod
-	.4byte \jumpInstr
-	.endm
-
-	.macro jumpifabsorbaffected battler:req, jumpInstr:req
-	callnative BS_JumpIfAbsorb
-	.4byte \jumpInstr
-	.endm
-
-	.macro jumpifmotoraffected battler:req, jumpInstr:req
-	callnative BS_JumpIfMotor
+	.macro jumpifelectricabilityaffected battler:req, ability:req, jumpInstr:req
+	callnative BS_JumpIfElectricAbilityAffected
+	.byte \battler
+	.2byte \ability
 	.4byte \jumpInstr
 	.endm
 
@@ -1551,10 +1556,6 @@
 	.macro setsteelsurge, failInstr:req
 	callnative BS_SetSteelsurge
 	.4byte \failInstr
-	.endm
-
-	.macro damagenontypes
-	callnative BS_DamageNonTypes
 	.endm
 
 	.macro trysetstatus1, ptr:req
@@ -1626,10 +1627,54 @@
 	callnative BS_TryUpdateRecoilTracker
 	.endm
 
+	.macro tryupdateleaderscresttracker
+	callnative BS_TryUpdateLeadersCrestTracker
+	.endm
+
 	.macro trytidyup clear:req, jumpInstr:req
 	callnative BS_TryTidyUp
 	.byte \clear
 	.4byte \jumpInstr
+	.endm
+
+	.macro trygulpmissile
+	callnative BS_TryGulpMissile
+	.endm
+
+	.macro tryactivategulpmissile
+	callnative BS_TryActivateGulpMissile
+	.endm
+
+	.macro tryquash failInstr:req
+	callnative BS_TryQuash
+	.4byte \failInstr
+	.endm
+
+	.macro copyfoesstatincrease battler:req, failInstr:req
+	callnative BS_CopyFoesStatIncrease
+	.byte \battler
+	.4byte \failInstr
+	.endm
+
+	.macro removeweather
+	callnative BS_RemoveWeather
+	.endm
+
+	.macro applyterastallization
+	callnative BS_ApplyTerastallization
+	.endm
+
+	.macro damagetoquartertargethp
+	callnative BS_DamageToQuarterTargetHP
+	.endm
+
+	.macro ficklebeamdamagecalculation
+	callnative BS_FickleBeamDamageCalculation
+	.endm
+
+	.macro trytarshot failInstr:req
+	callnative BS_TryTarShot
+	.4byte \failInstr
 	.endm
 
 @ various command changed to more readable macros
@@ -1752,14 +1797,6 @@
 
 	.macro switchinabilities battler:req
 	various \battler, VARIOUS_SWITCHIN_ABILITIES
-	.endm
-
-	.macro savetarget
-	various BS_TARGET, VARIOUS_SAVE_TARGET
-	.endm
-
-	.macro restoretarget
-	various BS_TARGET, VARIOUS_RESTORE_TARGET
 	.endm
 
 	.macro instanthpdrop battler:req
@@ -2186,11 +2223,6 @@
 
 	.macro trynoretreat battler:req, failInstr:req
 	various \battler, VARIOUS_TRY_NO_RETREAT
-	.4byte \failInstr
-	.endm
-
-	.macro trytarshot battler:req, failInstr:req
-	various \battler, VARIOUS_TRY_TAR_SHOT
 	.4byte \failInstr
 	.endm
 

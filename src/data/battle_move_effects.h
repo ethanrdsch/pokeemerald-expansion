@@ -1436,7 +1436,7 @@ const struct BattleMoveEffect gBattleMoveEffects[NUM_BATTLE_MOVE_EFFECTS] =
         .battleTvScore = 0, // TODO: Assign points
     },
 
-    [EFFECT_FREEZE_DRY] =
+    [EFFECT_SUPER_EFFECTIVE_ON_ARG] =
     {
         .battleScript = BattleScript_EffectHit,
         .battleTvScore = 0, // TODO: Assign points
@@ -2188,7 +2188,7 @@ const struct BattleMoveEffect gBattleMoveEffects[NUM_BATTLE_MOVE_EFFECTS] =
 
     [EFFECT_FICKLE_BEAM] =
     {
-        .battleScript = BattleScript_EffectHit,
+        .battleScript = BattleScript_EffectFickleBeam,
         .battleTvScore = 0, // TODO: Assign points
     },
 
@@ -2236,6 +2236,43 @@ const struct BattleMoveEffect gBattleMoveEffects[NUM_BATTLE_MOVE_EFFECTS] =
         .battleScript = BattleScript_EffectTidyUp,
         .battleTvScore = 0, // TODO: Assign points
         .encourageEncore = TRUE,
+    },
+
+    [EFFECT_SPICY_EXTRACT] =
+    {
+        .battleScript = BattleScript_EffectSpicyExtract,
+        .battleTvScore = 0, // TODO: Assign points
+        .encourageEncore = TRUE,
+    },
+
+    [EFFECT_TERA_BLAST] =
+    {
+        .battleScript = BattleScript_EffectPhotonGeyser,
+        .battleTvScore = 0, // TODO: Assign points
+    },
+
+    [EFFECT_TERA_STARSTORM] =
+    {
+        .battleScript = BattleScript_EffectPhotonGeyser,
+        .battleTvScore = 0, // TODO: Assign points
+    },
+
+    [EFFECT_DRAGON_DARTS] =
+    {
+        .battleScript = BattleScript_EffectHit,
+        .battleTvScore = 0, // TODO: Assign points
+    },
+
+    [EFFECT_GUARDIAN_OF_ALOLA] =
+    {
+        .battleScript = BattleScript_DamageToQuarterTargetHP,
+        .battleTvScore = 0, // TODO: Assign points
+    },
+
+    [EFFECT_SHELL_SIDE_ARM] =
+    {
+        .battleScript = BattleScript_EffectHit,
+        .battleTvScore = 0, // TODO: Assign points
     },
 
     [EFFECT_POISON_STEEL_HIT] =

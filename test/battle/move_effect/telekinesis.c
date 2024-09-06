@@ -68,3 +68,10 @@ SINGLE_BATTLE_TEST("Telekinesis makes the target immune to Ground-type attacks")
         MESSAGE("It doesn't affect Foe Wynaut…");
     }
 }
+<<<<<<< HEAD
+=======
+
+TO_DO_BATTLE_TEST("Baton Pass passes Telekinesis' effect");
+//Bulbapedia doesn't confirm what happens with Diglett, Dugtrio, Sandygast and Palossand, so it needs to be tested in-game.
+TO_DO_BATTLE_TEST("Baton Pass removes Telekinesis' effect disappears if the switching-in mon is Mega Gengar");
+>>>>>>> 9bd5601b5c085a70111f0fc4eaf7d98e43adbfa8

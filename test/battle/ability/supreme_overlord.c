@@ -85,3 +85,48 @@ SINGLE_BATTLE_TEST("Supreme Overlord does not boost attack if party members are 
         EXPECT_EQ(results[0].damage, results[1].damage);
     }
 }
+<<<<<<< HEAD
+=======
+
+SINGLE_BATTLE_TEST("Supreme Overlord's message displays correctly after all battlers fainted - Player")
+{
+    GIVEN {
+        ASSUME(gMovesInfo[MOVE_EXPLOSION].effect == EFFECT_EXPLOSION);
+        PLAYER(SPECIES_WOBBUFFET) { HP(1);}
+        PLAYER(SPECIES_KINGAMBIT) { Ability(ABILITY_SUPREME_OVERLORD); }
+        OPPONENT(SPECIES_WOBBUFFET);
+        OPPONENT(SPECIES_WOBBUFFET);
+    } WHEN {
+        TURN { MOVE(opponent, MOVE_EXPLOSION); SEND_OUT(player, 1); SEND_OUT(opponent, 1); }
+    } SCENE {
+        HP_BAR(opponent, hp: 0);
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_EXPLOSION, opponent);
+        // Everyone faints.
+        SEND_IN_MESSAGE("Kingambit");
+        MESSAGE("2 sent out Wobbuffet!");
+        ABILITY_POPUP(player, ABILITY_SUPREME_OVERLORD);
+        MESSAGE("Kingambit gained strength from the fallen!");
+    }
+}
+
+SINGLE_BATTLE_TEST("Supreme Overlord's message displays correctly after all battlers fainted - Opponent")
+{
+    GIVEN {
+        ASSUME(gMovesInfo[MOVE_EXPLOSION].effect == EFFECT_EXPLOSION);
+        PLAYER(SPECIES_WOBBUFFET);
+        PLAYER(SPECIES_WOBBUFFET);
+        OPPONENT(SPECIES_WOBBUFFET) { HP(1);}
+        OPPONENT(SPECIES_KINGAMBIT) { Ability(ABILITY_SUPREME_OVERLORD); }
+    } WHEN {
+        TURN { MOVE(player, MOVE_EXPLOSION); SEND_OUT(player, 1); SEND_OUT(opponent, 1); }
+    } SCENE {
+        HP_BAR(player, hp: 0);
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_EXPLOSION, player);
+        // Everyone faints.
+        SEND_IN_MESSAGE("Wobbuffet");
+        MESSAGE("2 sent out Kingambit!");
+        ABILITY_POPUP(opponent, ABILITY_SUPREME_OVERLORD);
+        MESSAGE("Foe Kingambit gained strength from the fallen!");
+    }
+}
+>>>>>>> 9bd5601b5c085a70111f0fc4eaf7d98e43adbfa8

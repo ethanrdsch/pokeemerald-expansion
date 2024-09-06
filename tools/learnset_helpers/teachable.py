@@ -12,8 +12,13 @@ with open("./include/config/pokemon.h", "r") as file:
         quit()
 
 def parse_mon_name(name):
+<<<<<<< HEAD
     return re.sub('(?!^)([A-Z]+)', r'_\1', name).upper()
     
+=======
+    return re.sub(r'(?!^)([A-Z]+)', r'_\1', name).upper()
+
+>>>>>>> 9bd5601b5c085a70111f0fc4eaf7d98e43adbfa8
 tm_moves = []
 tutor_moves = []
 
@@ -196,7 +201,7 @@ for move in tm_moves:
 header += "// " + longest_move_name * "*" + " //\n"
 header_print(tutor_title)
 tutor_moves.sort() # alphabetically sort tutor moves for easier referencing
-for move in tutor_moves: 
+for move in tutor_moves:
     header_print("- " + move)
 header += "// " + longest_move_name * "*" + " //\n"
 header_print(universal_title)

@@ -95,7 +95,7 @@ SINGLE_BATTLE_TEST("Shield Dust does not block self-targeting effects, primary o
     GIVEN {
         ASSUME(MoveHasAdditionalEffectSelf(MOVE_POWER_UP_PUNCH, MOVE_EFFECT_ATK_PLUS_1) == TRUE);
         ASSUME(MoveHasAdditionalEffectSelf(MOVE_RAPID_SPIN, MOVE_EFFECT_RAPID_SPIN) == TRUE);
-        ASSUME(MoveHasAdditionalEffectSelf(MOVE_LEAF_STORM, MOVE_EFFECT_SP_ATK_TWO_DOWN) == TRUE);
+        ASSUME(MoveHasAdditionalEffectSelf(MOVE_LEAF_STORM, MOVE_EFFECT_SP_ATK_MINUS_2) == TRUE);
         ASSUME(MoveHasAdditionalEffectSelf(MOVE_METEOR_ASSAULT, MOVE_EFFECT_RECHARGE) == TRUE);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_VIVILLON) { Ability(ABILITY_SHIELD_DUST); }
@@ -135,5 +135,17 @@ DOUBLE_BATTLE_TEST("Shield Dust does not block Sparkling Aria in doubles")
         ANIMATION(ANIM_TYPE_MOVE, MOVE_SPARKLING_ARIA, playerLeft);
         MESSAGE("Foe Vivillion's burn was healed.");
         STATUS_ICON(opponentLeft, burn: TRUE);
+    }
+}
+
+SINGLE_BATTLE_TEST("Shield Dust does not prevent ability stat changes")
+{
+    GIVEN {
+        PLAYER(SPECIES_VIVILLON) { Ability(ABILITY_SHIELD_DUST); }
+        OPPONENT(SPECIES_ELDEGOSS) { Ability(ABILITY_COTTON_DOWN); }
+    } WHEN {
+        TURN { MOVE(player, MOVE_TACKLE); }
+    } SCENE {
+        MESSAGE("Vivillon's Speed fell!");
     }
 }
