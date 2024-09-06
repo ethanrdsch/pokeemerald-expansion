@@ -5756,6 +5756,7 @@ bool32 TrySetAteType(u32 move, u32 battlerAtk, u32 attackerAbility)
     case EFFECT_CHANGE_TYPE_ON_ITEM:
     case EFFECT_REVELATION_DANCE:
     case EFFECT_TERRAIN_PULSE:
+    case EFFECT_RAGING_BULL:
         return FALSE;
     }
 
@@ -5773,6 +5774,12 @@ bool32 TrySetAteType(u32 move, u32 battlerAtk, u32 attackerAbility)
         break;
     case ABILITY_GALVANIZE:
         ateType = TYPE_ELECTRIC;
+        break;
+    case ABILITY_FLORALIZE:
+        ateType = TYPE_GRASS;
+        break;
+    case ABILITY_TERRALATE:
+        ateType = TYPE_GROUND;
         break;
     default:
         ateType = TYPE_NONE;

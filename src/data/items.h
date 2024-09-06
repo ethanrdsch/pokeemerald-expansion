@@ -14082,20 +14082,7 @@ const struct Item gItemsInfo[] =
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_Pokevial,
         .effect = gItemEffect_Pokevial,
-    },
-
-    // pokevial branch
-    {
-        .name = _("Pokévial"),
-        .price = 0,
-        .description = COMPOUND_STRING(
-            "On use, heals all\n"
-            "non-fainted Pokémon\n"
-            "in the party."),
-        .importance = 1,
-        .pocket = POCKET_KEY_ITEMS,
-        .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_Pokevial,
-        .effect = gItemEffect_Pokevial,
+        .iconPic = gItemIcon_Pokevial,
+        .iconPalette = gItemIconPalette_Pokevial,
     },
 };
