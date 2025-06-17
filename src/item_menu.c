@@ -217,6 +217,14 @@ static void ConfirmSell(u8);
 static void CancelSell(u8);
 static void Task_FadeAndCloseBagMenuIfMulch(u8 taskId);
 
+//tx_registered_items_menu
+static void ItemMenu_RegisterSelect(u8 taskId);
+static void ItemMenu_RegisterList(u8 taskId);
+static void ItemMenu_Deselect(u8 taskId);
+//static u8 Register_GetItemListPosition(u16 itemId); unused?
+//static bool8 Register_IsItemInList(u16 itemId);
+//static void Task_ScrollingMultichoiceInput(u8 taskId);
+
 static const u8 sText_Var1CantBeHeldHere[] = _("The {STR_VAR_1} can't be held\nhere.");
 static const u8 sText_DepositHowManyVar1[] = _("Deposit how many\n{STR_VAR_1}?");
 static const u8 sText_DepositedVar2Var1s[] = _("Deposited {STR_VAR_2}\n{STR_VAR_1}.");
@@ -287,12 +295,14 @@ static const struct MenuAction sItemMenuActions[] = {
     [ACTION_BATTLE_USE]        = {gMenuText_Use,                {ItemMenu_UseInBattle}},
     [ACTION_CHECK]             = {COMPOUND_STRING("Check"),     {ItemMenu_UseOutOfBattle}},
     [ACTION_WALK]              = {COMPOUND_STRING("Walk"),      {ItemMenu_UseOutOfBattle}},
-    [ACTION_DESELECT]          = {COMPOUND_STRING("Deselect"),  {ItemMenu_Register}},
+    [ACTION_DESELECT]          = {COMPOUND_STRING("Deselect"),  {ItemMenu_Deselect}},
     [ACTION_CHECK_TAG]         = {COMPOUND_STRING("Check Tag"), {ItemMenu_CheckTag}},
     [ACTION_CONFIRM]           = {gMenuText_Confirm,            {Task_FadeAndCloseBagMenu}},
     [ACTION_SHOW]              = {COMPOUND_STRING("Show"),      {ItemMenu_Show}},
     [ACTION_GIVE_FAVOR_LADY]   = {gMenuText_Give2,              {ItemMenu_GiveFavorLady}},
     [ACTION_CONFIRM_QUIZ_LADY] = {gMenuText_Confirm,            {ItemMenu_ConfirmQuizLady}},
+    [ACTION_SELECT_BUTTON]     = {COMPOUND_STRING("Select"),    {ItemMenu_RegisterSelect}},
+    [ACTION_L_BUTTON]          = {COMPOUND_STRING("List"),      {ItemMenu_RegisterList}},   
     [ACTION_DUMMY]             = {gText_EmptyString2, {NULL}}
 };
 
@@ -2168,8 +2178,8 @@ bool8 UseRegisteredKeyItemOnField(u8 button)
             FreezeObjectEvents();
             PlayerFreeze();
             StopPlayerAvatar();
-            gSpecialVar_ItemId = gSaveBlock1Ptr->registeredItem;
-            taskId = CreateTask(GetItemFieldFunc(gSaveBlock1Ptr->registeredItem), 8);
+            gSpecialVar_ItemId = registeredItem;
+            taskId = CreateTask(GetItemFieldFunc(registeredItem), 8);
             gTasks[taskId].tUsingRegisteredKeyItem = TRUE;
             return TRUE;
         }

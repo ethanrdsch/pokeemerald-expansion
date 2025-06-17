@@ -100,6 +100,7 @@ void FieldClearPlayerInput(struct FieldInput *input)
     input->input_field_1_3 = FALSE;
     input->dpadDirection = 0;
     input->pressedListButton = FALSE;
+    input->pressedListButton = FALSE;
 }
 
 void FieldGetPlayerInput(struct FieldInput *input, u16 newKeys, u16 heldKeys)
@@ -120,6 +121,11 @@ void FieldGetPlayerInput(struct FieldInput *input, u16 newKeys, u16 heldKeys)
                 input->pressedAButton = TRUE;
             if (newKeys & B_BUTTON)
                 input->pressedBButton = TRUE;
+            //tx_registered_items_menu
+            if (newKeys & L_BUTTON && gSaveBlock2Ptr->optionsButtonMode != 2)
+                input->pressedListButton = TRUE;
+            else if (newKeys & R_BUTTON)
+                input->pressedListButton = TRUE;
             if (newKeys & R_BUTTON && !FlagGet(DN_FLAG_SEARCHING))
                 input->pressedRButton = TRUE;
         }
@@ -232,7 +238,7 @@ int ProcessPlayerFieldInput(struct FieldInput *input)
     if (input->tookStep && TryFindHiddenPokemon())
         return TRUE;
 
-    if (input->pressedSelectButton && UseRegisteredKeyItemOnField() == TRUE)
+    if (input->pressedSelectButton && UseRegisteredKeyItemOnField(0) == TRUE)
         return TRUE;
     else if (input->pressedListButton)
     {
