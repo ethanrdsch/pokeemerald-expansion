@@ -12,28 +12,28 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
     [ABILITY_STENCH] =
     {
         .name = _("Stench"),
-        .description = COMPOUND_STRING("May cause a foe to flinch."),
+        .description = COMPOUND_STRING("Attacking moves have a 10%\nchance to cause flinching."),
         .aiRating = 1,
     },
 
     [ABILITY_DRIZZLE] =
     {
         .name = _("Drizzle"),
-        .description = COMPOUND_STRING("Summons rain in battle."),
+        .description = COMPOUND_STRING("Upon switing in, summons\nrain for 5 turns."),
         .aiRating = 9,
     },
 
     [ABILITY_SPEED_BOOST] =
     {
         .name = _("Speed Boost"),
-        .description = COMPOUND_STRING("Gradually boosts Speed."),
+        .description = COMPOUND_STRING("Boosts Speed by 1 stage at\nthe end of each turn."),
         .aiRating = 9,
     },
 
     [ABILITY_BATTLE_ARMOR] =
     {
         .name = _("Battle Armor"),
-        .description = COMPOUND_STRING("Blocks critical hits."),
+        .description = COMPOUND_STRING("Grants immunity from\ncritical hits."),
         .aiRating = 2,
         .breakable = TRUE,
     },
@@ -41,7 +41,7 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
     [ABILITY_STURDY] =
     {
         .name = _("Sturdy"),
-        .description = COMPOUND_STRING("Negates 1-hit KO attacks."),
+        .description = COMPOUND_STRING("Cannot be KO'd in one hit\nwhile at full HP."),
         .aiRating = 6,
         .breakable = TRUE,
     },
@@ -49,15 +49,15 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
     [ABILITY_DAMP] =
     {
         .name = _("Damp"),
-        .description = COMPOUND_STRING("Prevents self-destruction."),
-        .aiRating = 2,
+        .description = COMPOUND_STRING("Stops self-destructing.\nWater Sport on switch-in."),
+        .aiRating = 4,
         .breakable = TRUE,
     },
 
     [ABILITY_LIMBER] =
     {
         .name = _("Limber"),
-        .description = COMPOUND_STRING("Prevents paralysis."),
+        .description = COMPOUND_STRING("Prevents paralysis. Reduces\nrecoil damage by 50%."),
         .aiRating = 3,
         .breakable = TRUE,
     },
@@ -65,7 +65,7 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
     [ABILITY_SAND_VEIL] =
     {
         .name = _("Sand Veil"),
-        .description = COMPOUND_STRING("Ups evasion in a sandstorm."),
+        .description = COMPOUND_STRING("Cuts accuracy of foe's\nmoves by 20% in Sandstorm."),
         .aiRating = 3,
         .breakable = TRUE,
     },

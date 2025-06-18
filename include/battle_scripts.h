@@ -520,6 +520,8 @@ extern const u8 BattleScript_TeraShellDistortingTypeMatchups[];
 extern const u8 BattleScript_TeraFormChange[];
 extern const u8 BattleScript_SleepClausePreventsEnd[];
 extern const u8 BattleScript_PowerConstruct[];
+extern const u8 BattleScript_EffectMudSportAbility[];
+extern const u8 BattleScript_EffectWaterSportAbility[];
 
 extern const u8 BattleScript_AbilityProtectsDoesntAffect[];
 extern const u8 BattleScript_ImmunityProtected[];

@@ -6980,11 +6980,26 @@ static void Cmd_moveend(void)
                  && !gBattleStruct->noTargetPresent)
                 {
                     if (B_RECOIL_IF_MISS_DMG >= GEN_5 || (B_CRASH_IF_TARGET_IMMUNE == GEN_4 && gBattleStruct->moveResultFlags[gBattlerTarget] & MOVE_RESULT_DOESNT_AFFECT_FOE))
-                        gBattleStruct->moveDamage[gBattlerAttacker] = GetNonDynamaxMaxHP(gBattlerAttacker) / 2;
+                    {
+                        if (GetBattlerAbility(gBattlerAttacker) == ABILITY_LIMBER)
+                            gBattleStruct->moveDamage[gBattlerAttacker] = GetNonDynamaxMaxHP(gBattlerAttacker) / 4;
+                        else
+                            gBattleStruct->moveDamage[gBattlerAttacker] = GetNonDynamaxMaxHP(gBattlerAttacker) / 2;
+                    }
                     else if (B_RECOIL_IF_MISS_DMG == GEN_4 && (GetNonDynamaxMaxHP(gBattlerTarget) / 2) < gBattleStruct->moveDamage[gBattlerTarget])
-                        gBattleStruct->moveDamage[gBattlerAttacker] = GetNonDynamaxMaxHP(gBattlerTarget) / 2;
+                    {
+                        if (GetBattlerAbility(gBattlerAttacker) == ABILITY_LIMBER)
+                            gBattleStruct->moveDamage[gBattlerAttacker] = GetNonDynamaxMaxHP(gBattlerAttacker) / 4;
+                        else
+                            gBattleStruct->moveDamage[gBattlerAttacker] = GetNonDynamaxMaxHP(gBattlerAttacker) / 2;
+                    }
                     else // Fallback if B_RECOIL_IF_MISS_DMG is set to gen3 or lower.
-                        gBattleStruct->moveDamage[gBattlerAttacker] = GetNonDynamaxMaxHP(gBattlerTarget) / 2;
+                    {
+                        if (GetBattlerAbility(gBattlerAttacker) == ABILITY_LIMBER)
+                            gBattleStruct->moveDamage[gBattlerAttacker] = GetNonDynamaxMaxHP(gBattlerAttacker) / 4;
+                        else
+                            gBattleStruct->moveDamage[gBattlerAttacker] = GetNonDynamaxMaxHP(gBattlerAttacker) / 2;
+                    }
 
                     if (gBattleStruct->moveDamage[gBattlerAttacker] == 0)
                         gBattleStruct->moveDamage[gBattlerAttacker] = 1;
@@ -6997,7 +7012,10 @@ static void Cmd_moveend(void)
             case EFFECT_RECOIL:
                 if (IsBattlerTurnDamaged(gBattlerTarget) && IsBattlerAlive(gBattlerAttacker))
                 {
-                    gBattleStruct->moveDamage[gBattlerAttacker] = max(1, gBattleStruct->moveDamage[gBattlerTarget] * max(1, GetMoveRecoil(gCurrentMove)) / 100);
+                    if (GetBattlerAbility(gBattlerAttacker) == ABILITY_LIMBER)
+                        gBattleStruct->moveDamage[gBattlerAttacker] = max(1, gBattleStruct->moveDamage[gBattlerTarget] * max(1, GetMoveRecoil(gCurrentMove)) / 200);
+                    else
+                        gBattleStruct->moveDamage[gBattlerAttacker] = max(1, gBattleStruct->moveDamage[gBattlerTarget] * max(1, GetMoveRecoil(gCurrentMove)) / 100);
                     BattleScriptPushCursor();
                     gBattlescriptCurrInstr = BattleScript_MoveEffectRecoil;
                     effect = TRUE;
@@ -7018,7 +7036,10 @@ static void Cmd_moveend(void)
                  && !(gBattleStruct->moveResultFlags[gBattlerTarget] & MOVE_RESULT_FAILED)
                  && GetBattlerAbility(gBattlerAttacker) != ABILITY_MAGIC_GUARD)
                 {
-                    gBattleStruct->moveDamage[gBattlerAttacker] = (GetNonDynamaxMaxHP(gBattlerAttacker) + 1) / 2; // Half of Max HP Rounded UP
+                    if (GetBattlerAbility(gBattlerAttacker) == ABILITY_LIMBER)
+                        gBattleStruct->moveDamage[gBattlerAttacker] = (GetNonDynamaxMaxHP(gBattlerAttacker) + 1) / 4; // 25% of Max HP Rounded UP (bc of Limber)
+                    else
+                        gBattleStruct->moveDamage[gBattlerAttacker] = (GetNonDynamaxMaxHP(gBattlerAttacker) + 1) / 2; // 50% of Max HP Rounded UP
                     BattleScriptPushCursor();
                     gBattlescriptCurrInstr = BattleScript_MaxHp50Recoil;
                     effect = TRUE;
@@ -7027,7 +7048,10 @@ static void Cmd_moveend(void)
             case EFFECT_CHLOROBLAST:
                 if (IsBattlerTurnDamaged(gBattlerTarget) && IsBattlerAlive(gBattlerAttacker))
                 {
-                    gBattleStruct->moveDamage[gBattlerAttacker] = (GetNonDynamaxMaxHP(gBattlerAttacker) + 1) / 2; // Half of Max HP Rounded UP
+                    if (GetBattlerAbility(gBattlerAttacker) == ABILITY_LIMBER)
+                        gBattleStruct->moveDamage[gBattlerAttacker] = (GetNonDynamaxMaxHP(gBattlerAttacker) + 1) / 4; // 25% of Max HP Rounded UP (bc of Limber)
+                    else
+                        gBattleStruct->moveDamage[gBattlerAttacker] = (GetNonDynamaxMaxHP(gBattlerAttacker) + 1) / 2; // 50% of Max HP Rounded UP
                     BattleScriptPushCursor();
                     gBattlescriptCurrInstr = BattleScript_MoveEffectRecoil;
                     effect = TRUE;
