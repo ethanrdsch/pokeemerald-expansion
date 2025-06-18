@@ -358,12 +358,16 @@ bool32 AI_CanBattlerEscape(u32 battler)
         return TRUE;
     if (holdEffect == HOLD_EFFECT_SHED_SHELL)
         return TRUE;
+    if (gAiLogicData->abilities[battler] == ABILITY_RUN_AWAY)
+        return TRUE;
 
     return FALSE;
 }
 
 bool32 IsBattlerTrapped(u32 battlerAtk, u32 battlerDef)
 {
+    if (gAiLogicData->abilities[battlerDef] == ABILITY_RUN_AWAY)
+        return TRUE;
     if (gBattleMons[battlerDef].status2 & (STATUS2_ESCAPE_PREVENTION | STATUS2_WRAPPED))
         return TRUE;
     if (gStatuses3[battlerDef] & (STATUS3_ROOTED | STATUS3_SKY_DROPPED))
@@ -1939,7 +1943,7 @@ bool32 ShouldLowerStat(u32 battlerAtk, u32 battlerDef, u32 abilityDef, u32 stat)
         if (stat == STAT_SPEED)
             return FALSE;
     case ABILITY_HYPER_CUTTER:
-        if (stat == STAT_ATK)
+        if (stat == STAT_ATK || stat == STAT_SPATK)
             return FALSE;
     case ABILITY_BIG_PECKS:
         if (stat == STAT_DEF)
@@ -2092,6 +2096,7 @@ bool32 ShouldLowerSpAtk(u32 battlerAtk, u32 battlerDef, u32 defAbility)
       && defAbility != ABILITY_CLEAR_BODY
       && defAbility != ABILITY_FULL_METAL_BODY
       && defAbility != ABILITY_WHITE_SMOKE
+      && defAbility != ABILITY_HYPER_CUTTER
       && gAiLogicData->holdEffects[battlerDef] != HOLD_EFFECT_CLEAR_AMULET)
         return TRUE;
     return FALSE;
@@ -3000,7 +3005,7 @@ static bool32 PartyBattlerShouldAvoidHazards(u32 currBattler, u32 switchBattler)
     if (flags == 0)
         return FALSE;
 
-    if (ability == ABILITY_MAGIC_GUARD)
+    if (ability == ABILITY_MAGIC_GUARD || ability == ABILITY_SHIELD_DUST)
         return FALSE;
     if (gFieldStatuses & STATUS_FIELD_MAGIC_ROOM || ability == ABILITY_KLUTZ)
         holdEffect = HOLD_EFFECT_NONE;
@@ -4695,15 +4700,24 @@ bool32 ShouldTriggerAbility(u32 battler, u32 ability)
     {
         case ABILITY_LIGHTNING_ROD:
         case ABILITY_STORM_DRAIN:
-            if (B_REDIRECT_ABILITY_IMMUNITY < GEN_5)
-                return FALSE;
+        case ABILITY_SAP_SIPPER:
+            u32 attack = gBattleMons[battler].attack;
+            u32 spAttack = gBattleMons[battler].spAttack;
+
+            attack = attack * gStatStageRatios[gBattleMons[battler].statStages[STAT_ATK]][0];
+            attack = attack / gStatStageRatios[gBattleMons[battler].statStages[STAT_ATK]][1];
+
+            spAttack = spAttack * gStatStageRatios[gBattleMons[battler].statStages[STAT_SPATK]][0];
+            spAttack = spAttack / gStatStageRatios[gBattleMons[battler].statStages[STAT_SPATK]][1];
+
+            if (spAttack >= attack)
+                return BattlerStatCanRise(battler, ability, STAT_SPATK);
             else
-                return (BattlerStatCanRise(battler, ability, STAT_SPATK) && HasMoveWithCategory(battler, DAMAGE_CATEGORY_SPECIAL));
+                return BattlerStatCanRise(battler, ability, STAT_ATK);
 
         case ABILITY_DEFIANT:
         case ABILITY_JUSTIFIED:
         case ABILITY_MOXIE:
-        case ABILITY_SAP_SIPPER:
         case ABILITY_THERMAL_EXCHANGE:
             return (BattlerStatCanRise(battler, ability, STAT_ATK) && HasMoveWithCategory(battler, DAMAGE_CATEGORY_PHYSICAL));
 

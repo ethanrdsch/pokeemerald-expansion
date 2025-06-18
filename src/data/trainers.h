@@ -42178,3 +42178,42 @@ F_TRAINER_FEMALE |
             },
         },
     },
+#line 16877
+    [DIFFICULTY_NORMAL][TRAINER_TEST_MAN] =
+    {
+#line 16878
+        .trainerName = _("Test Man"),
+#line 16879
+        .trainerClass = TRAINER_CLASS_HIKER,
+#line 16880
+        .trainerPic = TRAINER_PIC_HIKER,
+        .encounterMusic_gender =
+#line 16882
+            TRAINER_ENCOUNTER_MUSIC_MALE,
+#line 16883
+        .battleType = TRAINER_BATTLE_TYPE_SINGLES,
+        .partySize = 1,
+        .party = (const struct TrainerMon[])
+        {
+            {
+#line 16885
+            .species = SPECIES_DODRIO,
+            .gender = TRAINER_MON_RANDOM_GENDER,
+#line 16887
+            .iv = TRAINER_PARTY_IVS(31, 31, 31, 31, 31, 31),
+#line 16886
+            .ability = ABILITY_RUN_AWAY,
+#line 16887
+            .lvl = 100,
+            .nature = NATURE_HARDY,
+            .dynamaxLevel = MAX_DYNAMAX_LEVEL,
+            .moves = {
+#line 16887
+                MOVE_SPIKES,
+                MOVE_STICKY_WEB,
+                MOVE_TOXIC_SPIKES,
+                MOVE_STEALTH_ROCK,
+            },
+            },
+        },
+    },

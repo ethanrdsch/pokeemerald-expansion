@@ -5078,7 +5078,6 @@ BattleScript_ActivateSportAbilities_Increment:
 	return
 
 BattleScript_EffectMudSportAbility::
-	pause B_WAIT_TIME_SHORT
 	call BattleScript_AbilityPopUp
 	printstring STRINGID_ELECTRICITYWEAKENED
 	waitmessage B_WAIT_TIME_SHORT
@@ -5086,13 +5085,31 @@ BattleScript_EffectMudSportAbility::
 	end3
 
 BattleScript_EffectWaterSportAbility::
-	pause B_WAIT_TIME_SHORT
 	call BattleScript_AbilityPopUp
 	printstring STRINGID_FIREWEAKENED
 	waitmessage B_WAIT_TIME_SHORT
 	call BattleScript_ActivateSportAbilities
 	end3
-	
+
+BattleScript_ActivateAquaRingAbilities:
+	savetarget
+	setbyte gBattlerTarget, 0
+BattleScript_ActivateAquaRingAbilities_Loop:
+	copybyte sBATTLER, gBattlerTarget
+BattleScript_ActivateAquaRingAbilities_Increment:
+	addbyte gBattlerTarget, 1
+	jumpifbytenotequal gBattlerTarget, gBattlersCount, BattleScript_ActivateAquaRingAbilities_Loop
+	restoretarget
+	return
+
+BattleScript_EffectAquaRingAbility::
+	call BattleScript_AbilityPopUp
+	waitstate
+	playanimation BS_BATTLER_0, B_ANIM_AQUA_RING_HEAL
+	printstring STRINGID_PKMNSURROUNDEDWITHVEILOFWATER
+	waitmessage B_WAIT_TIME_SHORT
+	call BattleScript_ActivateAquaRingAbilities
+	end3
 BattleScript_EffectTickle::
 	attackcanceler
 	attackstring
@@ -6306,25 +6323,50 @@ BattleScript_LeechSeedFree::
 	waitmessage B_WAIT_TIME_LONG
 	return
 
+BattleScript_SpikesFreeWithPopup::
+	copybyte gBattlerAbility, gBattlerAttacker
+	call BattleScript_AbilityPopUp
+	waitstate
+
 BattleScript_SpikesFree::
 	printstring STRINGID_PKMNBLEWAWAYSPIKES
 	waitmessage B_WAIT_TIME_LONG
 	return
+
+BattleScript_ToxicSpikesFreeWithPopup::
+	copybyte gBattlerAbility, gBattlerAttacker
+	call BattleScript_AbilityPopUp
+	waitstate
 
 BattleScript_ToxicSpikesFree::
 	printstring STRINGID_PKMNBLEWAWAYTOXICSPIKES
 	waitmessage B_WAIT_TIME_LONG
 	return
 
+BattleScript_StickyWebFreeWithPopup::
+	copybyte gBattlerAbility, gBattlerAttacker
+	call BattleScript_AbilityPopUp
+	waitstate
+
 BattleScript_StickyWebFree::
 	printstring STRINGID_PKMNBLEWAWAYSTICKYWEB
 	waitmessage B_WAIT_TIME_LONG
 	return
 
+BattleScript_StealthRockFreeWithPopup::
+	copybyte gBattlerAbility, gBattlerAttacker
+	call BattleScript_AbilityPopUp
+	waitstate
+
 BattleScript_StealthRockFree::
 	printstring STRINGID_PKMNBLEWAWAYSTEALTHROCK
 	waitmessage B_WAIT_TIME_LONG
 	return
+
+BattleScript_SteelsurgeFreeWithPopup::
+	copybyte gBattlerAbility, gBattlerAttacker
+	call BattleScript_AbilityPopUp
+	waitstate
 
 BattleScript_SteelsurgeFree::
 	printstring STRINGID_PKMNBLEWAWAYSHARPSTEEL
@@ -7563,6 +7605,10 @@ BattleScript_PickupActivates::
 BattleScript_PickupActivatesEnd:
 	end3
 
+BattleScript_TryAbilityRemoveHazards::
+	tryabilityremovehazards BS_ATTACKER
+	end3
+
 BattleScript_HarvestActivates::
 	pause 5
 	tryrecycleitem BattleScript_HarvestActivatesEnd
@@ -8207,6 +8253,7 @@ BattleScript_StickyHoldActivates::
 	goto BattleScript_MoveEnd
 
 BattleScript_ColorChangeActivates::
+  sethword sABILITY_OVERWRITE, ABILITY_COLOR_CHANGE
 	call BattleScript_AbilityPopUp
 	printstring STRINGID_PKMNCHANGEDTYPEWITH
 	waitmessage B_WAIT_TIME_LONG

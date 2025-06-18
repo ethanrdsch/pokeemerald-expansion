@@ -2322,6 +2322,42 @@ static void CancellerProtean(u32 *effect)
     }
 }
 
+static void CancellerColorChange(u32 *effect)
+{
+    if (GetBattlerAbility(gBattlerTarget) == ABILITY_COLOR_CHANGE 
+        && gBattlerAttacker != gBattlerTarget
+        && GetBattleMoveCategory(gCurrentMove) != DAMAGE_CATEGORY_STATUS)
+    {
+        u32 moveType = GetBattleMoveType(gCurrentMove);
+        u32 currentType;
+        u32 bestType = gBattleMons[gBattlerTarget].types[0];
+        u16 bestModifier = GetTypeModifier(moveType, bestType);
+
+        for (currentType = TYPE_NORMAL; currentType < NUMBER_OF_MON_TYPES; currentType++) 
+        {
+            u16 currentModifier = GetTypeModifier(moveType, currentType);
+            if (currentModifier < bestModifier && currentModifier != UQ_4_12(0.0)) 
+            {
+                bestModifier = currentModifier;
+                bestType = currentType;
+            }
+            if (bestModifier == UQ_4_12(0.5))
+                break;
+        }
+
+        if (gBattleMons[gBattlerTarget].types[0] != bestType) 
+        {
+            SET_BATTLER_TYPE(gBattlerTarget, bestType);
+            PREPARE_TYPE_BUFFER(gBattleTextBuff1, bestType);
+            BattleScriptPushCursor();
+            PrepareStringBattle(STRINGID_EMPTYSTRING3, gBattlerTarget);
+            gBattleCommunication[MSG_DISPLAY] = 1;
+            gBattlescriptCurrInstr = BattleScript_ColorChangeActivates;
+            *effect = 1;
+        }
+    }
+}
+
 static void CancellerPsychicTerrain(u32 *effect)
 {
     if (gFieldStatuses & STATUS_FIELD_PSYCHIC_TERRAIN
@@ -2528,6 +2564,7 @@ static const MoveSuccessOrderCancellers sMoveSuccessOrderCancellers[] =
     [CANCELLER_DYNAMAX_BLOCKED] = CancellerDynamaxBlocked,
     [CANCELLER_POWDER_STATUS] = CancellerPowderStatus,
     [CANCELLER_PROTEAN] = CancellerProtean,
+    [CANCELLER_COLOR_CHANGE] = CancellerColorChange,
     [CANCELLER_PSYCHIC_TERRAIN] = CancellerPsychicTerrain,
     [CANCELLER_EXPLODING_DAMP] = CancellerExplodingDamp,
     [CANCELLER_MULTIHIT_MOVES] = CancellerMultihitMoves,
@@ -3096,21 +3133,60 @@ bool32 CanAbilityAbsorbMove(u32 battlerAtk, u32 battlerDef, u32 abilityDef, u32 
         if (B_REDIRECT_ABILITY_IMMUNITY >= GEN_5 && moveType == TYPE_ELECTRIC && GetBattlerMoveTargetType(battlerAtk, move) != MOVE_TARGET_ALL_BATTLERS)
         {
             effect = MOVE_ABSORBED_BY_STAT_INCREASE_ABILITY;
-            statId = STAT_SPATK;
+
+            u32 attack = gBattleMons[battlerDef].attack;
+            u32 spAttack = gBattleMons[battlerDef].spAttack;
+
+            attack = attack * gStatStageRatios[gBattleMons[battlerDef].statStages[STAT_ATK]][0];
+            attack = attack / gStatStageRatios[gBattleMons[battlerDef].statStages[STAT_ATK]][1];
+
+            spAttack = spAttack * gStatStageRatios[gBattleMons[battlerDef].statStages[STAT_SPATK]][0];
+            spAttack = spAttack / gStatStageRatios[gBattleMons[battlerDef].statStages[STAT_SPATK]][1];
+
+            if (spAttack >= attack)
+                statId = STAT_SPATK;
+            else
+                statId = STAT_ATK;
         }
         break;
     case ABILITY_STORM_DRAIN:
         if (B_REDIRECT_ABILITY_IMMUNITY >= GEN_5 && moveType == TYPE_WATER)
         {
             effect = MOVE_ABSORBED_BY_STAT_INCREASE_ABILITY;
-            statId = STAT_SPATK;
+
+            u32 attack = gBattleMons[battlerDef].attack;
+            u32 spAttack = gBattleMons[battlerDef].spAttack;
+
+            attack = attack * gStatStageRatios[gBattleMons[battlerDef].statStages[STAT_ATK]][0];
+            attack = attack / gStatStageRatios[gBattleMons[battlerDef].statStages[STAT_ATK]][1];
+
+            spAttack = spAttack * gStatStageRatios[gBattleMons[battlerDef].statStages[STAT_SPATK]][0];
+            spAttack = spAttack / gStatStageRatios[gBattleMons[battlerDef].statStages[STAT_SPATK]][1];
+
+            if (spAttack >= attack)
+                statId = STAT_SPATK;
+            else
+                statId = STAT_ATK;
         }
         break;
     case ABILITY_SAP_SIPPER:
         if (moveType == TYPE_GRASS)
         {
             effect = MOVE_ABSORBED_BY_STAT_INCREASE_ABILITY;
-            statId = STAT_ATK;
+
+            u32 attack = gBattleMons[battlerDef].attack;
+            u32 spAttack = gBattleMons[battlerDef].spAttack;
+
+            attack = attack * gStatStageRatios[gBattleMons[battlerDef].statStages[STAT_ATK]][0];
+            attack = attack / gStatStageRatios[gBattleMons[battlerDef].statStages[STAT_ATK]][1];
+
+            spAttack = spAttack * gStatStageRatios[gBattleMons[battlerDef].statStages[STAT_SPATK]][0];
+            spAttack = spAttack / gStatStageRatios[gBattleMons[battlerDef].statStages[STAT_SPATK]][1];
+
+            if (spAttack >= attack)
+                statId = STAT_SPATK;
+            else
+                statId = STAT_ATK;
         }
         break;
     case ABILITY_WELL_BAKED_BODY:
@@ -3672,6 +3748,15 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                 effect++;
             }
             return effect; // Note: It returns effect as to not record the ability if Frisk does not activate.
+        case ABILITY_PICKUP:
+            if (!gSpecialStatuses[battler].switchInAbilityDone)
+            {
+                gSpecialStatuses[battler].switchInAbilityDone = TRUE;
+                gBattlerAttacker = battler;
+                BattleScriptPushCursorAndCallback(BattleScript_TryAbilityRemoveHazards); // Try activate
+                effect++;
+            }
+            return effect; // Note: It returns effect as to not record the ability if Pickup does not activate.
         case ABILITY_FOREWARN:
             if (!gSpecialStatuses[battler].switchInAbilityDone)
             {
@@ -3863,6 +3948,14 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
             if (TrySetSport(battler, 1))
             {
                 BattleScriptPushCursorAndCallback(BattleScript_EffectWaterSportAbility);
+                effect++;
+            }
+            break;
+        case ABILITY_WATER_VEIL:
+            if (!(gStatuses3[battler] & STATUS3_AQUA_RING))
+            {
+                gStatuses3[battler] |= STATUS3_AQUA_RING;
+                BattleScriptPushCursorAndCallback(BattleScript_EffectAquaRingAbility);
                 effect++;
             }
             break;
@@ -4192,7 +4285,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                  && !(gStatuses3[battler] & STATUS3_HEAL_BLOCK))
                 {
                     BattleScriptPushCursorAndCallback(BattleScript_IceBodyHeal);
-                    gBattleStruct->moveDamage[battler] = GetNonDynamaxMaxHP(battler) / 16;
+                    gBattleStruct->moveDamage[battler] = GetNonDynamaxMaxHP(battler) / 8;
                     if (gBattleStruct->moveDamage[battler] == 0)
                         gBattleStruct->moveDamage[battler] = 1;
                     gBattleStruct->moveDamage[battler] *= -1;
@@ -4209,7 +4302,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                  && !(gStatuses3[battler] & STATUS3_HEAL_BLOCK))
                 {
                     BattleScriptPushCursorAndCallback(BattleScript_RainDishActivates);
-                    gBattleStruct->moveDamage[battler] = GetNonDynamaxMaxHP(battler) / (gLastUsedAbility == ABILITY_RAIN_DISH ? 16 : 8);
+                    gBattleStruct->moveDamage[battler] = GetNonDynamaxMaxHP(battler) / 8;
                     if (gBattleStruct->moveDamage[battler] == 0)
                         gBattleStruct->moveDamage[battler] = 1;
                     gBattleStruct->moveDamage[battler] *= -1;
@@ -4254,6 +4347,17 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                 break;
             case ABILITY_SPEED_BOOST:
                 if (CompareStat(battler, STAT_SPEED, MAX_STAT_STAGE, CMP_LESS_THAN) && gDisableStructs[battler].isFirstTurn != 2)
+                {
+                    SET_STATCHANGER(STAT_SPEED, 1, FALSE);
+                    BattleScriptPushCursorAndCallback(BattleScript_SpeedBoostActivates);
+                    gBattleScripting.battler = battler;
+                    effect++;
+                }
+                break;
+            case ABILITY_EARLY_BIRD:
+                if (CompareStat(battler, STAT_SPEED, MAX_STAT_STAGE, CMP_LESS_THAN) 
+                    && gDisableStructs[battler].isFirstTurn != 2
+                    && gBattleMons[battler].status1 & STATUS1_SLEEP)
                 {
                     SET_STATCHANGER(STAT_SPEED, 1, FALSE);
                     BattleScriptPushCursorAndCallback(BattleScript_SpeedBoostActivates);
@@ -4562,6 +4666,8 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                 effect++;
             }
             break;
+        /*
+        Color Change has a new effect
         case ABILITY_COLOR_CHANGE:
             if (!(gBattleStruct->moveResultFlags[battler] & MOVE_RESULT_NO_EFFECT)
              && move != MOVE_STRUGGLE
@@ -4579,6 +4685,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                 effect++;
             }
             break;
+        */
         case ABILITY_GOOEY:
         case ABILITY_TANGLING_HAIR:
             if (!(gBattleStruct->moveResultFlags[gBattlerTarget] & MOVE_RESULT_NO_EFFECT)
@@ -5521,6 +5628,8 @@ u32 IsAbilityPreventingEscape(u32 battler)
 {
     if (B_GHOSTS_ESCAPE >= GEN_6 && IS_BATTLER_OF_TYPE(battler, TYPE_GHOST))
         return 0;
+    if (GetBattlerAbility(battler) == ABILITY_RUN_AWAY)
+        return 0;
 
     for (u32 battlerDef = 0; battlerDef < gBattlersCount; battlerDef++)
     {
@@ -5546,6 +5655,8 @@ bool32 CanBattlerEscape(u32 battler) // no ability check
 {
     if (gBattleStruct->commanderActive[battler] != SPECIES_NONE)
         return FALSE;
+    else if (GetBattlerAbility(battler) == ABILITY_RUN_AWAY)
+        return TRUE;
     else if (GetBattlerHoldEffect(battler, TRUE) == HOLD_EFFECT_SHED_SHELL)
         return TRUE;
     else if (B_GHOSTS_ESCAPE >= GEN_6 && IS_BATTLER_OF_TYPE(battler, TYPE_GHOST))
@@ -8453,6 +8564,10 @@ static inline u32 CalcMoveBasePowerAfterModifiers(struct DamageCalculationData *
         if (IsPunchingMove(move))
            modifier = uq4_12_multiply(modifier, UQ_4_12(1.2));
         break;
+    case ABILITY_ILLUMINATE:
+        if (IsLightMove(move))
+           modifier = uq4_12_multiply(modifier, UQ_4_12(1.3));
+        break;
     case ABILITY_SHEER_FORCE:
         if (MoveIsAffectedBySheerForce(move))
            modifier = uq4_12_multiply(modifier, UQ_4_12(1.3));
@@ -8871,6 +8986,22 @@ static inline u32 CalcAttackStat(struct DamageCalculationData *damageCalcData, u
             modifier = uq4_12_multiply_half_down(modifier, UQ_4_12(0.5));
             if (damageCalcData->updateFlags)
                 RecordAbilityBattle(battlerDef, ABILITY_THICK_FAT);
+        }
+        break;
+    case ABILITY_IMMUNITY:
+        if (moveType == TYPE_POISON)
+        {
+            modifier = uq4_12_multiply_half_down(modifier, UQ_4_12(0.5));
+            if (damageCalcData->updateFlags)
+                RecordAbilityBattle(battlerDef, ABILITY_IMMUNITY);
+        }
+        break;
+    case ABILITY_MAGMA_ARMOR:
+        if (moveType == TYPE_WATER || moveType == TYPE_ICE)
+        {
+            modifier = uq4_12_multiply_half_down(modifier, UQ_4_12(0.5));
+            if (damageCalcData->updateFlags)
+                RecordAbilityBattle(battlerDef, ABILITY_MAGMA_ARMOR);
         }
         break;
     }

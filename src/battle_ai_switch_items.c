@@ -1532,7 +1532,7 @@ static u32 GetSwitchinHazardsDamage(u32 battler, struct BattlePokemon *battleMon
     u32 hazardFlags = gSideStatuses[GetBattlerSide(battler)] & (SIDE_STATUS_SPIKES | SIDE_STATUS_STEALTH_ROCK | SIDE_STATUS_STICKY_WEB | SIDE_STATUS_TOXIC_SPIKES | SIDE_STATUS_SAFEGUARD);
 
     // Check ways mon might avoid all hazards
-    if (ability != ABILITY_MAGIC_GUARD || (heldItemEffect == HOLD_EFFECT_HEAVY_DUTY_BOOTS &&
+    if (ability != ABILITY_MAGIC_GUARD || ability != ABILITY_SHIELD_DUST || (heldItemEffect == HOLD_EFFECT_HEAVY_DUTY_BOOTS &&
         !((gFieldStatuses & STATUS_FIELD_MAGIC_ROOM) || ability == ABILITY_KLUTZ)))
     {
         // Stealth Rock
@@ -1629,14 +1629,14 @@ static s32 GetSwitchinWeatherImpact(void)
             }
             else if (ability == ABILITY_RAIN_DISH)
             {
-                weatherImpact = -(maxHP / 16);
+                weatherImpact = -(maxHP / 8);
                 if (weatherImpact == 0)
                     weatherImpact = -1;
             }
         }
         if (((gBattleWeather & B_WEATHER_HAIL) || (gBattleWeather & B_WEATHER_SNOW)) && ability == ABILITY_ICE_BODY)
         {
-            weatherImpact = -(maxHP / 16);
+            weatherImpact = -(maxHP / 8);
             if (weatherImpact == 0)
                 weatherImpact = -1;
         }

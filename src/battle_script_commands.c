@@ -1617,6 +1617,9 @@ u32 GetTotalAccuracy(u32 battlerAtk, u32 battlerDef, u32 move, u32 atkAbility, u
     case ABILITY_COMPOUND_EYES:
         calc = (calc * 130) / 100; // 1.3 compound eyes boost
         break;
+    case ABILITY_KEEN_EYE:
+        calc = (calc * 120) / 100; // 1.2 keen eye boost
+        break;
     case ABILITY_VICTORY_STAR:
         calc = (calc * 110) / 100; // 1.1 victory star boost
         break;
@@ -1831,7 +1834,6 @@ static void Cmd_ppreduce(void)
     CMD_ARGS();
 
     s32 i, ppToDeduct = 1;
-    u32 moveTarget = GetBattlerMoveTargetType(gBattlerAttacker, gCurrentMove);
 
     if (gBattleControllerExecFlags)
         return;
@@ -1839,21 +1841,10 @@ static void Cmd_ppreduce(void)
     if (gBattleMons[gBattlerAttacker].status2 & STATUS2_MULTIPLETURNS)
         gHitMarker |= HITMARKER_NO_PPDEDUCT;
 
-    if (moveTarget == MOVE_TARGET_BOTH
-        || moveTarget == MOVE_TARGET_FOES_AND_ALLY
-        || moveTarget == MOVE_TARGET_ALL_BATTLERS
-        || MoveForcesPressure(gCurrentMove))
+    for (i = 0; i < gBattlersCount; i++)
     {
-        for (i = 0; i < gBattlersCount; i++)
-        {
-            if (!IsBattlerAlly(i, gBattlerAttacker) && IsBattlerAlive(i))
+        if (!IsBattlerAlly(i, gBattlerAttacker) && IsBattlerAlive(i))
                 ppToDeduct += (GetBattlerAbility(i) == ABILITY_PRESSURE);
-        }
-    }
-    else if (moveTarget != MOVE_TARGET_OPPONENTS_FIELD)
-    {
-        if (gBattlerAttacker != gBattlerTarget && GetBattlerAbility(gBattlerTarget) == ABILITY_PRESSURE)
-             ppToDeduct++;
     }
 
     if (!(gHitMarker & (HITMARKER_NO_PPDEDUCT | HITMARKER_NO_ATTACKSTRING)) && gBattleMons[gBattlerAttacker].pp[gCurrMovePos])
@@ -1957,13 +1948,15 @@ s32 CalcCritChanceStage(u32 battlerAtk, u32 battlerDef, u32 move, bool32 recordA
                     + GetHoldEffectCritChanceIncrease(battlerAtk, holdEffectAtk)
                     + 2 * (B_AFFECTION_MECHANICS == TRUE && GetBattlerAffectionHearts(battlerAtk) == AFFECTION_FIVE_HEARTS)
                     + (abilityAtk == ABILITY_SUPER_LUCK)
+                    + (abilityAtk == ABILITY_HYPER_CUTTER && MoveMakesContact(move))
                     + gBattleStruct->bonusCritStages[gBattlerAttacker];
 
         if (critChance >= ARRAY_COUNT(sCriticalHitOdds))
             critChance = ARRAY_COUNT(sCriticalHitOdds) - 1;
     }
 
-    if (critChance != CRITICAL_HIT_BLOCKED && (abilityDef == ABILITY_BATTLE_ARMOR || abilityDef == ABILITY_SHELL_ARMOR))
+    if (critChance != CRITICAL_HIT_BLOCKED 
+        && (abilityDef == ABILITY_BATTLE_ARMOR || abilityDef == ABILITY_SHELL_ARMOR || abilityDef == ABILITY_MAGMA_ARMOR))
     {
         // Record ability only if move had 100% chance to get a crit
         if (recordAbility)
@@ -2018,7 +2011,7 @@ s32 CalcCritChanceStageGen1(u32 battlerAtk, u32 battlerDef, u32 move, bool32 rec
     // Prevented crits
     if (gSideStatuses[battlerDef] & SIDE_STATUS_LUCKY_CHANT)
         critChance = CRITICAL_HIT_BLOCKED;
-    else if (abilityDef == ABILITY_BATTLE_ARMOR || abilityDef == ABILITY_SHELL_ARMOR)
+    else if (abilityDef == ABILITY_BATTLE_ARMOR || abilityDef == ABILITY_SHELL_ARMOR || abilityDef == ABILITY_MAGMA_ARMOR)
     {
         if (recordAbility)
             RecordAbilityBattle(battlerDef, abilityDef);
@@ -6000,7 +5993,7 @@ static void Cmd_playstatchangeanimation(void)
                         && ability != ABILITY_WHITE_SMOKE
                         && !((ability == ABILITY_KEEN_EYE || ability == ABILITY_MINDS_EYE) && currStat == STAT_ACC)
                         && !(B_ILLUMINATE_EFFECT >= GEN_9 && ability == ABILITY_ILLUMINATE && currStat == STAT_ACC)
-                        && !(ability == ABILITY_HYPER_CUTTER && currStat == STAT_ATK)
+                        && !(ability == ABILITY_HYPER_CUTTER && (currStat == STAT_ATK || currStat == STAT_SPATK))
                         && !(ability == ABILITY_BIG_PECKS && currStat == STAT_DEF))
                 {
                     if (gBattleMons[battler].statStages[currStat] > MIN_STAT_STAGE)
@@ -8268,6 +8261,7 @@ static bool32 DoSwitchInEffectsForBattler(u32 battler)
     else if (!(gDisableStructs[battler].spikesDone)
         && (gSideStatuses[GetBattlerSide(battler)] & SIDE_STATUS_SPIKES)
         && GetBattlerAbility(battler) != ABILITY_MAGIC_GUARD
+        && GetBattlerAbility(battler) != ABILITY_SHIELD_DUST
         && IsBattlerAffectedByHazards(battler, FALSE)
         && IsBattlerGrounded(battler))
     {
@@ -8282,7 +8276,8 @@ static bool32 DoSwitchInEffectsForBattler(u32 battler)
     else if (!(gDisableStructs[battler].stealthRockDone)
         && (gSideStatuses[GetBattlerSide(battler)] & SIDE_STATUS_STEALTH_ROCK)
         && IsBattlerAffectedByHazards(battler, FALSE)
-        && GetBattlerAbility(battler) != ABILITY_MAGIC_GUARD)
+        && GetBattlerAbility(battler) != ABILITY_MAGIC_GUARD
+        && GetBattlerAbility(battler) != ABILITY_SHIELD_DUST)
     {
         gDisableStructs[battler].stealthRockDone = TRUE;
         gBattleStruct->moveDamage[battler] = GetStealthHazardDamage(TYPE_SIDE_HAZARD_POINTED_STONES, battler);
@@ -8303,7 +8298,8 @@ static bool32 DoSwitchInEffectsForBattler(u32 battler)
             BattleScriptPushCursor();
             gBattlescriptCurrInstr = BattleScript_ToxicSpikesAbsorbed;
         }
-        else if (IsBattlerAffectedByHazards(battler, TRUE))
+        else if (IsBattlerAffectedByHazards(battler, TRUE)
+                && GetBattlerAbility(battler) != ABILITY_SHIELD_DUST)
         {
             if (CanBePoisoned(gBattlerAttacker, battler, GetBattlerAbility(gBattlerAttacker), GetBattlerAbility(battler)))
             {
@@ -8325,7 +8321,8 @@ static bool32 DoSwitchInEffectsForBattler(u32 battler)
             }
         }
     }
-    else if (!(gDisableStructs[battler].stickyWebDone)
+    else if (GetBattlerAbility(battler) != ABILITY_SHIELD_DUST &&
+        !(gDisableStructs[battler].stickyWebDone)
         && (gSideStatuses[GetBattlerSide(battler)] & SIDE_STATUS_STICKY_WEB)
         && IsBattlerAffectedByHazards(battler, FALSE)
         && IsBattlerGrounded(battler))
@@ -8339,7 +8336,8 @@ static bool32 DoSwitchInEffectsForBattler(u32 battler)
     else if (!(gDisableStructs[battler].steelSurgeDone)
         && (gSideStatuses[GetBattlerSide(battler)] & SIDE_STATUS_STEELSURGE)
         && IsBattlerAffectedByHazards(battler, FALSE)
-        && GetBattlerAbility(battler) != ABILITY_MAGIC_GUARD)
+        && GetBattlerAbility(battler) != ABILITY_MAGIC_GUARD
+        && GetBattlerAbility(battler) != ABILITY_SHIELD_DUST)
     {
         gDisableStructs[battler].steelSurgeDone = TRUE;
         gBattleStruct->moveDamage[battler] = GetStealthHazardDamage(TYPE_SIDE_HAZARD_SHARP_STEEL, battler);
@@ -10224,6 +10222,102 @@ static void Cmd_various(void)
         }
         gBattleStruct->friskedBattler = 0;
         gBattleStruct->friskedAbility = FALSE;
+        break;
+    }
+ case VARIOUS_TRY_ABILITY_REMOVE_HAZARDS:
+    {
+        VARIOUS_ARGS();
+
+        u8 atkSide = GetBattlerSide(gBattlerAttacker);
+
+        while (gSideStatuses[atkSide] & SIDE_STATUS_SPIKES
+            || gSideStatuses[atkSide] & SIDE_STATUS_TOXIC_SPIKES
+            || gSideStatuses[atkSide] & SIDE_STATUS_STICKY_WEB
+            || gSideStatuses[atkSide] & SIDE_STATUS_STEALTH_ROCK
+            || gSideStatuses[atkSide] & SIDE_STATUS_STEELSURGE)
+        {
+            if (gSideStatuses[atkSide] & SIDE_STATUS_SPIKES)
+            {
+                gSideStatuses[atkSide] &= ~SIDE_STATUS_SPIKES;
+                gSideTimers[atkSide].spikesAmount = 0;
+                BattleScriptPushCursor();
+                if (gBattleStruct->abilityRemovedHazards)
+                {
+                    gBattlescriptCurrInstr = BattleScript_SpikesFree;
+                }
+                else
+                {
+                    gBattleStruct->abilityRemovedHazards = TRUE;
+                    gBattlescriptCurrInstr = BattleScript_SpikesFreeWithPopup;
+                }
+                return;
+            }
+            else if (gSideStatuses[atkSide] & SIDE_STATUS_TOXIC_SPIKES)
+            {
+                gSideStatuses[atkSide] &= ~SIDE_STATUS_TOXIC_SPIKES;
+                gSideTimers[atkSide].toxicSpikesAmount = 0;
+                BattleScriptPushCursor();
+                if (gBattleStruct->abilityRemovedHazards)
+                {
+                    gBattlescriptCurrInstr = BattleScript_ToxicSpikesFree;
+                }
+                else
+                {
+                    gBattleStruct->abilityRemovedHazards = TRUE;
+                    gBattlescriptCurrInstr = BattleScript_ToxicSpikesFreeWithPopup;
+                }
+                return;
+            }
+            else if (gSideStatuses[atkSide] & SIDE_STATUS_STICKY_WEB)
+            {
+                gSideStatuses[atkSide] &= ~SIDE_STATUS_STICKY_WEB;
+                gSideTimers[atkSide].stickyWebAmount = 0;
+                BattleScriptPushCursor();
+                if (gBattleStruct->abilityRemovedHazards)
+                {
+                    gBattlescriptCurrInstr = BattleScript_StickyWebFree;
+                }
+                else
+                {
+                    gBattleStruct->abilityRemovedHazards = TRUE;
+                    gBattlescriptCurrInstr = BattleScript_StickyWebFreeWithPopup;
+                }
+                return;
+            }
+            else if (gSideStatuses[atkSide] & SIDE_STATUS_STEALTH_ROCK)
+            {
+                gSideStatuses[atkSide] &= ~SIDE_STATUS_STEALTH_ROCK;
+                gSideTimers[atkSide].stealthRockAmount = 0;
+                BattleScriptPushCursor();
+                if (gBattleStruct->abilityRemovedHazards)
+                {
+                    gBattlescriptCurrInstr = BattleScript_StealthRockFree;
+                }
+                else
+                {
+                    gBattleStruct->abilityRemovedHazards = TRUE;
+                    gBattlescriptCurrInstr = BattleScript_StealthRockFreeWithPopup;
+                }
+                return;
+            }
+            else if (gSideStatuses[atkSide] & SIDE_STATUS_STEELSURGE)
+            {
+                gSideStatuses[atkSide] &= ~SIDE_STATUS_STEELSURGE;
+                gSideTimers[atkSide].steelsurgeAmount = 0;
+                BattleScriptPushCursor();
+                if (gBattleStruct->abilityRemovedHazards)
+                {
+                    gBattlescriptCurrInstr = BattleScript_SteelsurgeFree;
+                }
+                else
+                {
+                    gBattleStruct->abilityRemovedHazards = TRUE;
+                    gBattlescriptCurrInstr = BattleScript_SteelsurgeFreeWithPopup;
+                }
+                return;
+            }
+        }
+        gBattleStruct->abilityRemovedHazards = FALSE;
         break;
     }
     case VARIOUS_TRACE_ABILITY:
@@ -12380,7 +12474,7 @@ static u32 ChangeStatBuffs(s8 statValue, u32 statId, u32 flags, const u8 *BS_ptr
         else if (!certain
                 && (((battlerAbility == ABILITY_KEEN_EYE || battlerAbility == ABILITY_MINDS_EYE) && statId == STAT_ACC)
                 || (B_ILLUMINATE_EFFECT >= GEN_9 && battlerAbility == ABILITY_ILLUMINATE && statId == STAT_ACC)
-                || (battlerAbility == ABILITY_HYPER_CUTTER && statId == STAT_ATK)
+                || (battlerAbility == ABILITY_HYPER_CUTTER && (statId == STAT_ATK || statId == STAT_SPATK))
                 || (battlerAbility == ABILITY_BIG_PECKS && statId == STAT_DEF)))
         {
             if (flags == STAT_CHANGE_ALLOW_PTR)
@@ -14294,7 +14388,8 @@ static bool32 SetTargetToNextPursuiter(u32 battlerDef)
         && (B_PURSUIT_TARGET >= GEN_4 || gBattleStruct->moveTarget[battler] == battlerDef)
         && !IsGimmickSelected(battler, GIMMICK_Z_MOVE)
         && !IsGimmickSelected(battler, GIMMICK_DYNAMAX)
-        && GetActiveGimmick(battler) != GIMMICK_DYNAMAX)
+        && GetActiveGimmick(battler) != GIMMICK_DYNAMAX
+        && GetBattlerAbility(battlerDef) != ABILITY_RUN_AWAY)
         {
             gBattlerTarget = battler;
             return TRUE;

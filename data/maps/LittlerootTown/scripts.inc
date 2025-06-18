@@ -904,6 +904,12 @@ LittlerootTown_EventScript_GiveRunningShoes::
 	delay 30
 	return
 
+LittlerootTown_EventScript_Test_Man::
+	trainerbattle_single TRAINER_TEST_MAN, LittlerootTown_Text_Test_ManIntro, LittlerootTown_Text_Test_ManDefeat
+	msgbox LittlerootTown_Text_Test_ManPostBattle, MSGBOX_AUTOCLOSE
+	clearflag TRAINER_FLAGS_START + TRAINER_TEST_MAN
+	end
+
 LittlerootTown_Text_OurNewHomeLetsGoInside:
 	.string "MOM: {PLAYER}, we're here, honey!\p"
 	.string "It must be tiring riding with our things\n"
@@ -1014,3 +1020,11 @@ LittlerootTown_Text_BirchSomethingToShowYouAtLab:
 	.string "I have something to show you.\n"
 	.string "Let's go to my LAB.$"
 
+LittlerootTown_Text_Test_ManIntro:
+	.string "test battle$"
+
+LittlerootTown_Text_Test_ManDefeat:
+	.string "beastmode$"
+
+LittlerootTown_Text_Test_ManPostBattle:
+	.string "hopefully this works$"

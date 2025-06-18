@@ -1259,6 +1259,10 @@
 	.4byte \failInstr
 	.endm
 
+	.macro tryabilityremovehazards battler:req
+	various \battler, VARIOUS_TRY_ABILITY_REMOVE_HAZARDS
+	.endm
+
 	.macro settypetoenvironment failInstr:req
 	.byte 0xeb
 	.4byte \failInstr
