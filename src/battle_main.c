@@ -5787,6 +5787,18 @@ u32 TrySetAteType(u32 move, u32 battlerAtk, u32 attackerAbility)
     case ABILITY_GALVANIZE:
         ateType = TYPE_ELECTRIC;
         break;
+    case ABILITY_FLORALIZE:
+        ateType = TYPE_GRASS;
+        break;
+    case ABILITY_TECTONIZE:
+        ateType = TYPE_GROUND;
+        break;
+    case ABILITY_IMMOLATE:
+        ateType = TYPE_FIRE;
+        break;
+    case ABILITY_POLLINATE:
+        ateType = TYPE_BUG;
+        break;
     default:
         ateType = TYPE_NONE;
         break;
@@ -6000,6 +6012,10 @@ u32 GetDynamicMoveType(struct Pokemon *mon, u32 move, u32 battler, enum MonState
     if (IsSoundMove(move) && ability == ABILITY_LIQUID_VOICE)
     {
         return TYPE_WATER;
+    }
+    else if (IsSoundMove(move) && ability == ABILITY_FLAMING_VOICE)
+    {
+        return TYPE_FIRE;
     }
     else if (moveEffect == EFFECT_AURA_WHEEL
           && species == SPECIES_MORPEKO_HANGRY

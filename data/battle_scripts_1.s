@@ -5162,6 +5162,27 @@ BattleScript_EffectSafeguardAbility::
 	call BattleScript_ActivateSafeguardAbilities
 	end3
 
+BattleScript_ActivateMagnetRiseAbilities:
+	savetarget
+	setbyte gBattlerTarget, 0
+BattleScript_ActivateMagnetRiseAbilities_Loop:
+	copybyte sBATTLER, gBattlerTarget
+BattleScript_ActivateMagnetRiseAbilities_Increment:
+	addbyte gBattlerTarget, 1
+	jumpifbytenotequal gBattlerTarget, gBattlersCount, BattleScript_ActivateMagnetRiseAbilities_Loop
+	restoretarget
+	return
+
+BattleScript_EffectMagnetRiseAbility::
+	pause B_WAIT_TIME_SHORT
+	call BattleScript_AbilityPopUp
+	waitstate
+	playanimation BS_BATTLER_0, B_ANIM_MAGNETRISE
+	printstring STRINGID_PKMNLEVITATEDONELECTROMAGNETISM
+	waitmessage B_WAIT_TIME_SHORT
+	call BattleScript_ActivateMagnetRiseAbilities
+	end3
+
 BattleScript_EffectTickle::
 	attackcanceler
 	attackstring
@@ -8623,6 +8644,17 @@ BattleScript_AbilityStatusEffect::
 	waitstate
 	call BattleScript_AbilityPopUp
 	seteffectsecondary
+	return
+
+BattleScript_SoundTherapy::
+	copybyte gBattlerAbility, gBattlerAttacker
+	call BattleScript_AbilityPopUp
+	flushtextbox
+	printstring STRINGID_BELLCHIMED
+	healpartystatus
+	waitstate
+	updatestatusicon BS_ATTACKER_WITH_PARTNER
+	waitstate
 	return
 
 BattleScript_BattleBondActivatesOnMoveEndAttacker::

@@ -3501,6 +3501,7 @@ bool32 ShouldFakeOut(u32 battlerAtk, u32 battlerDef, u32 move)
 {
     if ((!gDisableStructs[battlerAtk].isFirstTurn && MoveHasAdditionalEffectWithChance(move, MOVE_EFFECT_FLINCH, 100))
     || gAiLogicData->abilities[battlerAtk] == ABILITY_GORILLA_TACTICS
+    || gAiLogicData->abilities[battlerAtk] == ABILITY_SAGE_POWER
     || gAiLogicData->holdEffects[battlerAtk] == HOLD_EFFECT_CHOICE_BAND
     || gAiLogicData->holdEffects[battlerDef] == HOLD_EFFECT_COVERT_CLOAK
     || DoesSubstituteBlockMove(battlerAtk, battlerDef, move)
@@ -4756,6 +4757,7 @@ bool32 ShouldTriggerAbility(u32 battler, u32 ability)
         case ABILITY_VOLT_ABSORB:
         case ABILITY_WATER_ABSORB:
         case ABILITY_MINUS:
+        case ABILITY_SOUL_ABSORB:
             return (gAiThinkingStruct->aiFlags[battler] & AI_FLAG_HP_AWARE);
 
         case ABILITY_RATTLED:

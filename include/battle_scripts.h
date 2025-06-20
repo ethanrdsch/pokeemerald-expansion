@@ -200,6 +200,7 @@ extern const u8 BattleScript_ColorChangeActivates[];
 extern const u8 BattleScript_RoughSkinActivates[];
 extern const u8 BattleScript_CuteCharmActivates[];
 extern const u8 BattleScript_AbilityStatusEffect[];
+extern const u8 BattleScript_SoundTherapy[];
 extern const u8 BattleScript_SynchronizeActivates[];
 extern const u8 BattleScript_NoItemSteal[];
 extern const u8 BattleScript_AbilityCuredStatus[];
@@ -534,6 +535,7 @@ extern const u8 BattleScript_EffectAquaRingAbility[];
 extern const u8 BattleScript_TryAbilityRemoveHazards[];
 extern const u8 BattleScript_EffectHazeAbility[];
 extern const u8 BattleScript_EffectSafeguardAbility[];
+extern const u8 BattleScript_EffectMagnetRiseAbility[];
 
 extern const u8 BattleScript_AbilityProtectsDoesntAffect[];
 extern const u8 BattleScript_ImmunityProtected[];

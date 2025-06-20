@@ -1951,7 +1951,8 @@ s32 CalcCritChanceStage(u32 battlerAtk, u32 battlerDef, u32 move, bool32 recordA
     else if (gStatuses3[battlerAtk] & STATUS3_LASER_FOCUS
           || MoveAlwaysCrits(move)
           || (abilityAtk == ABILITY_MERCILESS && ((gBattleMons[battlerDef].status1 & STATUS1_PSN_ANY)
-                                                || (gBattleMons[battlerDef].status1 & STATUS1_PARALYSIS))))
+                                                || (gBattleMons[battlerDef].status1 & STATUS1_PARALYSIS)))
+          || (gMovesInfo[move].criticalHitStage && abilityAtk == ABILITY_ELITE_PRECISION))
     {
         critChance = CRITICAL_HIT_ALWAYS;
     }
@@ -1964,6 +1965,7 @@ s32 CalcCritChanceStage(u32 battlerAtk, u32 battlerDef, u32 move, bool32 recordA
                     + 2 * (B_AFFECTION_MECHANICS == TRUE && GetBattlerAffectionHearts(battlerAtk) == AFFECTION_FIVE_HEARTS)
                     + (abilityAtk == ABILITY_SUPER_LUCK)
                     + (abilityAtk == ABILITY_HYPER_CUTTER && MoveMakesContact(move))
+                    + (abilityAtk == ABILITY_STARRY_FIST && IsPunchingMove(move))
                     + gBattleStruct->bonusCritStages[gBattlerAttacker];
 
         if (critChance >= ARRAY_COUNT(sCriticalHitOdds))
@@ -6121,7 +6123,8 @@ static bool32 TryKnockOffBattleScript(u32 battlerDef)
 
             gLastUsedItem = gBattleMons[battlerDef].item;
             gBattleMons[battlerDef].item = 0;
-            if (gBattleMons[battlerDef].ability != ABILITY_GORILLA_TACTICS)
+            if (gBattleMons[battlerDef].ability != ABILITY_GORILLA_TACTICS
+                && gBattleMons[battlerDef].ability != ABILITY_SAGE_POWER)
                 gBattleStruct->choicedMove[battlerDef] = 0;
             CheckSetUnburden(battlerDef);
 
@@ -6593,7 +6596,8 @@ static void Cmd_moveend(void)
                  && !(gHitMarker & HITMARKER_UNABLE_TO_USE_MOVE)
                  && gChosenMove != MOVE_STRUGGLE
                  && (*choicedMoveAtk == MOVE_NONE || *choicedMoveAtk == MOVE_UNAVAILABLE)
-                 && (HOLD_EFFECT_CHOICE(holdEffectAtk) || GetBattlerAbility(gBattlerAttacker) == ABILITY_GORILLA_TACTICS))
+                 && (HOLD_EFFECT_CHOICE(holdEffectAtk) || GetBattlerAbility(gBattlerAttacker) == ABILITY_GORILLA_TACTICS
+                                                       || GetBattlerAbility(gBattlerAttacker) == ABILITY_SAGE_POWER))
                 {
                     if ((moveEffect == EFFECT_BATON_PASS || moveEffect == EFFECT_HEALING_WISH)
                      && !(gBattleStruct->moveResultFlags[gBattlerTarget] & MOVE_RESULT_FAILED))
@@ -7400,7 +7404,8 @@ static void Cmd_moveend(void)
 
                             gLastUsedItem = gBattleMons[gBattlerAttacker].item;
                             gBattleMons[gBattlerAttacker].item = 0;
-                            if (gBattleMons[gBattlerAttacker].ability != ABILITY_GORILLA_TACTICS)
+                            if (gBattleMons[gBattlerAttacker].ability != ABILITY_GORILLA_TACTICS
+                                && gBattleMons[gBattlerAttacker].ability != ABILITY_SAGE_POWER)
                                 gBattleStruct->choicedMove[gBattlerAttacker] = 0;
                             CheckSetUnburden(gBattlerAttacker);
 

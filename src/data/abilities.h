@@ -2430,4 +2430,111 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
         .description = COMPOUND_STRING("Fire immunity. Always acts\nas if in harsh sunlight."),
         .aiRating = 9,
     },
+
+    [ABILITY_ELITE_PRECISION] =
+    {
+        .name = _("Elite Precision"),
+        .description = COMPOUND_STRING("Moves with a high critical\nhit ratio always crit."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_SAGE_POWER] =
+    {
+        .name = _("Sage Power"),
+        .description = COMPOUND_STRING("Boosts Sp. Atk by 50%, but can\nonly use first used move."),
+        .aiRating = 4,
+    },
+
+    [ABILITY_REFLECTIVE] =
+    {
+        .name = _("Reflective"),
+        .description = COMPOUND_STRING("When hit with a non-contact special\nmove, attacker takes 1/8 max HP damage."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_PURE_CRYSTAL] =
+    {
+        .name = _("Pure Crystal"),
+        .description = COMPOUND_STRING("Immune to harmful status\nconditions."),
+        .aiRating = 6,
+        .breakable = TRUE,
+    },
+
+    [ABILITY_ARTILLERY] =
+    {
+        .name = _("Artillery"),
+        .description = COMPOUND_STRING("Boosts damage of ballistic\nmoves by 50%."),
+        .aiRating = 7,
+    },
+
+    [ABILITY_VERSATILE] =
+    {
+        .name = _("Versatile"),
+        .description = COMPOUND_STRING("Moves always use higher\nattacking stat."),
+        .aiRating = 4,
+    },
+
+    [ABILITY_SOUL_ABSORB] =
+    {
+        .name = _("Soul Absorb"),
+        .description = COMPOUND_STRING("Heals 25% of max HP when\nhit with a Ghost move."),
+        .aiRating = 7,
+        .breakable = TRUE,
+    },
+
+    [ABILITY_FLAMING_VOICE] =
+    {
+        .name = _("Flaming Voice"),
+        .description = COMPOUND_STRING("Makes sound moves Fire, and\ngives a 20% power boost."),
+        .aiRating = 5,
+    },
+
+    [ABILITY_STARRY_FIST] =
+    {
+        .name = _("Starry Fist"),
+        .description = COMPOUND_STRING("Punches use Sp. Atk, gain +1 crit,\n2x effect chance, and +50% power."),
+        .aiRating = 7,
+    },
+
+    [ABILITY_ELECTROMAGNET] =
+    {
+        .name = _("Electromagnet"),
+        .description = COMPOUND_STRING("On switch-in, sets Magnet\nRise for 5 turns."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_FLORALIZE] =
+    {
+        .name = _("Floralize"),
+        .description = COMPOUND_STRING("Normal moves become Grass\nand get a 20% power boost."),
+        .aiRating = 8,
+    },
+
+    [ABILITY_TECTONIZE] =
+    {
+        .name = _("Tectonize"),
+        .description = COMPOUND_STRING("Normal moves become Ground\nand get a 20% power boost."),
+        .aiRating = 8,
+    },
+
+    [ABILITY_IMMOLATE] =
+    {
+        .name = _("Immolate"),
+        .description = COMPOUND_STRING("Normal moves become Fire\nand get a 20% power boost."),
+        .aiRating = 8,
+    },
+
+    [ABILITY_POLLINATE] =
+    {
+        .name = _("Pollinate"),
+        .description = COMPOUND_STRING("Normal moves become Bug\nand get a 20% power boost."),
+        .aiRating = 8,
+    },
+
+    [ABILITY_SOUND_THERAPY] =
+    {
+        .name = _("Sound Therapy"),
+        .description = COMPOUND_STRING("Triggers Heal Bell effect\nafter using a sound move."),
+        .aiRating = 5,
+    },
 };

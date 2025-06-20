@@ -42199,7 +42199,7 @@ F_TRAINER_FEMALE |
         {
             {
 #line 16886
-            .species = SPECIES_AMOONGUSS,
+            .species = SPECIES_GENGAR,
             .gender = TRAINER_MON_RANDOM_GENDER,
 #line 16888
             .iv = TRAINER_PARTY_IVS(31, 31, 31, 31, 31, 31),
@@ -42209,7 +42209,9 @@ F_TRAINER_FEMALE |
             .dynamaxLevel = MAX_DYNAMAX_LEVEL,
             .moves = {
 #line 16888
-                MOVE_SLUDGE_BOMB,
+                MOVE_RECOVER,
+                MOVE_MOONLIGHT,
+                MOVE_SYNTHESIS,
             },
             },
         },
