@@ -16881,10 +16881,31 @@ Pic: Hiker
 Gender: Male
 Music: Male
 Double Battle: No
+AI: Basic Trainer
 
-Dodrio
-Ability: Run Away
-- Spikes
-- Sticky Web
-- Toxic Spikes
-- Stealth Rock
+Amoonguss
+Level: 100
+- Recycle
+
+Blissey @ Safety Goggles
+Level: 20
+- Recycle
+
+Cloyster
+Level: 20
+Ability: Overcoat
+- Tackle
+
+Sawsbuck
+Level: 20
+Ability: Sap Sipper
+- Recycle
+
+Jolteon
+Level: 20
+Ability: Volt Absorb
+- Recycle
+
+Ferrothorn
+Level: 20
+- Recycle

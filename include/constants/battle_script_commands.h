@@ -216,6 +216,7 @@ enum CmdVarious
 #define DMG_FULL_ATTACKER_HP    4
 #define DMG_CURR_ATTACKER_HP    5
 #define DMG_BIG_ROOT            6
+#define DMG_1_6_TARGET_HP       7
 
 // Cmd_jumpifcantswitch
 #define SWITCH_IGNORE_ESCAPE_PREVENTION   (1 << 7)
@@ -284,6 +285,7 @@ enum MoveEndEffects
     MOVEEND_HIT_ESCAPE,
     MOVEEND_OPPORTUNIST, // Occurs after other stat change items/abilities to try and copy the boosts
     MOVEEND_PICKPOCKET,
+    MOVEEND_KLUTZ,
     MOVEEND_WHITE_HERB,
     MOVEEND_CHANGED_ITEMS,
     MOVEEND_SAME_MOVE_TURNS,

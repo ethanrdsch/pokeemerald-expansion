@@ -291,7 +291,7 @@ static bool32 ShouldSwitchIfHasBadOdds(u32 battler)
     if (((getsOneShot && gBattleMons[opposingBattler].speed > gBattleMons[battler].speed) // If the player OHKOs and outspeeds OR OHKOs, doesn't outspeed but isn't 2HKO'd
             || (getsOneShot && gBattleMons[opposingBattler].speed <= gBattleMons[battler].speed && maxDamageDealt < gBattleMons[opposingBattler].hp / 2))
         && (gBattleMons[battler].hp >= gBattleMons[battler].maxHP / 2 // And the current mon has at least 1/2 their HP, or 1/4 HP and Regenerator
-            || (aiAbility == ABILITY_REGENERATOR
+            || ((aiAbility == ABILITY_REGENERATOR || aiAbility == ABILITY_CURIOUS_MEDICINE || aiAbility == ABILITY_HOSPITALITY)
             && gBattleMons[battler].hp >= gBattleMons[battler].maxHP / 4)))
     {
         // 50% chance to stay in regardless
@@ -307,7 +307,7 @@ static bool32 ShouldSwitchIfHasBadOdds(u32 battler)
     {
         if (!hasSuperEffectiveMove // If the AI doesn't have a super effective move
         && (gBattleMons[battler].hp >= gBattleMons[battler].maxHP / 2 // And the current mon has at least 1/2 their HP, or 1/4 HP and Regenerator
-            || (aiAbility == ABILITY_REGENERATOR
+            || ((aiAbility == ABILITY_REGENERATOR || aiAbility == ABILITY_CURIOUS_MEDICINE || aiAbility == ABILITY_HOSPITALITY)
             && gBattleMons[battler].hp >= gBattleMons[battler].maxHP / 4)))
         {
             // Then check if they have an important status move, which is worth using even in a bad matchup
@@ -516,6 +516,7 @@ static bool32 FindMonThatAbsorbsOpponentsMove(u32 battler)
     else if (incomingType == TYPE_ELECTRIC || (isOpposingBattlerChargingOrInvulnerable && incomingType == TYPE_ELECTRIC))
     {
         absorbingTypeAbilities[numAbsorbingAbilities++] = ABILITY_VOLT_ABSORB;
+        absorbingTypeAbilities[numAbsorbingAbilities++] = ABILITY_MINUS;
         absorbingTypeAbilities[numAbsorbingAbilities++] = ABILITY_MOTOR_DRIVE;
         if (B_REDIRECT_ABILITY_IMMUNITY >= GEN_5)
             absorbingTypeAbilities[numAbsorbingAbilities++] = ABILITY_LIGHTNING_ROD;
@@ -540,6 +541,10 @@ static bool32 FindMonThatAbsorbsOpponentsMove(u32 battler)
     else if (IsWindMove(incomingMove) || (isOpposingBattlerChargingOrInvulnerable && IsWindMove(incomingMove)))
     {
         absorbingTypeAbilities[numAbsorbingAbilities++] = ABILITY_WIND_RIDER;
+    }
+    else if (IsWindMove(incomingMove) || (isOpposingBattlerChargingOrInvulnerable && IsThrowMove(incomingMove) && !(MoveMakesContact(incomingMove))))
+    {
+        absorbingTypeAbilities[numAbsorbingAbilities++] = ABILITY_RECEIVER;
     }
     else
     {
@@ -676,6 +681,7 @@ static bool32 ShouldSwitchIfBadlyStatused(u32 battler)
             // Checks to see if active Pokemon can do something against sleep
             if ((monAbility == ABILITY_NATURAL_CURE
                 || monAbility == ABILITY_SHED_SKIN
+                || monAbility == ABILITY_HEALER
                 || monAbility == ABILITY_EARLY_BIRD)
                 || holdEffect == (HOLD_EFFECT_CURE_SLP | HOLD_EFFECT_CURE_STATUS)
                 || HasMove(battler, MOVE_SLEEP_TALK)
@@ -769,6 +775,18 @@ static bool32 ShouldSwitchIfAbilityBenefit(u32 battler)
             if (gBattleMons[battler].status1 & STATUS1_ANY)
                 return FALSE;
             if ((gBattleMons[battler].hp <= ((gBattleMons[battler].maxHP * 2) / 3))
+                 && gAiLogicData->mostSuitableMonId[battler] != PARTY_SIZE
+                 && (hasStatRaised ? RandomPercentage(RNG_AI_SWITCH_REGENERATOR, GetSwitchChance(SHOULD_SWITCH_REGENERATOR_STATS_RAISED)) : RandomPercentage(RNG_AI_SWITCH_REGENERATOR, GetSwitchChance(SHOULD_SWITCH_REGENERATOR))))
+                break;
+
+            return FALSE;
+
+        case ABILITY_CURIOUS_MEDICINE:
+        case ABILITY_HOSPITALITY:
+            //Don't switch if ailment
+            if (gBattleMons[battler].status1 & STATUS1_ANY)
+                return FALSE;
+            if ((gBattleMons[battler].hp <= ((gBattleMons[battler].maxHP * 3) / 4))
                  && gAiLogicData->mostSuitableMonId[battler] != PARTY_SIZE
                  && (hasStatRaised ? RandomPercentage(RNG_AI_SWITCH_REGENERATOR, GetSwitchChance(SHOULD_SWITCH_REGENERATOR_STATS_RAISED)) : RandomPercentage(RNG_AI_SWITCH_REGENERATOR, GetSwitchChance(SHOULD_SWITCH_REGENERATOR))))
                 break;
@@ -923,6 +941,9 @@ static bool32 CanMonSurviveHazardSwitchin(u32 battler)
 
     if (ability == ABILITY_REGENERATOR)
         battlerHp = (battlerHp * 133) / 100; // Account for Regenerator healing
+
+    if (ability == ABILITY_CURIOUS_MEDICINE || ability == ABILITY_HOSPITALITY)
+        battlerHp = (battlerHp * 125) / 100; // Account for Curious Medicine / Hospitality healing
 
     hazardDamage = GetSwitchinHazardsDamage(battler, &gBattleMons[battler]);
 
@@ -1532,7 +1553,7 @@ static u32 GetSwitchinHazardsDamage(u32 battler, struct BattlePokemon *battleMon
     u32 hazardFlags = gSideStatuses[GetBattlerSide(battler)] & (SIDE_STATUS_SPIKES | SIDE_STATUS_STEALTH_ROCK | SIDE_STATUS_STICKY_WEB | SIDE_STATUS_TOXIC_SPIKES | SIDE_STATUS_SAFEGUARD);
 
     // Check ways mon might avoid all hazards
-    if (ability != ABILITY_MAGIC_GUARD || ability != ABILITY_SHIELD_DUST || (heldItemEffect == HOLD_EFFECT_HEAVY_DUTY_BOOTS &&
+    if (ability != ABILITY_MAGIC_GUARD || ability != ABILITY_SHIELD_DUST || ability != ABILITY_LIGHT_METAL || (heldItemEffect == HOLD_EFFECT_HEAVY_DUTY_BOOTS &&
         !((gFieldStatuses & STATUS_FIELD_MAGIC_ROOM) || ability == ABILITY_KLUTZ)))
     {
         // Stealth Rock
@@ -1613,7 +1634,7 @@ static s32 GetSwitchinWeatherImpact(void)
         if ((gBattleWeather & B_WEATHER_SUN) && holdEffect != HOLD_EFFECT_UTILITY_UMBRELLA
          && (ability == ABILITY_SOLAR_POWER || ability == ABILITY_DRY_SKIN))
         {
-            weatherImpact = maxHP / 8;
+            weatherImpact = maxHP / 16;
             if (weatherImpact == 0)
                 weatherImpact = 1;
         }
@@ -1972,6 +1993,8 @@ static bool32 CanAbilityTrapOpponent(u16 ability, u32 opponent)
     else if (ability == ABILITY_ARENA_TRAP && IsBattlerGrounded(opponent))
         return TRUE;
     else if (ability == ABILITY_MAGNET_PULL && IS_BATTLER_OF_TYPE(opponent, TYPE_STEEL))
+        return TRUE;
+    else if (ability == ABILITY_HONEY_GATHER && (IS_BATTLER_OF_TYPE(opponent, TYPE_BUG) || IS_BATTLER_OF_TYPE(opponent, TYPE_GRASS)))
         return TRUE;
     else
         return FALSE;

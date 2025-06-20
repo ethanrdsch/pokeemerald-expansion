@@ -383,6 +383,10 @@ bool32 IsBattlerTrapped(u32 battlerAtk, u32 battlerDef)
     if (AI_IsAbilityOnSide(battlerAtk, ABILITY_MAGNET_PULL)
         && IS_BATTLER_OF_TYPE(battlerAtk, TYPE_STEEL))
         return TRUE;
+    if (AI_IsAbilityOnSide(battlerAtk, ABILITY_HONEY_GATHER)
+        && (IS_BATTLER_OF_TYPE(battlerAtk, TYPE_BUG) ||
+            IS_BATTLER_OF_TYPE(battlerAtk, TYPE_GRASS)))
+        return TRUE;
 
     return FALSE;
 }
@@ -416,9 +420,10 @@ bool32 IsTruantMonVulnerable(u32 battlerAI, u32 opposingBattler)
 // move checks
 bool32 IsAffectedByPowder(u32 battler, u32 ability, enum ItemHoldEffect holdEffect)
 {
-    if (ability == ABILITY_OVERCOAT
+    if ((ability == ABILITY_OVERCOAT
         || (B_POWDER_GRASS >= GEN_6 && IS_BATTLER_OF_TYPE(battler, TYPE_GRASS))
         || holdEffect == HOLD_EFFECT_SAFETY_GOGGLES)
+        && GetBattlerAbility(battler) != ABILITY_MYCELIUM_MIGHT)
         return FALSE;
     return TRUE;
 }
@@ -1201,10 +1206,20 @@ s32 AI_WhoStrikesFirst(u32 battlerAI, u32 battler, u32 moveConsidered)
     else if (holdEffectAI != HOLD_EFFECT_LAGGING_TAIL && holdEffectPlayer == HOLD_EFFECT_LAGGING_TAIL)
         return AI_IS_FASTER;
 
-    if (abilityAI == ABILITY_STALL && abilityPlayer != ABILITY_STALL)
-        return AI_IS_SLOWER;
-    else if (abilityAI != ABILITY_STALL && abilityPlayer == ABILITY_STALL)
-        return AI_IS_FASTER;
+    if (gFieldStatuses & STATUS_FIELD_TRICK_ROOM)
+    {
+        if (abilityAI == ABILITY_STALL && abilityPlayer != ABILITY_STALL)
+            return AI_IS_FASTER;
+        else if (abilityAI != ABILITY_STALL && abilityPlayer == ABILITY_STALL)
+            return AI_IS_SLOWER;
+    }
+    else
+    {
+        if (abilityAI == ABILITY_STALL && abilityPlayer != ABILITY_STALL)
+            return AI_IS_SLOWER;
+        else if (abilityAI != ABILITY_STALL && abilityPlayer == ABILITY_STALL)
+            return AI_IS_FASTER;
+    }
 
     if (speedBattlerAI > speedBattler)
     {
@@ -1456,7 +1471,7 @@ s32 AI_DecideKnownAbilityForTurn(u32 battlerId)
         return gAiPartyData->mons[GetBattlerSide(battlerId)][gBattlerPartyIndexes[battlerId]].ability;
 
     // Abilities that prevent fleeing - treat as always known
-    if (knownAbility == ABILITY_SHADOW_TAG || knownAbility == ABILITY_MAGNET_PULL || knownAbility == ABILITY_ARENA_TRAP)
+    if (knownAbility == ABILITY_SHADOW_TAG || knownAbility == ABILITY_MAGNET_PULL || knownAbility == ABILITY_ARENA_TRAP || knownAbility == ABILITY_HONEY_GATHER)
         return knownAbility;
 
     for (i = 0; i < NUM_ABILITY_SLOTS; i++)
@@ -1725,7 +1740,9 @@ bool32 IsMoveEncouragedToHit(u32 battlerAtk, u32 battlerDef, u32 move)
     if (gStatuses3[battlerDef] & STATUS3_ALWAYS_HITS || gDisableStructs[battlerDef].battlerWithSureHit == battlerAtk)
         return TRUE;
 
-    if (gAiLogicData->abilities[battlerDef] == ABILITY_NO_GUARD || gAiLogicData->abilities[battlerAtk] == ABILITY_NO_GUARD)
+    if (gAiLogicData->abilities[battlerDef] == ABILITY_NO_GUARD 
+        || gAiLogicData->abilities[battlerAtk] == ABILITY_NO_GUARD
+        || gAiLogicData->abilities[battlerAtk] == ABILITY_VICTORY_STAR)
         return TRUE;
 
     u32 nonVolatileStatus = GetMoveNonVolatileStatus(move);
@@ -1767,7 +1784,7 @@ bool32 ShouldTryOHKO(u32 battlerAtk, u32 battlerDef, u32 atkAbility, u32 defAbil
 
     if ((((gStatuses3[battlerDef] & STATUS3_ALWAYS_HITS)
         && gDisableStructs[battlerDef].battlerWithSureHit == battlerAtk)
-        || atkAbility == ABILITY_NO_GUARD || defAbility == ABILITY_NO_GUARD)
+        || atkAbility == ABILITY_NO_GUARD || defAbility == ABILITY_NO_GUARD || atkAbility == ABILITY_VICTORY_STAR)
         && gBattleMons[battlerAtk].level >= gBattleMons[battlerDef].level)
     {
         return TRUE;
@@ -1940,13 +1957,14 @@ bool32 ShouldLowerStat(u32 battlerAtk, u32 battlerDef, u32 abilityDef, u32 stat)
     switch (abilityDef)
     {
     case ABILITY_SPEED_BOOST:
+    case ABILITY_VITAL_SPIRIT:
         if (stat == STAT_SPEED)
             return FALSE;
     case ABILITY_HYPER_CUTTER:
         if (stat == STAT_ATK || stat == STAT_SPATK)
             return FALSE;
     case ABILITY_BIG_PECKS:
-        if (stat == STAT_DEF)
+        if (stat == STAT_DEF || stat == STAT_SPDEF)
             return FALSE;
     case ABILITY_ILLUMINATE:
         if (B_ILLUMINATE_EFFECT < GEN_9)
@@ -1956,9 +1974,6 @@ bool32 ShouldLowerStat(u32 battlerAtk, u32 battlerDef, u32 abilityDef, u32 stat)
         if (stat == STAT_ACC)
             return FALSE;
     case ABILITY_FLOWER_VEIL:
-        if (IS_BATTLER_OF_TYPE(battlerDef, TYPE_GRASS))
-            return FALSE;
-        break;
     case ABILITY_CONTRARY:
     case ABILITY_CLEAR_BODY:
     case ABILITY_WHITE_SMOKE:
@@ -2077,6 +2092,7 @@ bool32 ShouldLowerSpeed(u32 battlerAtk, u32 battlerDef, u32 defAbility)
      || defAbility == ABILITY_CLEAR_BODY
      || defAbility == ABILITY_FULL_METAL_BODY
      || defAbility == ABILITY_WHITE_SMOKE
+     || defAbility == ABILITY_VITAL_SPIRIT
      || gAiLogicData->holdEffects[battlerDef] == HOLD_EFFECT_CLEAR_AMULET)
         return FALSE;
 
@@ -2115,6 +2131,7 @@ bool32 ShouldLowerSpDef(u32 battlerAtk, u32 battlerDef, u32 defAbility)
       && defAbility != ABILITY_CLEAR_BODY
       && defAbility != ABILITY_FULL_METAL_BODY
       && defAbility != ABILITY_WHITE_SMOKE
+      && defAbility != ABILITY_BIG_PECKS
       && gAiLogicData->holdEffects[battlerDef] != HOLD_EFFECT_CLEAR_AMULET)
         return TRUE;
     return FALSE;
@@ -3005,7 +3022,7 @@ static bool32 PartyBattlerShouldAvoidHazards(u32 currBattler, u32 switchBattler)
     if (flags == 0)
         return FALSE;
 
-    if (ability == ABILITY_MAGIC_GUARD || ability == ABILITY_SHIELD_DUST)
+    if (ability == ABILITY_MAGIC_GUARD || ability == ABILITY_SHIELD_DUST || ability == ABILITY_LIGHT_METAL)
         return FALSE;
     if (gFieldStatuses & STATUS_FIELD_MAGIC_ROOM || ability == ABILITY_KLUTZ)
         holdEffect = HOLD_EFFECT_NONE;
@@ -3440,7 +3457,8 @@ bool32 AI_CanBeInfatuated(u32 battlerAtk, u32 battlerDef, u32 defAbility)
 
 u32 ShouldTryToFlinch(u32 battlerAtk, u32 battlerDef, u32 atkAbility, u32 defAbility, u32 move)
 {
-    if (((!IsMoldBreakerTypeAbility(battlerAtk, gAiLogicData->abilities[battlerAtk]) && (defAbility == ABILITY_SHIELD_DUST || defAbility == ABILITY_INNER_FOCUS))
+    if (((!IsMoldBreakerTypeAbility(battlerAtk, gAiLogicData->abilities[battlerAtk]) 
+      && (defAbility == ABILITY_SHIELD_DUST || defAbility == ABILITY_INNER_FOCUS || defAbility == ABILITY_ZEN_MODE))
       || gAiLogicData->holdEffects[battlerDef] == HOLD_EFFECT_COVERT_CLOAK
       || DoesSubstituteBlockMove(battlerAtk, battlerDef, move)
       || AI_IsSlower(battlerAtk, battlerDef, move))) // Opponent goes first
@@ -3487,7 +3505,9 @@ bool32 ShouldFakeOut(u32 battlerAtk, u32 battlerDef, u32 move)
     || gAiLogicData->holdEffects[battlerDef] == HOLD_EFFECT_COVERT_CLOAK
     || DoesSubstituteBlockMove(battlerAtk, battlerDef, move)
     || (!IsMoldBreakerTypeAbility(battlerAtk, gAiLogicData->abilities[battlerAtk])
-    && (gAiLogicData->abilities[battlerDef] == ABILITY_SHIELD_DUST || gAiLogicData->abilities[battlerDef] == ABILITY_INNER_FOCUS)))
+    && (gAiLogicData->abilities[battlerDef] == ABILITY_SHIELD_DUST 
+        || gAiLogicData->abilities[battlerDef] == ABILITY_INNER_FOCUS
+        || gAiLogicData->abilities[battlerDef] == ABILITY_ZEN_MODE)))
         return FALSE;
 
     return TRUE;
@@ -4360,7 +4380,8 @@ void IncreaseParalyzeScore(u32 battlerAtk, u32 battlerDef, u32 move, s32 *score)
           || IsPowerBasedOnStatus(battlerAtk, EFFECT_DOUBLE_POWER_ON_ARG_STATUS, STATUS1_PARALYSIS)
           || (HasMoveWithMoveEffectExcept(battlerAtk, MOVE_EFFECT_FLINCH, EFFECT_FIRST_TURN_ONLY)) // filter out Fake Out
           || gBattleMons[battlerDef].status2 & STATUS2_INFATUATION
-          || gBattleMons[battlerDef].status2 & STATUS2_CONFUSION)
+          || gBattleMons[battlerDef].status2 & STATUS2_CONFUSION
+          || gAiLogicData->abilities[battlerAtk] == ABILITY_MERCILESS)
             ADJUST_SCORE_PTR(GOOD_EFFECT);
         else
             ADJUST_SCORE_PTR(DECENT_EFFECT);
@@ -4567,6 +4588,7 @@ bool32 AI_ShouldSpicyExtract(u32 battlerAtk, u32 battlerAtkPartner, u32 move, st
     if (gBattleMons[battlerAtkPartner].statStages[STAT_ATK] == MAX_STAT_STAGE
      || partnerAbility == ABILITY_CONTRARY
      || partnerAbility == ABILITY_GOOD_AS_GOLD
+     || partnerAbility == ABILITY_WONDER_SKIN
      || HasMoveWithEffect(BATTLE_OPPOSITE(battlerAtk), EFFECT_FOUL_PLAY)
      || HasMoveWithEffect(BATTLE_OPPOSITE(battlerAtkPartner), EFFECT_FOUL_PLAY))
         return FALSE;
@@ -4724,12 +4746,16 @@ bool32 ShouldTriggerAbility(u32 battler, u32 ability)
         case ABILITY_COMPETITIVE:
             return (BattlerStatCanRise(battler, ability, STAT_SPATK) && HasMoveWithCategory(battler, DAMAGE_CATEGORY_SPECIAL));
 
+        case ABILITY_VITAL_SPIRIT:
+            return BattlerStatCanRise(battler, ability, STAT_SPEED);
+
         case ABILITY_CONTRARY:
             return TRUE;
 
         case ABILITY_DRY_SKIN:
         case ABILITY_VOLT_ABSORB:
         case ABILITY_WATER_ABSORB:
+        case ABILITY_MINUS:
             return (gAiThinkingStruct->aiFlags[battler] & AI_FLAG_HP_AWARE);
 
         case ABILITY_RATTLED:

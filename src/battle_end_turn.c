@@ -620,6 +620,12 @@ static bool32 HandleEndTurnPoison(u32 battler)
 
     gBattleStruct->turnEffectsBattlerId++;
 
+    if (ability == ABILITY_TOXIC_BOOST)
+    {
+        RecordAbilityBattle(battler, ability);
+        return effect;
+    }
+
     if ((gBattleMons[battler].status1 & STATUS1_POISON || gBattleMons[battler].status1 & STATUS1_TOXIC_POISON)
      && IsBattlerAlive(battler)
      && !IsBattlerProtectedByMagicGuard(battler, ability))
@@ -668,17 +674,17 @@ static bool32 HandleEndTurnBurn(u32 battler)
 
     gBattleStruct->turnEffectsBattlerId++;
 
+    if (ability == ABILITY_HEATPROOF || ability == ABILITY_FLARE_BOOST)
+    {
+        RecordAbilityBattle(battler, ability);
+        return effect;
+    }
+
     if (gBattleMons[battler].status1 & STATUS1_BURN
      && IsBattlerAlive(battler)
      && !IsBattlerProtectedByMagicGuard(battler, ability))
     {
         gBattleStruct->moveDamage[battler] = GetNonDynamaxMaxHP(battler) / (B_BURN_DAMAGE >= GEN_7 ? 16 : 8);
-        if (ability == ABILITY_HEATPROOF)
-        {
-            if (gBattleStruct->moveDamage[battler] > (gBattleStruct->moveDamage[battler] / 2) + 1) // Record ability if the burn takes less damage than it normally would.
-                RecordAbilityBattle(battler, ABILITY_HEATPROOF);
-            gBattleStruct->moveDamage[battler] /= 2;
-        }
         if (gBattleStruct->moveDamage[battler] == 0)
             gBattleStruct->moveDamage[battler] = 1;
         BattleScriptExecute(BattleScript_BurnTurnDmg);
@@ -1418,6 +1424,8 @@ static bool32 HandleEndTurnThirdEventBlock(u32 battler)
         case ABILITY_PICKUP:
         case ABILITY_SPEED_BOOST:
         case ABILITY_EARLY_BIRD:
+        case ABILITY_HONEY_GATHER:
+        case ABILITY_POWER_OF_ALCHEMY:
             if (AbilityBattleEffects(ABILITYEFFECT_ENDTURN, battler, ability, 0, MOVE_NONE))
                 effect = TRUE;
             break;
