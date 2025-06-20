@@ -1425,6 +1425,7 @@ static bool32 HandleEndTurnThirdEventBlock(u32 battler)
         case ABILITY_SPEED_BOOST:
         case ABILITY_EARLY_BIRD:
         case ABILITY_HONEY_GATHER:
+        case ABILITY_SELF_SUFFICIENT:
         case ABILITY_POWER_OF_ALCHEMY:
             if (AbilityBattleEffects(ABILITYEFFECT_ENDTURN, battler, ability, 0, MOVE_NONE))
                 effect = TRUE;

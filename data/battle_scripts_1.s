@@ -3542,11 +3542,19 @@ BattleScript_EffectTwoTurnsAttack::
 	jumpifstatus2 BS_ATTACKER, STATUS2_MULTIPLETURNS, BattleScript_TwoTurnMovesSecondTurn
 	jumpifword CMP_COMMON_BITS, gHitMarker, HITMARKER_NO_ATTACKSTRING, BattleScript_TwoTurnMovesSecondTurn
 	tryfiretwoturnmovewithoutcharging BS_ATTACKER, BattleScript_EffectHit @ e.g. Solar Beam
+	jumpifmove MOVE_SOLAR_BEAM, BattleScript_EffectTwoTurnsAttackCheckSunSalute
+	jumpifmove MOVE_SOLAR_BLADE, BattleScript_EffectTwoTurnsAttackCheckSunSalute
+
+BattleScript_EffectTwoTurnsAttackPostSunSaluteCheck:
 	call BattleScript_FirstChargingTurn
 	jumpifability BS_ATTACKER, ABILITY_PROPELLER_TAIL, BattleScript_TwoTurnMovesSecondTurn
 	tryfiretwoturnmoveaftercharging BS_ATTACKER, BattleScript_TwoTurnMovesSecondTurn @ e.g. Electro Shot
 	jumpifholdeffect BS_ATTACKER, HOLD_EFFECT_POWER_HERB, BattleScript_TwoTurnMovesSecondPowerHerbActivates
 	goto BattleScript_MoveEnd
+
+BattleScript_EffectTwoTurnsAttackCheckSunSalute:
+	jumpifability BS_ATTACKER, ABILITY_SUN_SALUTE, BattleScript_TwoTurnMovesSecondTurn
+	goto BattleScript_EffectTwoTurnsAttackPostSunSaluteCheck
 
 BattleScript_EffectGeomancy::
 	jumpifstatus2 BS_ATTACKER, STATUS2_MULTIPLETURNS, BattleScript_GeomancySecondTurn

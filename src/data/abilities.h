@@ -2408,4 +2408,26 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
         .cantBeSwapped = TRUE,
         .cantBeTraced = TRUE,
     },
+
+    //new abilities
+    [ABILITY_STRIKER] =
+    {
+        .name = _("Striker"),
+        .description = COMPOUND_STRING("30% damage boost for\nkicking moves."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_SELF_SUFFICIENT] =
+    {
+        .name = _("Self Sufficient"),
+        .description = COMPOUND_STRING("Heal 1/16 of max HP at the\nend of each turn."),
+        .aiRating = 8,
+    },
+
+    [ABILITY_SUN_SALUTE] =
+    {
+        .name = _("Sun Salute"),
+        .description = COMPOUND_STRING("Fire immunity. Always acts\nas if in harsh sunlight."),
+        .aiRating = 9,
+    },
 };
