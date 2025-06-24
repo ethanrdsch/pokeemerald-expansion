@@ -185,6 +185,15 @@ static const struct BattleWeatherInfo sBattleWeatherInfo[BATTLE_WEATHER_COUNT] =
         .animation = B_ANIM_SNOW_CONTINUES,
     },
 
+    [BATTLE_WEATHER_HAILSTORM] =
+    {
+        .flag = B_WEATHER_HAILSTORM,
+        .rock = HOLD_EFFECT_ICY_ROCK,
+        .endMessage = B_MSG_WEATHER_END_HAIL,
+        .continuesMessage = B_MSG_WEATHER_TURN_HAIL,
+        .animation = B_ANIM_HAIL_CONTINUES,
+    },
+
     [BATTLE_WEATHER_FOG] =
     {
         .flag = B_WEATHER_FOG,
@@ -2778,7 +2787,8 @@ bool32 TryChangeBattleWeather(u32 battler, u32 battleWeatherId, bool32 viaAbilit
     else if (gBattleWeather & B_WEATHER_PRIMAL_ANY
         && battlerAbility != ABILITY_DESOLATE_LAND
         && battlerAbility != ABILITY_PRIMORDIAL_SEA
-        && battlerAbility != ABILITY_DELTA_STREAM)
+        && battlerAbility != ABILITY_DELTA_STREAM
+        && battlerAbility != ABILITY_HAILSTORM)
     {
         return FALSE;
     }
@@ -4175,6 +4185,13 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                 effect++;
             }
             break;
+        case ABILITY_HAILSTORM:
+            if (TryChangeBattleWeather(battler, BATTLE_WEATHER_HAILSTORM, TRUE))
+            {
+                BattleScriptPushCursorAndCallback(BattleScript_HailstormActivates);
+                effect++;
+            }
+            break;
         case ABILITY_VESSEL_OF_RUIN:
             if (!gSpecialStatuses[battler].switchInAbilityDone)
             {
@@ -4317,7 +4334,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
             }
             break;
         case ABILITY_ICE_FACE:
-            if (IsBattlerWeatherAffected(battler, B_WEATHER_HAIL | B_WEATHER_SNOW)
+            if (IsBattlerWeatherAffected(battler, B_WEATHER_HAIL | B_WEATHER_SNOW | B_WEATHER_HAILSTORM)
              && gBattleMons[battler].species == SPECIES_EISCUE_NOICE
              && !(gBattleMons[battler].status2 & STATUS2_TRANSFORMED))
             {
@@ -4383,7 +4400,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                 }
                 break;
             case ABILITY_ICE_BODY:
-                if (IsBattlerWeatherAffected(battler, B_WEATHER_HAIL | B_WEATHER_SNOW)
+                if (IsBattlerWeatherAffected(battler, B_WEATHER_HAIL | B_WEATHER_SNOW | B_WEATHER_HAILSTORM)
                  && !IsBattlerAtMaxHp(battler)
                  && !(gStatuses3[battler] & (STATUS3_UNDERGROUND | STATUS3_UNDERWATER))
                  && !(gStatuses3[battler] & STATUS3_HEAL_BLOCK))
@@ -5248,7 +5265,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
              && IsBattlerAlive(gBattlerTarget)
              && !gProtectStructs[gBattlerAttacker].confusionSelfDmg
              && CanBeBurned(gBattlerAttacker, gBattlerTarget, ABILITY_NONE) // ABILITY_NONE for Mold Breaker effect
-             && GetBattlerHoldEffect(gBattlerAttacker, TRUE) != HOLD_EFFECT_PROTECTIVE_PADS
+             && (!(MoveMakesContact(gCurrentMove)) || GetBattlerHoldEffect(gBattlerAttacker, TRUE) != HOLD_EFFECT_PROTECTIVE_PADS)
              && IsBattlerTurnDamaged(gBattlerTarget) // Need to actually hit the target
              && GetBattleMoveType(gCurrentMove) == TYPE_FIRE
              && RandomPercentage(RNG_TURBOBLAZE, 50))
@@ -5266,7 +5283,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
              && IsBattlerAlive(gBattlerTarget)
              && !gProtectStructs[gBattlerAttacker].confusionSelfDmg
              && CanBeParalyzed(gBattlerAttacker, gBattlerTarget, ABILITY_NONE) // ABILITY_NONE for Mold Breaker effect
-             && GetBattlerHoldEffect(gBattlerAttacker, TRUE) != HOLD_EFFECT_PROTECTIVE_PADS
+             && (!(MoveMakesContact(gCurrentMove)) || GetBattlerHoldEffect(gBattlerAttacker, TRUE) != HOLD_EFFECT_PROTECTIVE_PADS)
              && IsBattlerTurnDamaged(gBattlerTarget) // Need to actually hit the target
              && GetBattleMoveType(gCurrentMove) == TYPE_ELECTRIC
              && RandomPercentage(RNG_TERAVOLT, 50))
@@ -5288,6 +5305,23 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
              && RandomWeighted(RNG_TOXIC_CHAIN, 7, 3))
             {
                 gBattleScripting.moveEffect = MOVE_EFFECT_TOXIC;
+                PREPARE_ABILITY_BUFFER(gBattleTextBuff1, gLastUsedAbility);
+                BattleScriptPushCursor();
+                gBattlescriptCurrInstr = BattleScript_AbilityStatusEffect;
+                gHitMarker |= HITMARKER_STATUS_ABILITY_EFFECT;
+                effect++;
+            }
+            break;
+        case ABILITY_CACOPHONY:
+            if (!(gBattleStruct->moveResultFlags[gBattlerTarget] & MOVE_RESULT_NO_EFFECT)
+             && IsBattlerAlive(gBattlerTarget)
+             && !gProtectStructs[gBattlerAttacker].confusionSelfDmg
+             && CanBeConfused(gBattlerTarget)
+             && IsBattlerTurnDamaged(gBattlerTarget) // Need to actually hit the target
+             && IsSoundMove(gCurrentMove)
+             && RandomPercentage(RNG_CACOPHONY, 50))
+            {
+                gBattleScripting.moveEffect = MOVE_EFFECT_CONFUSION;
                 PREPARE_ABILITY_BUFFER(gBattleTextBuff1, gLastUsedAbility);
                 BattleScriptPushCursor();
                 gBattlescriptCurrInstr = BattleScript_AbilityStatusEffect;
@@ -5633,7 +5667,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
             break;
         case ABILITY_ICE_FACE:
         {
-            u32 battlerWeatherAffected = IsBattlerWeatherAffected(battler, B_WEATHER_HAIL | B_WEATHER_SNOW);
+            u32 battlerWeatherAffected = IsBattlerWeatherAffected(battler, B_WEATHER_HAIL | B_WEATHER_SNOW | B_WEATHER_HAILSTORM);
             if (battlerWeatherAffected && gBattleMons[battler].species == SPECIES_EISCUE)
             {
                 // If Hail/Snow activates when in Eiscue is in base, prevent reversion when Eiscue Noice gets broken
@@ -8703,7 +8737,7 @@ static inline u32 CalcMoveBasePowerAfterModifiers(struct DamageCalculationData *
             modifier = uq4_12_multiply(modifier, UQ_4_12(2.0));
         break;
     case EFFECT_SOLAR_BEAM:
-        if (IsBattlerWeatherAffected(battlerAtk, (B_WEATHER_HAIL | B_WEATHER_SANDSTORM | B_WEATHER_RAIN | B_WEATHER_SNOW | B_WEATHER_FOG))
+        if (IsBattlerWeatherAffected(battlerAtk, (B_WEATHER_HAIL | B_WEATHER_SANDSTORM | B_WEATHER_RAIN | B_WEATHER_SNOW | B_WEATHER_FOG | B_WEATHER_HAILSTORM))
             && GetBattlerAbility(battlerAtk) != ABILITY_SUN_SALUTE)
             modifier = uq4_12_multiply(modifier, UQ_4_12(0.5));
         break;
@@ -8788,6 +8822,10 @@ static inline u32 CalcMoveBasePowerAfterModifiers(struct DamageCalculationData *
         break;
     case ABILITY_BIG_PECKS:
         if (IsBeakMove(move))
+           modifier = uq4_12_multiply(modifier, UQ_4_12(1.5));
+        break;
+    case ABILITY_LOYAL_COMPANION:
+        if (IsFieldMove(move))
            modifier = uq4_12_multiply(modifier, UQ_4_12(1.5));
         break;
     case ABILITY_SHEER_FORCE:
@@ -9186,6 +9224,18 @@ static inline u32 CalcAttackStat(struct DamageCalculationData *damageCalcData, u
         else if (moveType == TYPE_GRASS)
             modifier = uq4_12_multiply_half_down(modifier, UQ_4_12(1.1));
         break;
+    case ABILITY_DEEP_FREEZE:
+        if (moveType == TYPE_ICE && gBattleMons[battlerAtk].hp <= (gBattleMons[battlerAtk].maxHP / 3))
+            modifier = uq4_12_multiply_half_down(modifier, UQ_4_12(1.5));
+        else if (moveType == TYPE_ICE)
+            modifier = uq4_12_multiply_half_down(modifier, UQ_4_12(1.1));
+        break;
+    case ABILITY_AURA_BOOST:
+        if (IsPulseMove(move) && gBattleMons[battlerAtk].hp <= (gBattleMons[battlerAtk].maxHP / 3))
+            modifier = uq4_12_multiply_half_down(modifier, UQ_4_12(1.6));
+        else if (IsPulseMove(move))
+            modifier = uq4_12_multiply_half_down(modifier, UQ_4_12(1.3));
+        break;
     case ABILITY_PLUS:
         if (moveType == TYPE_ELECTRIC)
             modifier = uq4_12_multiply(modifier, UQ_4_12(1.3));
@@ -9562,7 +9612,10 @@ static inline uq4_12_t GetParentalBondModifier(u32 battlerAtk)
 {
     if (gSpecialStatuses[battlerAtk].parentalBondState != PARENTAL_BOND_2ND_HIT)
         return UQ_4_12(1.0);
-    return B_PARENTAL_BOND_DMG >= GEN_7 ? UQ_4_12(0.25) : UQ_4_12(0.5);
+    if (GetBattlerAbility(battlerAtk) == ABILITY_REPRISE && IsSoundMove(gCurrentMove))
+        return UQ_4_12(0.33);
+    else
+        return B_PARENTAL_BOND_DMG >= GEN_7 ? UQ_4_12(0.25) : UQ_4_12(0.5);
 }
 
 static inline uq4_12_t GetSameTypeAttackBonusModifier(struct DamageCalculationData *damageCalcData, u32 abilityAtk)
@@ -10170,6 +10223,13 @@ static inline void MulByTypeEffectiveness(uq4_12_t *modifier, u32 move, u32 move
     if (gBattleWeather & B_WEATHER_STRONG_WINDS && HasWeatherEffect())
     {
         if (defType == TYPE_FLYING && mod >= UQ_4_12(2.0))
+            mod = UQ_4_12(1.0);
+    }
+
+    // B_WEATHER_HAILSTORM weakens Super Effective moves against Ice-type Pokémon
+    if (gBattleWeather & B_WEATHER_HAILSTORM && HasWeatherEffect())
+    {
+        if (defType == TYPE_ICE && mod >= UQ_4_12(2.0))
             mod = UQ_4_12(1.0);
     }
 
@@ -11877,6 +11937,7 @@ void ClearDamageCalcResults(void)
     gBattleStruct->calculatedDamageDone = FALSE;
     gBattleStruct->calculatedSpreadMoveAccuracy = FALSE;
     gBattleStruct->printedStrongWindsWeakenedAttack = FALSE;
+    gBattleStruct->printedHailstormWeakenedAttack = FALSE;
     gBattleStruct->numSpreadTargets = 0;
 }
 

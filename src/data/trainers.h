@@ -42194,24 +42194,39 @@ F_TRAINER_FEMALE |
         .battleType = TRAINER_BATTLE_TYPE_SINGLES,
 #line 16884
         .aiFlags = AI_FLAG_BASIC_TRAINER,
-        .partySize = 1,
+        .partySize = 2,
         .party = (const struct TrainerMon[])
         {
             {
 #line 16886
-            .species = SPECIES_GENGAR,
+            .species = SPECIES_BLISSEY,
             .gender = TRAINER_MON_RANDOM_GENDER,
 #line 16888
             .iv = TRAINER_PARTY_IVS(31, 31, 31, 31, 31, 31),
 #line 16887
-            .lvl = 100,
+            .lvl = 50,
             .nature = NATURE_HARDY,
             .dynamaxLevel = MAX_DYNAMAX_LEVEL,
             .moves = {
 #line 16888
-                MOVE_RECOVER,
-                MOVE_MOONLIGHT,
-                MOVE_SYNTHESIS,
+                MOVE_SUNNY_DAY,
+            },
+            },
+            {
+#line 16890
+            .species = SPECIES_GROUDON,
+            .gender = TRAINER_MON_RANDOM_GENDER,
+#line 16890
+            .heldItem = ITEM_RED_ORB,
+#line 16891
+            .iv = TRAINER_PARTY_IVS(31, 31, 31, 31, 31, 31),
+#line 16891
+            .lvl = 100,
+            .nature = NATURE_HARDY,
+            .dynamaxLevel = MAX_DYNAMAX_LEVEL,
+            .moves = {
+#line 16891
+                MOVE_RECYCLE,
             },
             },
         },

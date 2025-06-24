@@ -1261,7 +1261,8 @@ static void Cmd_attackcanceler(void)
         return;
 
     if (gSpecialStatuses[gBattlerAttacker].parentalBondState == PARENTAL_BOND_OFF
-     && GetBattlerAbility(gBattlerAttacker) == ABILITY_PARENTAL_BOND
+     && (GetBattlerAbility(gBattlerAttacker) == ABILITY_PARENTAL_BOND
+            || (GetBattlerAbility(gBattlerAttacker) == ABILITY_REPRISE && IsSoundMove(gCurrentMove)))
      && IsMoveAffectedByParentalBond(gCurrentMove, gBattlerAttacker)
      && !(gAbsentBattlerFlags & (1u << gBattlerTarget))
      && GetActiveGimmick(gBattlerAttacker) != GIMMICK_Z_MOVE)
@@ -1567,7 +1568,7 @@ static bool32 AccuracyCalcHelper(u32 move, u32 battler)
     {
         if (MoveAlwaysHitsInRain(move) && IsBattlerWeatherAffected(battler, B_WEATHER_RAIN))
             effect = TRUE;
-        else if ((gBattleWeather & (B_WEATHER_HAIL | B_WEATHER_SNOW)) && MoveAlwaysHitsInHailSnow(move))
+        else if ((gBattleWeather & (B_WEATHER_HAIL | B_WEATHER_SNOW | B_WEATHER_HAILSTORM)) && MoveAlwaysHitsInHailSnow(move))
             effect = TRUE;
 
         if (effect)
@@ -1651,7 +1652,7 @@ u32 GetTotalAccuracy(u32 battlerAtk, u32 battlerDef, u32 move, u32 atkAbility, u
             calc = (calc * 80) / 100; // 1.2 sand veil loss
         break;
     case ABILITY_SNOW_CLOAK:
-        if (HasWeatherEffect() && (gBattleWeather & (B_WEATHER_HAIL | B_WEATHER_SNOW)))
+        if (HasWeatherEffect() && (gBattleWeather & (B_WEATHER_HAIL | B_WEATHER_SNOW | B_WEATHER_HAILSTORM)))
             calc = (calc * 80) / 100; // 1.2 snow cloak loss
         break;
     case ABILITY_TANGLED_FEET:
@@ -2382,6 +2383,25 @@ static u32 UpdateEffectivenessResultFlagsForDoubleSpreadMoves(u32 resultFlags)
     return resultFlags;
 }
 
+static inline bool32 TryHailStormWeakenAttack(u32 battlerDef, u32 moveType)
+{
+    if (gBattleWeather & B_WEATHER_HAILSTORM && HasWeatherEffect())
+    {
+        if (GetMoveCategory(gCurrentMove) != DAMAGE_CATEGORY_STATUS
+         && IS_BATTLER_OF_TYPE(battlerDef, TYPE_ICE)
+         && gTypeEffectivenessTable[moveType][TYPE_ICE] >= UQ_4_12(2.0)
+         && !gBattleStruct->printedHailstormWeakenedAttack)
+        {
+            gBattleStruct->printedHailstormWeakenedAttack = TRUE;
+            BattleScriptPushCursor();
+            gBattlescriptCurrInstr = BattleScript_AttackWeakenedByHailstorm;
+            return TRUE;
+        }
+    }
+
+    return FALSE;
+}
+
 static inline bool32 TryStrongWindsWeakenAttack(u32 battlerDef, u32 moveType)
 {
     if (gBattleWeather & B_WEATHER_STRONG_WINDS && HasWeatherEffect())
@@ -2450,6 +2470,19 @@ static bool32 ProcessPreAttackAnimationFuncs(void)
                     return TRUE;
             }
         }
+        if (!gBattleStruct->printedHailstormWeakenedAttack)
+        {
+            for (u32 battlerDef = 0; battlerDef < gBattlersCount; battlerDef++)
+            {
+                if (IsBattlerInvalidForSpreadMove(gBattlerAttacker, battlerDef, moveTarget)
+                 || (battlerDef == BATTLE_PARTNER(gBattlerAttacker) && !(moveTarget & MOVE_TARGET_FOES_AND_ALLY))
+                 || (gBattleStruct->noResultString[battlerDef] && gBattleStruct->noResultString[battlerDef] != DO_ACCURACY_CHECK))
+                    continue;
+
+                if (TryHailStormWeakenAttack(battlerDef, moveType))
+                    return TRUE;
+            }
+        }
 
         for (u32 battlerDef = 0; battlerDef < gBattlersCount; battlerDef++)
         {
@@ -2467,6 +2500,8 @@ static bool32 ProcessPreAttackAnimationFuncs(void)
     else
     {
         if (TryStrongWindsWeakenAttack(gBattlerTarget, moveType))
+            return TRUE;
+        if (TryHailStormWeakenAttack(gBattlerTarget, moveType))
             return TRUE;
         if (TryTeraShellDistortTypeMatchups(gBattlerTarget))
             return TRUE;
@@ -9822,6 +9857,8 @@ static void RemoveAllWeather(void)
         gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_WEATHER_END_STRONG_WINDS;
     else if (gBattleWeather & B_WEATHER_SNOW)
         gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_WEATHER_END_SNOW;
+    else if (gBattleWeather & B_WEATHER_HAILSTORM)
+        gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_WEATHER_END_HAIL;
     else if (gBattleWeather & B_WEATHER_FOG)
         gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_WEATHER_END_FOG;
     else
@@ -11341,7 +11378,7 @@ static void Cmd_various(void)
     {
         VARIOUS_ARGS();
         if (gSideStatuses[GetBattlerSide(battler)] & SIDE_STATUS_AURORA_VEIL
-            || !(HasWeatherEffect() && gBattleWeather & (B_WEATHER_HAIL | B_WEATHER_SNOW)))
+            || !(HasWeatherEffect() && gBattleWeather & (B_WEATHER_HAIL | B_WEATHER_SNOW | B_WEATHER_HAILSTORM)))
         {
             gBattleStruct->moveResultFlags[gBattlerTarget] |= MOVE_RESULT_MISSED;
             gBattleCommunication[MULTISTRING_CHOOSER] = 0;
@@ -11611,7 +11648,8 @@ static void Cmd_various(void)
             u32 ability = GetBattlerAbility(i);
             if (((ability == ABILITY_DESOLATE_LAND && gBattleWeather & B_WEATHER_SUN_PRIMAL)
              || (ability == ABILITY_PRIMORDIAL_SEA && gBattleWeather & B_WEATHER_RAIN_PRIMAL)
-             || (ability == ABILITY_DELTA_STREAM && gBattleWeather & B_WEATHER_STRONG_WINDS))
+             || (ability == ABILITY_DELTA_STREAM && gBattleWeather & B_WEATHER_STRONG_WINDS)
+             || (ability == ABILITY_HAILSTORM && gBattleWeather & B_WEATHER_HAILSTORM))
              && IsBattlerAlive(i))
                 shouldNotClear = TRUE;
         }
@@ -11631,6 +11669,12 @@ static void Cmd_various(void)
         {
             gBattleWeather &= ~B_WEATHER_STRONG_WINDS;
             PrepareStringBattle(STRINGID_STRONGWINDSDISSIPATED, battler);
+            gBattleCommunication[MSG_DISPLAY] = 1;
+        }
+        else if (gBattleWeather & B_WEATHER_HAILSTORM && !shouldNotClear)
+        {
+            gBattleWeather &= ~B_WEATHER_HAILSTORM;
+            PrepareStringBattle(STRINGID_HAILSTORMSTOPPED, battler);
             gBattleCommunication[MSG_DISPLAY] = 1;
         }
         break;

@@ -2537,4 +2537,46 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
         .description = COMPOUND_STRING("Triggers Heal Bell effect\nafter using a sound move."),
         .aiRating = 5,
     },
+
+    [ABILITY_DEEP_FREEZE] =
+    {
+        .name = _("Deep Freeze"),
+        .description = COMPOUND_STRING("10% boost to Ice moves, or\n50% when under 1/3 max HP."),
+        .aiRating = 5,
+    },
+
+    [ABILITY_CACOPHONY] =
+    {
+        .name = _("Cacophony"),
+        .description = COMPOUND_STRING("Damaging sound moves have +30%\npower and a 50% confuse chance."),
+        .aiRating = 2,
+    },
+
+    [ABILITY_LOYAL_COMPANION] =
+    {
+        .name = _("Loyal Companion"),
+        .description = COMPOUND_STRING("The power of field moves is\nboosted by 50%."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_AURA_BOOST] =
+    {
+        .name = _("Aura Boost"),
+        .description = COMPOUND_STRING("30% boost to aura/pulse moves,\nor 60% when under 1/3 max HP."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_REPRISE] =
+    {
+        .name = _("Reprise"),
+        .description = COMPOUND_STRING("Sound attacks hit twice.\n2nd hit does 1/3 damage."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_HAILSTORM] =
+    {
+        .name = _("Hailstorm"),
+        .description = COMPOUND_STRING("Summons an Intense Hailstorm\nwhile on the field."),
+        .aiRating = 10,
+    },
 };

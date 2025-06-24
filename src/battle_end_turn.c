@@ -256,12 +256,13 @@ static bool32 HandleEndTurnWeatherDamage(u32 battler)
         break;
     case BATTLE_WEATHER_HAIL:
     case BATTLE_WEATHER_SNOW:
+    case BATTLE_WEATHER_HAILSTORM:
         if (ability == ABILITY_ICE_BODY)
         {
             if (AbilityBattleEffects(ABILITYEFFECT_ENDTURN, battler, ability, 0, MOVE_NONE))
                 effect = TRUE;
         }
-        else if (currBattleWeather == BATTLE_WEATHER_HAIL)
+        else if (currBattleWeather == BATTLE_WEATHER_HAIL || currBattleWeather == B_WEATHER_HAILSTORM)
         {
             if (ability != ABILITY_SNOW_CLOAK
              && ability != ABILITY_OVERCOAT

@@ -775,6 +775,7 @@ struct BattleStruct
     u8 calculatedDamageDone:1;
     u8 calculatedSpreadMoveAccuracy:1;
     u8 printedStrongWindsWeakenedAttack:1;
+    u8 printedHailstormWeakenedAttack:1;
     u8 numSpreadTargets:2;
     u8 bypassMoldBreakerChecks:1; // for ABILITYEFFECT_IMMUNITY
     bool8 abilityRemovedHazards; // if multiple entry hazards were removed, only show popup once

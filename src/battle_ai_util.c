@@ -705,6 +705,17 @@ static inline void CalcDynamicMoveDamage(struct DamageCalculationData *damageCal
         minimum += minimum / (B_PARENTAL_BOND_DMG >= GEN_7 ? 4 : 2);
         maximum += maximum / (B_PARENTAL_BOND_DMG >= GEN_7 ? 4 : 2);
     }
+    if (abilityAtk == ABILITY_REPRISE
+        && !strikeCount
+        && effect != EFFECT_TRIPLE_KICK
+        && effect != EFFECT_MULTI_HIT
+        && IsSoundMove(move)
+        && !AI_IsDoubleSpreadMove(damageCalcData->battlerAtk, move))
+    {
+        median  += median  / 3;
+        minimum += minimum / 3;
+        maximum += maximum / 3;
+    }
 
     if (median == 0)
         median = 1;
@@ -1758,7 +1769,7 @@ bool32 IsMoveEncouragedToHit(u32 battlerAtk, u32 battlerDef, u32 move)
 
     if ((weather & B_WEATHER_RAIN) && MoveAlwaysHitsInRain(move))
         return TRUE;
-    if ((weather & (B_WEATHER_HAIL | B_WEATHER_SNOW)) && MoveAlwaysHitsInHailSnow(move))
+    if ((weather & (B_WEATHER_HAIL | B_WEATHER_SNOW | B_WEATHER_HAILSTORM)) && MoveAlwaysHitsInHailSnow(move))
         return TRUE;
     if (B_MINIMIZE_DMG_ACC >= GEN_6 && (gStatuses3[battlerDef] & STATUS3_MINIMIZED) && MoveIncreasesPowerToMinimizedTargets(move))
         return TRUE;
@@ -3674,7 +3685,7 @@ bool32 ShouldSetScreen(u32 battlerAtk, u32 battlerDef, enum BattleMoveEffects mo
     {
     case EFFECT_AURORA_VEIL:
         // Use only in Hail and only if AI doesn't already have Reflect, Light Screen or Aurora Veil itself active.
-        if ((AI_GetWeather() & (B_WEATHER_HAIL | B_WEATHER_SNOW))
+        if ((AI_GetWeather() & (B_WEATHER_HAIL | B_WEATHER_SNOW | B_WEATHER_HAILSTORM))
             && !(gSideStatuses[atkSide] & (SIDE_STATUS_REFLECT | SIDE_STATUS_LIGHTSCREEN | SIDE_STATUS_AURORA_VEIL)))
             return TRUE;
         break;

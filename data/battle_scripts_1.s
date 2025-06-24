@@ -271,6 +271,7 @@ BattleScript_EffectChillyReception::
 	jumpifhalfword CMP_COMMON_BITS, gBattleWeather, B_WEATHER_SUN_PRIMAL, BattleScript_EffectChillyReceptionBlockedByPrimalSun
 	jumpifhalfword CMP_COMMON_BITS, gBattleWeather, B_WEATHER_RAIN_PRIMAL, BattleScript_EffectChillyReceptionBlockedByPrimalRain
 	jumpifhalfword CMP_COMMON_BITS, gBattleWeather, B_WEATHER_STRONG_WINDS, BattleScript_EffectChillyReceptionBlockedByStrongWinds
+	jumpifhalfword CMP_COMMON_BITS, gBattleWeather, B_WEATHER_HAILSTORM, BattleScript_EffectChillyReceptionBlockedByHailstorm
 	call BattleScript_EffectChillyReceptionPlayAnimation
     #if B_PREFERRED_ICE_WEATHER == B_ICE_WEATHER_HAIL
 	setfieldweather BATTLE_WEATHER_HAIL
@@ -296,6 +297,11 @@ BattleScript_EffectChillyReceptionBlockedByStrongWinds:
 	call BattleScript_EffectChillyReceptionTrySwitchWeatherFailed
 	call BattleScript_MysteriousAirCurrentBlowsOnRet
 	goto BattleScript_MoveSwitch
+BattleScript_EffectChillyReceptionBlockedByHailstorm:
+	call BattleScript_EffectChillyReceptionTrySwitchWeatherFailed
+	call BattleScript_HailWontStopRet
+	goto BattleScript_MoveSwitch
+
 BattleScript_EffectChillyReceptionTrySwitchWeatherFailed:
 	jumpifbattletype BATTLE_TYPE_ARENA, BattleScript_FailedFromAtkString
 	jumpifcantswitch SWITCH_IGNORE_ESCAPE_PREVENTION | BS_ATTACKER, BattleScript_FailedFromAtkString
@@ -306,6 +312,7 @@ BattleScript_CheckPrimalWeather:
 	jumpifhalfword CMP_COMMON_BITS, gBattleWeather, B_WEATHER_SUN_PRIMAL, BattleScript_ExtremelyHarshSunlightWasNotLessened
 	jumpifhalfword CMP_COMMON_BITS, gBattleWeather, B_WEATHER_RAIN_PRIMAL, BattleScript_NoReliefFromHeavyRain
 	jumpifhalfword CMP_COMMON_BITS, gBattleWeather, B_WEATHER_STRONG_WINDS, BattleScript_MysteriousAirCurrentBlowsOn
+	jumpifhalfword CMP_COMMON_BITS, gBattleWeather, B_WEATHER_HAILSTORM, BattleScript_HailWontStop
 	return
 
 BattleScript_MoveSwitchPursuitEnd:
@@ -4344,11 +4351,30 @@ BattleScript_MysteriousAirCurrentBlowsOnRet:
 	waitmessage B_WAIT_TIME_LONG
 	return
 
+BattleScript_HailWontStop:
+	pause B_WAIT_TIME_SHORT
+	printstring STRINGID_HAILWONTSTOP
+	waitmessage B_WAIT_TIME_LONG
+	goto BattleScript_MoveEnd
+
+BattleScript_HailWontStopEnd3:
+	pause B_WAIT_TIME_SHORT
+	printstring STRINGID_HAILWONTSTOP
+	waitmessage B_WAIT_TIME_LONG
+	end3
+
+BattleScript_HailWontStopRet:
+	pause B_WAIT_TIME_SHORT
+	printstring STRINGID_HAILWONTSTOP
+	waitmessage B_WAIT_TIME_LONG
+	return
+
 BattleScript_BlockedByPrimalWeatherEnd3::
 	call BattleScript_AbilityPopUp
 	jumpifhalfword CMP_COMMON_BITS, gBattleWeather, B_WEATHER_SUN_PRIMAL, BattleScript_ExtremelyHarshSunlightWasNotLessenedEnd3
 	jumpifhalfword CMP_COMMON_BITS, gBattleWeather, B_WEATHER_RAIN_PRIMAL, BattleScript_NoReliefFromHeavyRainEnd3
 	jumpifhalfword CMP_COMMON_BITS, gBattleWeather, B_WEATHER_STRONG_WINDS, BattleScript_MysteriousAirCurrentBlowsOnEnd3
+	jumpifhalfword CMP_COMMON_BITS, gBattleWeather, B_WEATHER_HAILSTORM, BattleScript_HailWontStopEnd3
 	end3
 
 BattleScript_BlockedByPrimalWeatherRet::
@@ -4356,6 +4382,7 @@ BattleScript_BlockedByPrimalWeatherRet::
 	jumpifhalfword CMP_COMMON_BITS, gBattleWeather, B_WEATHER_SUN_PRIMAL, BattleScript_ExtremelyHarshSunlightWasNotLessenedRet
 	jumpifhalfword CMP_COMMON_BITS, gBattleWeather, B_WEATHER_RAIN_PRIMAL, BattleScript_NoReliefFromHeavyRainRet
 	jumpifhalfword CMP_COMMON_BITS, gBattleWeather, B_WEATHER_STRONG_WINDS, BattleScript_MysteriousAirCurrentBlowsOnRet
+	jumpifhalfword CMP_COMMON_BITS, gBattleWeather, B_WEATHER_HAILSTORM, BattleScript_HailWontStopRet
 	return
 
 BattleScript_EffectBellyDrum::
@@ -7950,6 +7977,14 @@ BattleScript_DeltaStreamActivates::
 	playanimation BS_ATTACKER, B_ANIM_STRONG_WINDS
 	end3
 
+BattleScript_HailstormActivates::
+	pause B_WAIT_TIME_SHORT
+	call BattleScript_AbilityPopUp
+	printstring STRINGID_INTENSEHAILSTORM
+	waitstate
+	playanimation BS_ATTACKER, B_ANIM_HAIL_CONTINUES
+	end3
+
 BattleScript_ProtosynthesisActivates::
 	call BattleScript_AbilityPopUpScripting
 	printstring STRINGID_SUNLIGHTACTIVATEDABILITY
@@ -8050,6 +8085,12 @@ BattleScript_HospitalityActivates::
 BattleScript_AttackWeakenedByStrongWinds::
 	pause B_WAIT_TIME_SHORT
 	printstring STRINGID_ATTACKWEAKENEDBSTRONGWINDS
+	waitmessage B_WAIT_TIME_LONG
+	return
+
+BattleScript_AttackWeakenedByHailstorm::
+	pause B_WAIT_TIME_SHORT
+	printstring STRINGID_ATTACKWEAKENEDBHAILSTORM
 	waitmessage B_WAIT_TIME_LONG
 	return
 

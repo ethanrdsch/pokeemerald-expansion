@@ -105,6 +105,7 @@ struct MoveInfo
     bool32 lightMove:1;
     bool32 beakMove:1;
     bool32 throwMove:1;
+    bool32 fieldMove:1;
     bool32 lazyMove:1; // can be used on loafing turns of Truant
     bool32 minimizeDoubleDamage:1;
     bool32 ignoresTargetAbility:1;
@@ -356,6 +357,11 @@ static inline bool32 IsBeakMove(u32 moveId)
 static inline bool32 IsThrowMove(u32 moveId)
 {
     return gMovesInfo[SanitizeMoveId(moveId)].throwMove;
+}
+
+static inline bool32 IsFieldMove(u32 moveId)
+{
+    return gMovesInfo[SanitizeMoveId(moveId)].fieldMove;
 }
 
 static inline bool32 MoveIncreasesPowerToMinimizedTargets(u32 moveId)

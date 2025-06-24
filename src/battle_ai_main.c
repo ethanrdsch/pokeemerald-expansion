@@ -1655,7 +1655,7 @@ static s32 AI_CheckBadMove(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
         case EFFECT_AURORA_VEIL:
             if (gSideStatuses[GetBattlerSide(battlerAtk)] & SIDE_STATUS_AURORA_VEIL
               || PartnerHasSameMoveEffectWithoutTarget(BATTLE_PARTNER(battlerAtk), move, aiData->partnerMove)
-              || !(weather & (B_WEATHER_HAIL | B_WEATHER_SNOW)))
+              || !(weather & (B_WEATHER_HAIL | B_WEATHER_SNOW | B_WEATHER_HAILSTORM)))
                 ADJUST_SCORE(-10);
             break;
         case EFFECT_OHKO:
@@ -2095,7 +2095,7 @@ static s32 AI_CheckBadMove(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
         case EFFECT_MORNING_SUN:
         case EFFECT_SYNTHESIS:
         case EFFECT_MOONLIGHT:
-            if ((AI_GetWeather() & (B_WEATHER_RAIN | B_WEATHER_SANDSTORM | B_WEATHER_HAIL | B_WEATHER_SNOW | B_WEATHER_FOG)))
+            if ((AI_GetWeather() & (B_WEATHER_RAIN | B_WEATHER_SANDSTORM | B_WEATHER_HAIL | B_WEATHER_SNOW | B_WEATHER_FOG | B_WEATHER_HAILSTORM)))
                 ADJUST_SCORE(-3);
             else if (AI_BattlerAtMaxHp(battlerAtk))
                 ADJUST_SCORE(-10);
@@ -2894,7 +2894,7 @@ static s32 AI_CheckBadMove(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
         // Don't use user-target moves ie. Swords Dance, with exceptions
         if ((moveTarget & MOVE_TARGET_USER)
         && moveEffect != EFFECT_DESTINY_BOND && moveEffect != EFFECT_WISH && moveEffect != EFFECT_HEALING_WISH
-        && !(moveEffect == EFFECT_AURORA_VEIL && (AI_GetWeather() & (B_WEATHER_SNOW | B_WEATHER_HAIL))))
+        && !(moveEffect == EFFECT_AURORA_VEIL && (AI_GetWeather() & (B_WEATHER_SNOW | B_WEATHER_HAIL | B_WEATHER_HAILSTORM))))
             ADJUST_SCORE(-30);
         // Don't use a status move if the mon is the last one in the party, has no good switchin, or is trapped
         else if (GetBattleMoveCategory(move) == DAMAGE_CATEGORY_STATUS
