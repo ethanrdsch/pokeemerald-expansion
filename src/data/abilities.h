@@ -204,7 +204,7 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
     [ABILITY_LEVITATE] =
     {
         .name = _("Levitate"),
-        .description = COMPOUND_STRING("Immune to Ground attacks."),
+        .description = COMPOUND_STRING("Immune to Ground attacks.\nBoosts own Flying moves by 25%."),
         .aiRating = 7,
         .breakable = TRUE,
     },
@@ -1981,7 +1981,7 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
     [ABILITY_UNSEEN_FIST] =
     {
         .name = _("Unseen Fist"),
-        .description = COMPOUND_STRING("The Pokémon's contact moves\nignore protection moves."),
+        .description = COMPOUND_STRING("Contact moves bypass Protect,\nscreens, and substitutes."),
         .aiRating = 6,
     },
 
@@ -2578,5 +2578,12 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
         .name = _("Hailstorm"),
         .description = COMPOUND_STRING("Summons an Intense Hailstorm\nwhile on the field."),
         .aiRating = 10,
+    },
+
+    [ABILITY_TWO_STEP] = // TODO: CURRENTLY DOES NOT WORK
+    {
+        .name = _("Two Step"),
+        .description = COMPOUND_STRING("After using a dance move, casts\nRevelation Dance at 30BP."),
+        .aiRating = 5,
     },
 };

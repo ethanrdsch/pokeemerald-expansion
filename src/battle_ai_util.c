@@ -1648,6 +1648,10 @@ bool32 IsHazardClearingMove(u32 move)
         if (B_DEFOG_EFFECT_CLEARING >= GEN_6)
             return TRUE;
         break;
+    case EFFECT_ROCK_SMASH:
+        if (gSideStatuses[GetBattlerSide(gBattlerAttacker)] & (SIDE_STATUS_STEALTH_ROCK))
+            return TRUE;
+        break;
     }
 
     u32 additionalEffectCount = GetMoveAdditionalEffectCount(move);
@@ -2514,6 +2518,7 @@ bool32 IsTrappingMove(u32 move)
     switch (GetMoveEffect(move))
     {
     case EFFECT_MEAN_LOOK:
+    case EFFECT_SPIDER_WEB:
     case EFFECT_FAIRY_LOCK:
     //case EFFECT_NO_RETREAT:   // TODO
         return TRUE;
@@ -2569,6 +2574,7 @@ bool32 IsAttackBoostMoveEffect(enum BattleMoveEffects effect)
     case EFFECT_ATTACK_UP_2:
     case EFFECT_ATTACK_ACCURACY_UP:
     case EFFECT_ATTACK_SPATK_UP:
+    case EFFECT_SHARPEN:
     case EFFECT_DRAGON_DANCE:
     case EFFECT_COIL:
     case EFFECT_BELLY_DRUM:
@@ -2611,6 +2617,7 @@ bool32 IsStatRaisingEffect(enum BattleMoveEffects effect)
     case EFFECT_SHIFT_GEAR:
     case EFFECT_ATTACK_ACCURACY_UP:
     case EFFECT_ATTACK_SPATK_UP:
+    case EFFECT_SHARPEN:
     case EFFECT_GROWTH:
     case EFFECT_COIL:
     case EFFECT_QUIVER_DANCE:

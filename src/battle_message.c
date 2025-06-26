@@ -218,6 +218,7 @@ const u8 *const gBattleStringsTable[STRINGID_COUNT] =
     [STRINGID_PKMNWASDEFROSTED]                     = COMPOUND_STRING("{B_DEF_NAME_WITH_PREFIX} thawed out!"),
     [STRINGID_PKMNWASDEFROSTED2]                    = COMPOUND_STRING("{B_ATK_NAME_WITH_PREFIX} thawed out!"),
     [STRINGID_PKMNWASDEFROSTEDBY]                   = COMPOUND_STRING("{B_ATK_NAME_WITH_PREFIX}'s {B_CURRENT_MOVE} melted the ice!"),
+    [STRINGID_PKMNWOKEUPBY]                         = COMPOUND_STRING("{B_ATK_NAME_WITH_PREFIX}'s {B_CURRENT_MOVE} woke it up!"),
     [STRINGID_PKMNWASPARALYZED]                     = COMPOUND_STRING("{B_EFF_NAME_WITH_PREFIX} is paralyzed, so it may be unable to move!"),
     [STRINGID_PKMNWASPARALYZEDBY]                   = COMPOUND_STRING("{B_SCR_NAME_WITH_PREFIX}'s {B_BUFF1} paralyzed {B_EFF_NAME_WITH_PREFIX2}, so it may be unable to move!"), //not in gen 5+, ability popup
     [STRINGID_PKMNISPARALYZED]                      = COMPOUND_STRING("{B_ATK_NAME_WITH_PREFIX} couldn't move because it's paralyzed!"),
@@ -1113,8 +1114,9 @@ const u16 gStockpileUsedStringIds[] =
 
 const u16 gWokeUpStringIds[] =
 {
-    [B_MSG_WOKE_UP]        = STRINGID_PKMNWOKEUP,
-    [B_MSG_WOKE_UP_UPROAR] = STRINGID_PKMNWOKEUPINUPROAR
+    [B_MSG_WOKE_UP]         = STRINGID_PKMNWOKEUP,
+    [B_MSG_WOKE_UP_UPROAR]  = STRINGID_PKMNWOKEUPINUPROAR,
+    [B_MSG_WOKE_UP_BY_MOVE] = STRINGID_PKMNWOKEUPBY
 };
 
 const u16 gSwallowFailStringIds[] =

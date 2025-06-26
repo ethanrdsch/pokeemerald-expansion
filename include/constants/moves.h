@@ -910,7 +910,12 @@
 
 #define MOVES_COUNT_GEN9 848
 
-#define MOVES_COUNT         MOVES_COUNT_GEN9
+// new moves
+#define MOVE_REVELATION_DANCE_WEAKER 848
+
+#define MOVES_COUNT_NEW 849
+
+#define MOVES_COUNT         MOVES_COUNT_NEW
 
 // Z Moves
 #define MOVE_BREAKNECK_BLITZ (MOVES_COUNT + 0)

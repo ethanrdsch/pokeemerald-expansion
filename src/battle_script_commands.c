@@ -1499,9 +1499,9 @@ static bool32 AccuracyCalcHelper(u32 move, u32 battler)
     u32 nonVolatileStatus = GetMoveNonVolatileStatus(move);
 
     if ((gStatuses3[battler] & STATUS3_ALWAYS_HITS && gDisableStructs[battler].battlerWithSureHit == gBattlerAttacker)
-     || (B_TOXIC_NEVER_MISS >= GEN_6
-        && nonVolatileStatus == MOVE_EFFECT_TOXIC
-        && IS_BATTLER_OF_TYPE(gBattlerAttacker, TYPE_POISON))
+     || (nonVolatileStatus == MOVE_EFFECT_TOXIC && IS_BATTLER_OF_TYPE(gBattlerAttacker, TYPE_POISON))
+     || (move == MOVE_THUNDER_WAVE && IS_BATTLER_OF_TYPE(gBattlerAttacker, TYPE_ELECTRIC))
+     || (move == MOVE_WILL_O_WISP && IS_BATTLER_OF_TYPE(gBattlerAttacker, TYPE_FIRE))
      || gStatuses4[battler] & STATUS4_GLAIVE_RUSH)
     {
         effect = TRUE;
@@ -7160,6 +7160,14 @@ static void Cmd_moveend(void)
                 {
                     BattleScriptPushCursor();
                     gBattlescriptCurrInstr = BattleScript_RapidSpinAway;
+                    effect = TRUE;
+                }
+                break;
+            case EFFECT_ROCK_SMASH:
+                if (IsBattlerTurnDamaged(gBattlerTarget))
+                {
+                    BattleScriptPushCursor();
+                    gBattlescriptCurrInstr = BattleScript_RockSmashStealthRock;
                     effect = TRUE;
                 }
                 break;
@@ -14462,24 +14470,19 @@ static void Cmd_presentdamagecalculation(void)
     {
         if (rand < 102)
         {
-            gBattleStruct->presentBasePower = 40;
+            gBattleStruct->presentBasePower = 70;
         }
         else if (rand < 178)
         {
-            gBattleStruct->presentBasePower = 80;
+            gBattleStruct->presentBasePower = 100;
         }
         else if (rand < 204)
         {
-            gBattleStruct->presentBasePower = 120;
+            gBattleStruct->presentBasePower = 160;
         }
         else
         {
-            // TODO: Check if this is correct
-            gBattleStruct->moveDamage[gBattlerTarget] = GetNonDynamaxMaxHP(gBattlerTarget) / 4;
-            if (gBattleStruct->moveDamage[gBattlerTarget] == 0)
-                gBattleStruct->moveDamage[gBattlerTarget] = 1;
-            gBattleStruct->moveDamage[gBattlerTarget] *= -1;
-            gBattleStruct->presentBasePower = 0;
+            gBattleStruct->presentBasePower = 130;
         }
     }
 
@@ -14725,6 +14728,26 @@ static void Cmd_rapidspinfree(void)
     {
         gBattlescriptCurrInstr = cmd->nextInstr;
     }
+}
+
+void BS_stealthrocksmash(void)
+{
+    NATIVE_ARGS();
+
+    u8 atkSide = GetBattlerSide(gBattlerAttacker);
+
+    if (gSideStatuses[atkSide] & SIDE_STATUS_STEALTH_ROCK)
+    {
+        gSideStatuses[atkSide] &= ~SIDE_STATUS_STEALTH_ROCK;
+        gSideTimers[atkSide].stealthRockAmount = 0;
+        BattleScriptPushCursor();
+        gBattlescriptCurrInstr = BattleScript_StealthRockFree;
+    }
+    else
+    {
+        gBattlescriptCurrInstr = cmd->nextInstr;
+    }
+    
 }
 
 static void Cmd_setdefensecurlbit(void)
@@ -15044,7 +15067,7 @@ static void Cmd_curestatuswithmove(void)
     CMD_ARGS(const u8 *failInstr);
     u32 shouldHeal;
 
-    if (GetMoveEffect(gCurrentMove) == EFFECT_REFRESH)
+    if (GetMoveEffect(gCurrentMove) == EFFECT_REFRESH || GetMoveEffect(gCurrentMove) == EFFECT_MILK_DRINK)
         shouldHeal = gBattleMons[gBattlerAttacker].status1 & STATUS1_REFRESH;
     else // Take Heart
         shouldHeal = gBattleMons[gBattlerAttacker].status1 & STATUS1_ANY;
@@ -15852,6 +15875,8 @@ bool32 DoesSubstituteBlockMove(u32 battlerAtk, u32 battlerDef, u32 move)
     else if (MoveIgnoresSubstitute(move))
         return FALSE;
     else if (GetBattlerAbility(battlerAtk) == ABILITY_INFILTRATOR)
+        return FALSE;
+    else if (GetBattlerAbility(battlerAtk) == ABILITY_UNSEEN_FIST && MoveMakesContact(move))
         return FALSE;
     else
         return TRUE;
@@ -19077,4 +19102,18 @@ void BS_JumpIfNoWhiteOut(void)
         gBattlescriptCurrInstr = cmd->jumpInstr;
     else
         gBattlescriptCurrInstr = cmd->nextInstr;
+}
+
+void BS_jumptomovebasedonability(void)
+{
+    NATIVE_ARGS(u8 ability);
+
+    u16 move = MOVE_NONE;
+
+    if (cmd->ability == ABILITY_TWO_STEP)
+        move = MOVE_REVELATION_DANCE_WEAKER;
+
+    ResetValuesForCalledMove();
+
+    gBattlescriptCurrInstr = GetMoveBattleScript(move);
 }

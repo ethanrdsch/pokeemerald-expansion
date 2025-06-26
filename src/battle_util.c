@@ -1898,7 +1898,7 @@ static void CancellerRecharge(u32 *effect)
 
 static void CancellerAsleep(u32 *effect)
 {
-    if (gBattleMons[gBattlerAttacker].status1 & STATUS1_SLEEP)
+    if (gBattleMons[gBattlerAttacker].status1 & STATUS1_SLEEP && !(MoveWakesUser(gCurrentMove)))
     {
         if (UproarWakeUpCheck(gBattlerAttacker))
         {
@@ -2272,6 +2272,19 @@ static void CancellerThaw(u32 *effect)
     }
 }
 
+static void CancellerWake(u32 *effect)
+{
+    if (gBattleMons[gBattlerAttacker].status1 & STATUS1_SLEEP && MoveWakesUser(gCurrentMove))
+    {
+
+        gBattleMons[gBattlerAttacker].status1 &= ~STATUS1_SLEEP;
+        BattleScriptPushCursor();
+        gBattlescriptCurrInstr = BattleScript_MoveUsedWokeUp;
+        gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_WOKE_UP_BY_MOVE;
+        *effect = 2;
+    }
+}
+
 static void CancellerStanceChangeTwo(u32 *effect)
 {
     if (B_STANCE_CHANGE_FAIL >= GEN_7 && !gBattleStruct->isAtkCancelerForCalledMove && TryFormChangeBeforeMove())
@@ -2586,6 +2599,7 @@ static const MoveSuccessOrderCancellers sMoveSuccessOrderCancellers[] =
     [CANCELLER_PARALYSED] = CancellerParalysed,
     [CANCELLER_BIDE] = CancellerBide,
     [CANCELLER_THAW] = CancellerThaw,
+    [CANCELLER_WAKE] = CancellerWake,
     [CANCELLER_STANCE_CHANGE_2] = CancellerStanceChangeTwo,
     [CANCELLER_WEATHER_PRIMAL] = CancellerWeatherPrimal,
     [CANCELLER_DYNAMAX_BLOCKED] = CancellerDynamaxBlocked,
@@ -5374,13 +5388,33 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
             break;
         }
         case ABILITY_SOUND_THERAPY:
-            if (gMovesInfo[gCurrentMove].soundMove 
+            if (IsSoundMove(move) 
                 && !(gHitMarker & HITMARKER_UNABLE_TO_USE_MOVE)
+                && !gProtectStructs[gBattlerAttacker].confusionSelfDmg
                 && gCurrentMove != MOVE_HEAL_BELL
                 && AnyPartyMemberStatused(gBattlerAttacker, IsSoundMove(move)))
             {
                 BattleScriptPushCursor();
                 gBattlescriptCurrInstr = BattleScript_SoundTherapy;
+                effect++;
+            }
+            break;
+        case ABILITY_TWO_STEP:
+            if (!(gHitMarker & HITMARKER_UNABLE_TO_USE_MOVE)
+                && IsBattlerAlive(gBattlerTarget)
+                && !gProtectStructs[gBattlerAttacker].confusionSelfDmg
+                && IsDanceMove(move))
+            {
+                // Set bit
+                gBattlerAttacker = gBattlerAbility = battler;
+                gCalledMove = move;
+
+                // Edge case for dance moves that hit multiple targets
+                gHitMarker &= ~HITMARKER_NO_ATTACKSTRING;
+
+                gHitMarker &= ~HITMARKER_ATTACKSTRING_PRINTED;
+                BattleScriptPushCursor();
+                gBattlescriptCurrInstr = BattleScript_TwoStep;
                 effect++;
             }
             break;
@@ -6031,7 +6065,10 @@ bool32 CanSetNonVolatileStatus(u32 battlerAtk, u32 battlerDef, u32 abilityAtk, u
         {
             battleScript = BattleScript_AlreadyPoisoned;
         }
-        else if (abilityAtk != ABILITY_CORROSION && IS_BATTLER_ANY_TYPE(battlerDef, TYPE_POISON, TYPE_STEEL) && GetBattlerAbility(battlerAtk) != ABILITY_MYCELIUM_MIGHT)
+        else if (abilityAtk != ABILITY_CORROSION
+                && abilityAtk != ABILITY_MYCELIUM_MIGHT 
+                && IS_BATTLER_ANY_TYPE(battlerDef, TYPE_POISON, TYPE_STEEL) 
+                && !(IS_BATTLER_OF_TYPE(battlerDef, TYPE_STEEL) && gCurrentMove == MOVE_TWINEEDLE))
         {
             battleScript = BattleScript_NotAffected;
         }
@@ -8678,6 +8715,10 @@ static inline u32 CalcMoveBasePower(struct DamageCalculationData *damageCalcData
         basePower += 50 * gBattleStruct->timesGotHit[GetBattlerSide(battlerAtk)][gBattlerPartyIndexes[battlerAtk]];
         basePower = (basePower > 350) ? 350 : basePower;
         break;
+    case EFFECT_RAGE_NEW:
+        basePower += 30 * gBattleStruct->timesGotHit[GetBattlerSide(battlerAtk)][gBattlerPartyIndexes[battlerAtk]];
+        basePower = (basePower > 210) ? 210 : basePower;
+        break;
     case EFFECT_FICKLE_BEAM:
         if (gBattleStruct->fickleBeamBoosted)
             basePower *= 2;
@@ -9297,6 +9338,10 @@ static inline u32 CalcAttackStat(struct DamageCalculationData *damageCalcData, u
         if (moveType == TYPE_ROCK)
             modifier = uq4_12_multiply(modifier, UQ_4_12(1.5));
         break;
+    case ABILITY_LEVITATE:
+        if (moveType == TYPE_FLYING)
+            modifier = uq4_12_multiply(modifier, UQ_4_12(1.25));
+        break;
     case ABILITY_PROTOSYNTHESIS:
         if (!(gBattleMons[battlerAtk].status2 & STATUS2_TRANSFORMED))
         {
@@ -9460,7 +9505,9 @@ static inline u32 CalcDefenseStat(struct DamageCalculationData *damageCalcData, 
         spDef = gBattleMons[battlerDef].spDefense;
     }
 
-    if (moveEffect == EFFECT_PSYSHOCK || IsBattleMovePhysical(move)) // uses defense stat instead of sp.def
+    if (moveEffect == EFFECT_PSYSHOCK
+        || move == MOVE_BARRAGE 
+        || IsBattleMovePhysical(move)) // uses defense stat instead of sp.def
     {
         defStat = def;
         defStage = gBattleMons[battlerDef].statStages[STAT_DEF];
@@ -9744,7 +9791,9 @@ static inline uq4_12_t GetScreensModifier(u32 move, u32 battlerAtk, u32 battlerD
     bool32 reflect = (sideStatus & SIDE_STATUS_REFLECT) && IsBattleMovePhysical(move);
     bool32 auroraVeil = sideStatus & SIDE_STATUS_AURORA_VEIL;
 
-    if (isCrit || abilityAtk == ABILITY_INFILTRATOR || gProtectStructs[battlerAtk].confusionSelfDmg)
+    if (isCrit || abilityAtk == ABILITY_INFILTRATOR 
+               || (abilityAtk == ABILITY_UNSEEN_FIST && MoveMakesContact(move)) 
+               || gProtectStructs[battlerAtk].confusionSelfDmg)
         return UQ_4_12(1.0);
     if (reflect || lightScreen || auroraVeil)
         return (IsDoubleBattle()) ? UQ_4_12(0.667) : UQ_4_12(0.5);
@@ -11481,7 +11530,7 @@ u32 GetBattlerMoveTargetType(u32 battler, u32 move)
 
 bool32 CanTargetBattler(u32 battlerAtk, u32 battlerDef, u16 move)
 {
-    if (GetMoveEffect(move) == EFFECT_HIT_ENEMY_HEAL_ALLY
+    if ((GetMoveEffect(move) == EFFECT_HIT_ENEMY_HEAL_ALLY || GetMoveEffect(move) == EFFECT_PRESENT)
     &&  IsBattlerAlly(battlerAtk, battlerDef)
     &&  gStatuses3[battlerAtk] & STATUS3_HEAL_BLOCK)
         return FALSE;   // Pokémon affected by Heal Block cannot target allies with Pollen Puff

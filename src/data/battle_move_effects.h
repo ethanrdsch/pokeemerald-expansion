@@ -2218,4 +2218,45 @@ const struct BattleMoveEffect gBattleMoveEffects[NUM_BATTLE_MOVE_EFFECTS] =
         .battleScript = BattleScript_EffectHit,
         .battleTvScore = 0, // TODO: Assign points
     },
+
+    [EFFECT_MEDITATE] =
+    {
+        .battleScript = BattleScript_EffectMeditate,
+        .battleTvScore = 0, // TODO: Assign points
+        .encourageEncore = TRUE,
+    },
+
+    [EFFECT_EVASION_DOWN_3] =
+    {
+        .battleScript = BattleScript_EffectEvasionDown3,
+        .battleTvScore = 1,
+        .encourageEncore = TRUE,
+    },
+
+    [EFFECT_SHARPEN] =
+    {
+        .battleScript = BattleScript_EffectSharpen,
+        .battleTvScore = 1,
+        .encourageEncore = TRUE,
+    },
+
+    [EFFECT_SPIDER_WEB] =
+    {
+        .battleScript = BattleScript_EffectSpiderWeb,
+        .battleTvScore = 1,
+        .encourageEncore = TRUE,
+    },
+
+    [EFFECT_MILK_DRINK] =
+    {
+        .battleScript = BattleScript_EffectMilkDrink,
+        .battleTvScore = 1,
+        .encourageEncore = TRUE,
+    },
+
+    [EFFECT_ROCK_SMASH] =
+    {
+        .battleScript = BattleScript_EffectHit,
+        .battleTvScore = 1,
+    },
 };

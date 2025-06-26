@@ -1605,7 +1605,6 @@ static s32 AI_CheckBadMove(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
                 }
             }
             break;
-        case EFFECT_PRESENT:
         case EFFECT_FIXED_DAMAGE_ARG:
         case EFFECT_FOCUS_PUNCH:
             // AI_CBM_HighRiskForDamage
@@ -1683,7 +1682,9 @@ static s32 AI_CheckBadMove(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
                 ADJUST_SCORE(-10);
             break;
         case EFFECT_SUBSTITUTE:
-            if (gBattleMons[battlerAtk].status2 & STATUS2_SUBSTITUTE || aiData->abilities[battlerDef] == ABILITY_INFILTRATOR)
+            if (gBattleMons[battlerAtk].status2 & STATUS2_SUBSTITUTE 
+                || aiData->abilities[battlerDef] == ABILITY_INFILTRATOR
+                || (aiData->abilities[battlerDef] == ABILITY_UNSEEN_FIST && HasMoveWithFlag(battlerDef, MoveMakesContact)))
                 ADJUST_SCORE(-8);
             else if (aiData->hpPercents[battlerAtk] <= 25)
                 ADJUST_SCORE(-10);
@@ -1693,7 +1694,9 @@ static s32 AI_CheckBadMove(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
         case EFFECT_SHED_TAIL:
             if (CountUsablePartyMons(battlerAtk) == 0)
                 ADJUST_SCORE(-10);
-            if (gBattleMons[battlerAtk].status2 & STATUS2_SUBSTITUTE || aiData->abilities[battlerDef] == ABILITY_INFILTRATOR)
+            if (gBattleMons[battlerAtk].status2 & STATUS2_SUBSTITUTE 
+                || aiData->abilities[battlerDef] == ABILITY_INFILTRATOR
+                || (aiData->abilities[battlerDef] == ABILITY_UNSEEN_FIST && HasMoveWithFlag(battlerDef, MoveMakesContact)))
                 ADJUST_SCORE(-8);
             else if (aiData->hpPercents[battlerAtk] <= 50)
                 ADJUST_SCORE(-10);
@@ -2649,6 +2652,7 @@ static s32 AI_CheckBadMove(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
             }
             // fallthrough
         case EFFECT_HIT_ENEMY_HEAL_ALLY:    // pollen puff
+        case EFFECT_PRESENT:
             if (IS_TARGETING_PARTNER(battlerAtk, battlerDef))
             {
                 if (gStatuses3[battlerDef] & STATUS3_HEAL_BLOCK)
@@ -3592,6 +3596,7 @@ static s32 AI_DoubleBattle(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
                 break;
             case EFFECT_HEAL_PULSE:
             case EFFECT_HIT_ENEMY_HEAL_ALLY:
+            case EFFECT_PRESENT:
                 if (AI_IsFaster(battlerAtk, FOE(battlerAtk), move)
                  && AI_IsFaster(battlerAtk, BATTLE_PARTNER(FOE(battlerAtk)), move)
                  && gBattleMons[battlerAtkPartner].hp < gBattleMons[battlerAtkPartner].maxHP / 2)
@@ -3829,6 +3834,10 @@ static u32 AI_CalcMoveEffectScore(u32 battlerAtk, u32 battlerDef, u32 move)
 
     // check thawing moves
     if ((gBattleMons[battlerAtk].status1 & (STATUS1_FREEZE | STATUS1_FROSTBITE)) && MoveThawsUser(move))
+        ADJUST_SCORE(10);
+
+    // check waking moves
+    if (gBattleMons[battlerAtk].status1 & STATUS1_SLEEP && MoveWakesUser(move))
         ADJUST_SCORE(10);
 
     // check burn / frostbite
@@ -4136,6 +4145,7 @@ static u32 AI_CalcMoveEffectScore(u32 battlerAtk, u32 battlerDef, u32 move)
         break;
     case EFFECT_FOCUS_ENERGY:
     case EFFECT_LASER_FOCUS:
+    case EFFECT_SHARPEN:
         if (aiData->abilities[battlerAtk] == ABILITY_SUPER_LUCK
          || aiData->abilities[battlerAtk] == ABILITY_SNIPER
          || aiData->holdEffects[battlerAtk] == HOLD_EFFECT_SCOPE_LENS
@@ -4555,7 +4565,7 @@ static u32 AI_CalcMoveEffectScore(u32 battlerAtk, u32 battlerDef, u32 move)
         if (HasDamagingMoveOfType(battlerAtk, TYPE_ELECTRIC))
             ADJUST_SCORE(DECENT_EFFECT);
         if (B_CHARGE_SPDEF_RAISE >= GEN_5)
-            ADJUST_SCORE(IncreaseStatUpScore(battlerAtk, battlerDef, STAT_CHANGE_SPDEF));
+            ADJUST_SCORE(IncreaseStatUpScore(battlerAtk, battlerDef, STAT_CHANGE_SPEED));
         break;
     case EFFECT_TAUNT:
         if (IsBattleMoveStatus(predictedMove))
@@ -5416,6 +5426,7 @@ static s32 AI_ForceSetupFirstTurn(u32 battlerAtk, u32 battlerDef, u32 move, s32 
     case EFFECT_CONVERSION:
     case EFFECT_LIGHT_SCREEN:
     case EFFECT_FOCUS_ENERGY:
+    case EFFECT_SHARPEN:
     case EFFECT_CONFUSE:
     case EFFECT_ATTACK_UP_2:
     case EFFECT_DEFENSE_UP_2:
@@ -5660,7 +5671,7 @@ static s32 AI_HPAware(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
 
     if (IS_TARGETING_PARTNER(battlerAtk, battlerDef))
     {
-        if ((effect == EFFECT_HEAL_PULSE || effect == EFFECT_HIT_ENEMY_HEAL_ALLY)
+        if ((effect == EFFECT_HEAL_PULSE || effect == EFFECT_HIT_ENEMY_HEAL_ALLY || effect == EFFECT_PRESENT)
          || (moveType == TYPE_ELECTRIC && gAiLogicData->abilities[BATTLE_PARTNER(battlerAtk)] == ABILITY_VOLT_ABSORB)
          || (moveType == TYPE_ELECTRIC && gAiLogicData->abilities[BATTLE_PARTNER(battlerAtk)] == ABILITY_MINUS)
          || (moveType == TYPE_GROUND && gAiLogicData->abilities[BATTLE_PARTNER(battlerAtk)] == ABILITY_EARTH_EATER)
@@ -5802,6 +5813,7 @@ static s32 AI_HPAware(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
             case EFFECT_EVASION_DOWN:
             case EFFECT_MIST:
             case EFFECT_FOCUS_ENERGY:
+            case EFFECT_SHARPEN:
             case EFFECT_ATTACK_UP_2:
             case EFFECT_DEFENSE_UP_2:
             case EFFECT_SPEED_UP_2:
@@ -5950,6 +5962,7 @@ static s32 AI_PredictSwitch(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
     u32 ability = gBattleMons[battlerAtk].ability;
     u32 opposingHazardFlags = gSideStatuses[GetBattlerSide(battlerDef)] & (SIDE_STATUS_SPIKES | SIDE_STATUS_STEALTH_ROCK | SIDE_STATUS_TOXIC_SPIKES);
     u32 aiHazardFlags = gSideStatuses[GetBattlerSide(battlerAtk)] & (SIDE_STATUS_HAZARDS_ANY);
+    u32 aiRocksFlags = gSideStatuses[GetBattlerSide(battlerAtk)] & (SIDE_STATUS_STEALTH_ROCK);
     enum BattleMoveEffects moveEffect = GetMoveEffect(move);
     struct AiLogicData *aiData = gAiLogicData;
     uq4_12_t effectiveness = aiData->effectiveness[battlerAtk][battlerDef][gAiThinkingStruct->movesetIndex];
@@ -6027,6 +6040,10 @@ static s32 AI_PredictSwitch(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
         if (aiHazardFlags != 0)
             ADJUST_SCORE(GOOD_EFFECT);
         break;
+    case EFFECT_ROCK_SMASH:
+        if (aiRocksFlags != 0)
+            ADJUST_SCORE(GOOD_EFFECT);
+        break;
     case EFFECT_WISH:
     case EFFECT_HEAL_BELL:
         if (ShouldUseWishAromatherapy(battlerAtk, battlerDef, move))
@@ -6066,6 +6083,7 @@ static s32 AI_PredictSwitch(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
     case EFFECT_INGRAIN:
     case EFFECT_NO_RETREAT:
     case EFFECT_MEAN_LOOK:
+    case EFFECT_SPIDER_WEB:
         ADJUST_SCORE(-GOOD_EFFECT);
         break;
 

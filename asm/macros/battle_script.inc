@@ -1358,6 +1358,11 @@
 	.4byte \func
 	.endm
 
+	.macro jumptomovebasedonability ability:req
+	callnative BS_jumptomovebasedonability
+	.2byte \ability
+	.endm
+	
 	.macro savetarget
 	callnative BS_SaveTarget
 	.endm
@@ -2459,6 +2464,10 @@
 
 	.macro dmgtocurrattackerhp
 	manipulatedamage DMG_CURR_ATTACKER_HP
+	.endm
+
+	.macro stealthrocksmash
+	callnative BS_stealthrocksmash
 	.endm
 
 	.macro jumpifflowerveil jumpInstr:req

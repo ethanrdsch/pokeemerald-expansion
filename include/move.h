@@ -107,6 +107,7 @@ struct MoveInfo
     bool32 throwMove:1;
     bool32 fieldMove:1;
     bool32 lazyMove:1; // can be used on loafing turns of Truant
+    bool32 wakesUser:1; // moves that immmediate awaken the user if sleeping (Spark, Wild Charge, Volt Tackle)
     bool32 minimizeDoubleDamage:1;
     bool32 ignoresTargetAbility:1;
     bool32 ignoresTargetDefenseEvasionStages:1;
@@ -407,6 +408,11 @@ static inline bool32 MoveIgnoresTypeIfFlyingAndUngrounded(u32 moveId)
 static inline bool32 MoveThawsUser(u32 moveId)
 {
     return gMovesInfo[SanitizeMoveId(moveId)].thawsUser;
+}
+
+static inline bool32 MoveWakesUser(u32 moveId)
+{
+    return gMovesInfo[SanitizeMoveId(moveId)].wakesUser;
 }
 
 static inline bool32 MoveIgnoresSubstitute(u32 moveId)
