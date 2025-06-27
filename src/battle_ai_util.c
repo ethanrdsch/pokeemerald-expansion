@@ -1771,9 +1771,12 @@ bool32 IsMoveEncouragedToHit(u32 battlerAtk, u32 battlerDef, u32 move)
     if ((weather & B_WEATHER_SUN) && MoveHas50AccuracyInSun(move))
         return FALSE;
 
-    if ((weather & B_WEATHER_RAIN) && MoveAlwaysHitsInRain(move))
+    if (((weather & B_WEATHER_RAIN) && MoveAlwaysHitsInRain(move))
+        || ((weather & B_WEATHER_RAIN) && MoveAlwaysHitsInRainAndSand(move)))
         return TRUE;
     if ((weather & (B_WEATHER_HAIL | B_WEATHER_SNOW | B_WEATHER_HAILSTORM)) && MoveAlwaysHitsInHailSnow(move))
+        return TRUE;
+    if ((weather & B_WEATHER_SANDSTORM) && MoveAlwaysHitsInRainAndSand(move))
         return TRUE;
     if (B_MINIMIZE_DMG_ACC >= GEN_6 && (gStatuses3[battlerDef] & STATUS3_MINIMIZED) && MoveIncreasesPowerToMinimizedTargets(move))
         return TRUE;

@@ -42194,12 +42194,12 @@ F_TRAINER_FEMALE |
         .battleType = TRAINER_BATTLE_TYPE_SINGLES,
 #line 16884
         .aiFlags = AI_FLAG_BASIC_TRAINER,
-        .partySize = 1,
+        .partySize = 2,
         .party = (const struct TrainerMon[])
         {
             {
 #line 16886
-            .species = SPECIES_BLISSEY,
+            .species = SPECIES_HYDREIGON,
             .gender = TRAINER_MON_RANDOM_GENDER,
 #line 16887
             .iv = TRAINER_PARTY_IVS(31, 31, 31, 31, 31, 31),
@@ -42209,6 +42209,23 @@ F_TRAINER_FEMALE |
             .dynamaxLevel = MAX_DYNAMAX_LEVEL,
             .moves = {
 #line 16887
+                MOVE_STEALTH_ROCK,
+                MOVE_SPIKES,
+                MOVE_STICKY_WEB,
+            },
+            },
+            {
+#line 16891
+            .species = SPECIES_BLISSEY,
+            .gender = TRAINER_MON_RANDOM_GENDER,
+#line 16892
+            .iv = TRAINER_PARTY_IVS(31, 31, 31, 31, 31, 31),
+#line 16892
+            .lvl = 100,
+            .nature = NATURE_HARDY,
+            .dynamaxLevel = MAX_DYNAMAX_LEVEL,
+            .moves = {
+#line 16892
                 MOVE_STEALTH_ROCK,
                 MOVE_SPIKES,
                 MOVE_STICKY_WEB,

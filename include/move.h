@@ -112,6 +112,7 @@ struct MoveInfo
     bool32 ignoresTargetAbility:1;
     bool32 ignoresTargetDefenseEvasionStages:1;
     bool32 damagesUnderground:1;
+    bool32 noRechargeOnKo:1; // does not have to recharge if the target is KO'd
     // end of word
     bool32 damagesUnderwater:1;
     bool32 damagesAirborne:1;
@@ -122,6 +123,7 @@ struct MoveInfo
     bool32 forcePressure:1;
     bool32 cantUseTwice:1;
     bool32 alwaysHitsInRain:1;
+    bool32 alwaysHitsInRainAndSand:1; //Sandsear Storm
     bool32 accuracy50InSun:1;
     bool32 alwaysHitsInHailSnow:1;
     // Ban flags
@@ -365,6 +367,11 @@ static inline bool32 IsFieldMove(u32 moveId)
     return gMovesInfo[SanitizeMoveId(moveId)].fieldMove;
 }
 
+static inline bool32 MoveNoRechargeOnKo(u32 moveId)
+{
+    return gMovesInfo[SanitizeMoveId(moveId)].noRechargeOnKo;
+}
+
 static inline bool32 MoveIncreasesPowerToMinimizedTargets(u32 moveId)
 {
     return gMovesInfo[SanitizeMoveId(moveId)].minimizeDoubleDamage;
@@ -433,6 +440,11 @@ static inline bool32 MoveCantBeUsedTwice(u32 moveId)
 static inline bool32 MoveAlwaysHitsInRain(u32 moveId)
 {
     return gMovesInfo[SanitizeMoveId(moveId)].alwaysHitsInRain;
+}
+
+static inline bool32 MoveAlwaysHitsInRainAndSand(u32 moveId)
+{
+    return gMovesInfo[SanitizeMoveId(moveId)].alwaysHitsInRainAndSand;
 }
 
 static inline bool32 MoveHas50AccuracyInSun(u32 moveId)

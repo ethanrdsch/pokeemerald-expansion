@@ -398,6 +398,7 @@ static u32 GetMaxPowerTier(u32 move)
         case EFFECT_ELECTRO_BALL:
         case EFFECT_METAL_BURST:
         case EFFECT_TERRAIN_PULSE:
+        case EFFECT_SNAP_TRAP:
         case EFFECT_PUNISHMENT:
         case EFFECT_TRUMP_CARD:
         case EFFECT_FIXED_DAMAGE_ARG:

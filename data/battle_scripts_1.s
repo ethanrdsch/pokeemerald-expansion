@@ -852,10 +852,8 @@ BattleScript_FlingMissed:
 	ppreduce
 	goto BattleScript_MoveMissedPause
 
-BattleScript_EffectAuraWheel:: @ Aura Wheel can only be used by Morpeko
-	jumpifspecies BS_ATTACKER, SPECIES_MORPEKO_FULL_BELLY, BattleScript_EffectHit
-	jumpifspecies BS_ATTACKER, SPECIES_MORPEKO_HANGRY, BattleScript_EffectHit
-	goto BattleScript_PokemonCantUseTheMove
+BattleScript_EffectAuraWheel::
+	goto BattleScript_EffectHit
 
 BattleScript_EffectClangorousSoul::
 	attackcanceler
@@ -949,14 +947,7 @@ BattleScript_BothCanNoLongerEscape::
 	return
 
 BattleScript_EffectHyperspaceFury::
-	jumpifspecies BS_ATTACKER, SPECIES_HOOPA_UNBOUND, BattleScript_EffectHit
-	jumpifspecies BS_ATTACKER, SPECIES_HOOPA_CONFINED, BattleScript_ButHoopaCantUseIt
-	goto BattleScript_PokemonCantUseTheMove
-
-BattleScript_ButHoopaCantUseIt:
-	printstring STRINGID_BUTHOOPACANTUSEIT
-	waitmessage B_WAIT_TIME_LONG
-	goto BattleScript_MoveEnd
+	goto BattleScript_EffectHit
 
 BattleScript_HyperspaceFuryRemoveProtect::
 	printstring STRINGID_BROKETHROUGHPROTECTION
@@ -1839,7 +1830,7 @@ BattleScript_HitSwitchTargetForceRandomSwitchFailed:
 	return
 
 BattleScript_EffectToxicThread::
-	setstatchanger STAT_SPEED, 1, TRUE
+	setstatchanger STAT_SPEED, 2, TRUE
 	attackcanceler
 	jumpifsubstituteblocks BattleScript_FailedFromAtkString
 	jumpifstat BS_TARGET, CMP_NOT_EQUAL, STAT_SPEED, MIN_STAT_STAGE, BattleScript_ToxicThreadWorks
@@ -1862,7 +1853,7 @@ BattleScript_ToxicThreadPrintString::
 	printfromtable gStatDownStringIds
 	waitmessage B_WAIT_TIME_LONG
 BattleScript_ToxicThreadTryPsn::
-	seteffectprimary MOVE_EFFECT_POISON
+	seteffectprimary MOVE_EFFECT_TOXIC
 	goto BattleScript_MoveEnd
 
 BattleScript_EffectVenomDrench::
@@ -3615,6 +3606,7 @@ BattleScript_EffectTwoTurnsAttack::
 	tryfiretwoturnmovewithoutcharging BS_ATTACKER, BattleScript_EffectHit @ e.g. Solar Beam
 	jumpifmove MOVE_SOLAR_BEAM, BattleScript_EffectTwoTurnsAttackCheckSunSalute
 	jumpifmove MOVE_SOLAR_BLADE, BattleScript_EffectTwoTurnsAttackCheckSunSalute
+	jumpifmove MOVE_ICE_BURN, BattleScript_EffectTwoTurnsAttackCheckSunSalute
 
 BattleScript_EffectTwoTurnsAttackPostSunSaluteCheck:
 	call BattleScript_FirstChargingTurn

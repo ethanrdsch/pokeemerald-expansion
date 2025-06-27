@@ -3691,7 +3691,8 @@ void SetMoveEffect(bool32 primary, bool32 certain)
                 }
                 break;
             case MOVE_EFFECT_RECHARGE:
-                if (B_SKIP_RECHARGE == GEN_1 && !IsBattlerAlive(gBattlerTarget))  // Skip recharge if gen 1 and foe is KO'd
+                if ((B_SKIP_RECHARGE == GEN_1 && !IsBattlerAlive(gBattlerTarget))
+                    || (MoveNoRechargeOnKo(gCurrentMove) && !IsBattlerAlive(gBattlerTarget)))  // Skip recharge on KO if gen 1 or move has noRechargeOnKo flag
                     break;
 
                 gBattleMons[gEffectBattler].status2 |= STATUS2_RECHARGE;
@@ -14940,6 +14941,8 @@ static bool32 CheckIfCanFireTwoTurnMoveNow(u8 battler, bool8 checkChargeTurnEffe
     // Certain two-turn moves may fire on the first turn in the right weather (Solar Beam, Electro Shot)
     // By default, all two-turn moves have the option of adding weather to their argument
     if (IsBattlerWeatherAffected(battler, GetMoveTwoTurnAttackWeather(gCurrentMove)))
+        return TRUE;
+    if (IsBattlerTerrainAffected(battler, GetMoveTwoTurnAttackWeather(gCurrentMove)))
         return TRUE;
 
     return FALSE;

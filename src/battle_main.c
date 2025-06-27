@@ -5768,6 +5768,7 @@ u32 TrySetAteType(u32 move, u32 battlerAtk, u32 attackerAbility)
     case EFFECT_CHANGE_TYPE_ON_ITEM:
     case EFFECT_REVELATION_DANCE:
     case EFFECT_TERRAIN_PULSE:
+    case EFFECT_SNAP_TRAP:
         return ateType;
     default:
         break;
@@ -5938,13 +5939,7 @@ u32 GetDynamicMoveType(struct Pokemon *mon, u32 move, u32 battler, enum MonState
         }
         break;
     case EFFECT_RAGING_BULL:
-        switch (species)
-        {
-        case SPECIES_TAUROS_PALDEA_COMBAT:
-        case SPECIES_TAUROS_PALDEA_BLAZE:
-        case SPECIES_TAUROS_PALDEA_AQUA:
-            return gSpeciesInfo[species].types[1];
-        }
+        return gSpeciesInfo[species].types[1];
         break;
     case EFFECT_IVY_CUDGEL:
         switch (species)
@@ -5964,6 +5959,7 @@ u32 GetDynamicMoveType(struct Pokemon *mon, u32 move, u32 battler, enum MonState
         else
             return moveType;
     case EFFECT_TERRAIN_PULSE:
+    case EFFECT_SNAP_TRAP:
         if (state == MON_IN_BATTLE)
         {
             if (IsBattlerTerrainAffected(battler, STATUS_FIELD_TERRAIN_ANY))
@@ -6035,6 +6031,7 @@ u32 GetDynamicMoveType(struct Pokemon *mon, u32 move, u32 battler, enum MonState
     }
     else if (moveEffect != EFFECT_CHANGE_TYPE_ON_ITEM
           && moveEffect != EFFECT_TERRAIN_PULSE
+          && moveEffect != EFFECT_SNAP_TRAP
           && moveEffect != EFFECT_NATURAL_GIFT
           && moveEffect != EFFECT_HIDDEN_POWER
           && moveEffect != EFFECT_WEATHER_BALL
