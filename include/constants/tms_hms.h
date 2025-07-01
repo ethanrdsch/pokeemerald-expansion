@@ -8,21 +8,21 @@
     F(CALM_MIND) \
     F(ROAR) \
     F(TOXIC) \
-    F(HAIL) \
+    F(ENERGY_BALL) \
     F(BULK_UP) \
     F(BULLET_SEED) \
     F(HIDDEN_POWER) \
-    F(SUNNY_DAY) \
+    F(HONE_CLAWS) \
     F(TAUNT) \
     F(ICE_BEAM) \
     F(BLIZZARD) \
     F(HYPER_BEAM) \
     F(LIGHT_SCREEN) \
     F(PROTECT) \
-    F(RAIN_DANCE) \
+    F(GIGA_IMPACT) \
     F(GIGA_DRAIN) \
     F(SAFEGUARD) \
-    F(FRUSTRATION) \
+    F(CONFUSE_RAY) \
     F(SOLAR_BEAM) \
     F(IRON_TAIL) \
     F(THUNDERBOLT) \
@@ -33,24 +33,24 @@
     F(PSYCHIC) \
     F(SHADOW_BALL) \
     F(BRICK_BREAK) \
-    F(DOUBLE_TEAM) \
+    F(ACROBATICS) \
     F(REFLECT) \
     F(SHOCK_WAVE) \
     F(FLAMETHROWER) \
     F(SLUDGE_BOMB) \
-    F(SANDSTORM) \
+    F(SHADOW_CLAW) \
     F(FIRE_BLAST) \
     F(ROCK_TOMB) \
     F(AERIAL_ACE) \
-    F(TORMENT) \
+    F(PSYBEAM) \
     F(FACADE) \
-    F(SECRET_POWER) \
+    F(DISARMING_VOICE) \
     F(REST) \
-    F(ATTRACT) \
+    F(TRAILBLAZE) \
     F(THIEF) \
     F(STEEL_WING) \
     F(SKILL_SWAP) \
-    F(SNATCH) \
+    F(STOMPING_TANTRUM) \
     F(OVERHEAT)
 
 #define FOREACH_HM(F) \

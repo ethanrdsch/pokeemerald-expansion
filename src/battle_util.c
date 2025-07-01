@@ -4060,6 +4060,8 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
         case ABILITY_WATER_VEIL:
             if (!(gStatuses3[battler] & STATUS3_AQUA_RING))
             {
+                gBattleScripting.savedBattler = gBattlerAttacker;
+                gBattlerAttacker = battler;
                 gStatuses3[battler] |= STATUS3_AQUA_RING;
                 BattleScriptPushCursorAndCallback(BattleScript_EffectAquaRingAbility);
                 effect++;
@@ -4068,6 +4070,8 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
         case ABILITY_ELECTROMAGNET:
             if (!(gStatuses3[battler] & STATUS3_MAGNET_RISE))
             {
+                gBattleScripting.savedBattler = gBattlerAttacker;
+                gBattlerAttacker = battler;
                 gStatuses3[battler] |= STATUS3_MAGNET_RISE;
                 gDisableStructs[gBattlerAttacker].magnetRiseTimer = 5;
                 BattleScriptPushCursorAndCallback(BattleScript_EffectMagnetRiseAbility);
@@ -4087,6 +4091,15 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                     effect++;
                 break;
             }
+        case ABILITY_POWDER_SHIELD:
+            if (!gSpecialStatuses[battler].switchInAbilityDone)
+            {
+                gBattlerAttacker = battler;
+                gSpecialStatuses[battler].switchInAbilityDone = TRUE;
+                BattleScriptPushCursorAndCallback(BattleScript_EffectPowderAbility);
+                effect++;
+            }
+            break;
         case ABILITY_INTIMIDATE:
             if (!gSpecialStatuses[battler].switchInAbilityDone)
             {
@@ -5248,6 +5261,20 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                 SWAP(gBattlerAttacker, gBattlerTarget, i);
                 BattleScriptPushCursor();
                 gBattlescriptCurrInstr = BattleScript_ToxicDebrisActivates;
+                effect++;
+            }
+            break;
+        case ABILITY_SPIKY_DEBRIS:
+            if (!(gBattleStruct->moveResultFlags[gBattlerTarget] & MOVE_RESULT_NO_EFFECT)
+             && (!gBattleStruct->isSkyBattle)
+             && !gProtectStructs[gBattlerAttacker].confusionSelfDmg
+             && IsBattleMovePhysical(gCurrentMove)
+             && IsBattlerTurnDamaged(gBattlerTarget)
+             && (gSideTimers[GetBattlerSide(gBattlerAttacker)].spikesAmount != 3))
+            {
+                SWAP(gBattlerAttacker, gBattlerTarget, i);
+                BattleScriptPushCursor();
+                gBattlescriptCurrInstr = BattleScript_SpikyDebrisActivates;
                 effect++;
             }
             break;
@@ -12005,7 +12032,7 @@ bool32 DoesDestinyBondFail(u32 battler)
 // This check has always to be the last in a condtion statement because of the recording of AI data.
 bool32 IsMoveEffectBlockedByTarget(u32 ability)
 {
-    if (ability == ABILITY_SHIELD_DUST)
+    if (ability == ABILITY_SHIELD_DUST || ability == ABILITY_POWDER_SHIELD)
     {
         RecordAbilityBattle(gBattlerTarget, ability);
         return TRUE;

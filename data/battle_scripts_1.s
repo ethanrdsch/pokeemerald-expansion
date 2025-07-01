@@ -782,6 +782,7 @@ BattleScript_EffectFling::
 	waitmessage B_WAIT_TIME_MED
 	jumpiflastuseditemberry BattleScript_EffectFlingConsumeBerry
 	jumpifability BS_TARGET, ABILITY_SHIELD_DUST, BattleScript_FlingBlockedByShieldDust
+	jumpifability BS_TARGET, ABILITY_POWDER_SHIELD, BattleScript_FlingBlockedByShieldDust
 	jumpiflastuseditemholdeffect HOLD_EFFECT_FLAME_ORB, 0, BattleScript_FlingFlameOrb
 	jumpiflastuseditemholdeffect HOLD_EFFECT_FLINCH, 0, BattleScript_FlingFlinch
 	jumpiflastuseditemholdeffect HOLD_EFFECT_LIGHT_BALL, 0, BattleScript_FlingLightBall
@@ -5243,10 +5244,34 @@ BattleScript_ActivateAquaRingAbilities_Increment:
 BattleScript_EffectAquaRingAbility::
 	call BattleScript_AbilityPopUp
 	waitstate
-	playanimation BS_BATTLER_0, B_ANIM_AQUA_RING_HEAL
+	playanimation BS_ATTACKER, B_ANIM_AQUA_RING_HEAL
 	printstring STRINGID_PKMNSURROUNDEDWITHVEILOFWATER
 	waitmessage B_WAIT_TIME_SHORT
 	call BattleScript_ActivateAquaRingAbilities
+	end3
+
+BattleScript_ActivatePowderAbilities:
+	savetarget
+	setbyte gBattlerTarget, 0
+BattleScript_ActivatePowderAbilities_Loop:
+	copybyte sBATTLER, gBattlerTarget
+BattleScript_ActivatePowderAbilities_Increment:
+	addbyte gBattlerTarget, 1
+	jumpifbytenotequal gBattlerTarget, gBattlerAttacker, BattleScript_EffectDoPowderAbility
+	jumpifbytenotequal gBattlerTarget, gBattlersCount, BattleScript_ActivatePowderAbilities_Loop
+	restoretarget
+	return
+
+BattleScript_EffectPowderAbility::
+	jumpifbyteequal gBattlerTarget, gBattlerAttacker, BattleScript_ActivatePowderAbilities
+
+BattleScript_EffectDoPowderAbility:
+	call BattleScript_AbilityPopUp
+	waitstate
+	setpowder BS_TARGET
+	playanimation BS_TARGET, B_ANIM_POWDER
+	printstring STRINGID_COVEREDINPOWDER
+	waitmessage B_WAIT_TIME_SHORT
 	end3
 
 BattleScript_ActivateHazeAbilities:
@@ -5281,7 +5306,7 @@ BattleScript_ActivateSafeguardAbilities_Increment:
 BattleScript_EffectSafeguardAbility::
 	call BattleScript_AbilityPopUp
 	waitstate
-	playanimation BS_BATTLER_0, B_ANIM_SAFEGUARD
+	playanimation BS_ATTACKER, B_ANIM_SAFEGUARD
 	printstring STRINGID_PKMNCOVEREDBYVEIL
 	waitmessage B_WAIT_TIME_SHORT
 	call BattleScript_ActivateSafeguardAbilities
@@ -5302,7 +5327,7 @@ BattleScript_EffectMagnetRiseAbility::
 	pause B_WAIT_TIME_SHORT
 	call BattleScript_AbilityPopUp
 	waitstate
-	playanimation BS_BATTLER_0, B_ANIM_MAGNETRISE
+	playanimation BS_ATTACKER, B_ANIM_MAGNETRISE
 	printstring STRINGID_PKMNLEVITATEDONELECTROMAGNETISM
 	waitmessage B_WAIT_TIME_SHORT
 	call BattleScript_ActivateMagnetRiseAbilities
@@ -6445,6 +6470,18 @@ BattleScript_ToxicDebrisActivates::
 	printstring STRINGID_POISONSPIKESSCATTERED
 	waitmessage B_WAIT_TIME_LONG
 BattleScript_ToxicDebrisRet:
+	copybyte sBATTLER, gBattlerTarget
+	copybyte gBattlerTarget, gBattlerAttacker
+	copybyte gBattlerAttacker, sBATTLER
+	return
+
+BattleScript_SpikyDebrisActivates::
+	call BattleScript_AbilityPopUp
+	pause B_WAIT_TIME_SHORT
+	trysetspikes BattleScript_SpikyDebrisRet
+	printstring STRINGID_SPIKESSCATTERED
+	waitmessage B_WAIT_TIME_LONG
+BattleScript_SpikyDebrisRet:
 	copybyte sBATTLER, gBattlerTarget
 	copybyte gBattlerTarget, gBattlerAttacker
 	copybyte gBattlerAttacker, sBATTLER

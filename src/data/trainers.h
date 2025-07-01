@@ -42199,36 +42199,35 @@ F_TRAINER_FEMALE |
         {
             {
 #line 16886
-            .species = SPECIES_HYDREIGON,
+            .species = SPECIES_PROBOPASS,
             .gender = TRAINER_MON_RANDOM_GENDER,
-#line 16887
+#line 16889
             .iv = TRAINER_PARTY_IVS(31, 31, 31, 31, 31, 31),
+#line 16888
+            .ability = ABILITY_ELECTROMAGNET,
 #line 16887
-            .lvl = 100,
+            .lvl = 1,
             .nature = NATURE_HARDY,
             .dynamaxLevel = MAX_DYNAMAX_LEVEL,
             .moves = {
-#line 16887
+#line 16889
+                MOVE_NUZZLE,
                 MOVE_STEALTH_ROCK,
-                MOVE_SPIKES,
-                MOVE_STICKY_WEB,
             },
             },
             {
-#line 16891
+#line 16892
             .species = SPECIES_BLISSEY,
             .gender = TRAINER_MON_RANDOM_GENDER,
-#line 16892
+#line 16894
             .iv = TRAINER_PARTY_IVS(31, 31, 31, 31, 31, 31),
-#line 16892
-            .lvl = 100,
+#line 16893
+            .lvl = 1,
             .nature = NATURE_HARDY,
             .dynamaxLevel = MAX_DYNAMAX_LEVEL,
             .moves = {
-#line 16892
-                MOVE_STEALTH_ROCK,
-                MOVE_SPIKES,
-                MOVE_STICKY_WEB,
+#line 16894
+                MOVE_FLAMETHROWER,
             },
             },
         },

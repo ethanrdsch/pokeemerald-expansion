@@ -2586,4 +2586,19 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
         .description = COMPOUND_STRING("After using a dance move, casts\nRevelation Dance at 30BP."),
         .aiRating = 5,
     },
+
+    [ABILITY_SPIKY_DEBRIS] =
+    {
+        .name = _("Spiky Debris"),
+        .description = COMPOUND_STRING("Throws Spikes if hit\nby a phyisical move."),
+        .aiRating = 4,
+    },
+
+    [ABILITY_POWDER_SHIELD] =
+    {
+        .name = _("Powder Shield"),
+        .description = COMPOUND_STRING("Casts Powder on entry. Immune to\nhazards and secondary effects."),
+        .aiRating = 6,
+        .breakable = TRUE,
+    },
 };

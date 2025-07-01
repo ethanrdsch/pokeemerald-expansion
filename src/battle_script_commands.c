@@ -8434,6 +8434,7 @@ static bool32 DoSwitchInEffectsForBattler(u32 battler)
         && (gSideStatuses[GetBattlerSide(battler)] & SIDE_STATUS_SPIKES)
         && GetBattlerAbility(battler) != ABILITY_MAGIC_GUARD
         && GetBattlerAbility(battler) != ABILITY_SHIELD_DUST
+        && GetBattlerAbility(battler) != ABILITY_POWDER_SHIELD
         && GetBattlerAbility(battler) != ABILITY_LIGHT_METAL
         && IsBattlerAffectedByHazards(battler, FALSE)
         && IsBattlerGrounded(battler))
@@ -8451,6 +8452,7 @@ static bool32 DoSwitchInEffectsForBattler(u32 battler)
         && IsBattlerAffectedByHazards(battler, FALSE)
         && GetBattlerAbility(battler) != ABILITY_MAGIC_GUARD
         && GetBattlerAbility(battler) != ABILITY_SHIELD_DUST
+        && GetBattlerAbility(battler) != ABILITY_POWDER_SHIELD
         && GetBattlerAbility(battler) != ABILITY_LIGHT_METAL)
     {
         gDisableStructs[battler].stealthRockDone = TRUE;
@@ -8474,6 +8476,7 @@ static bool32 DoSwitchInEffectsForBattler(u32 battler)
         }
         else if (IsBattlerAffectedByHazards(battler, TRUE)
                 && GetBattlerAbility(battler) != ABILITY_SHIELD_DUST
+                && GetBattlerAbility(battler) != ABILITY_POWDER_SHIELD
                 && GetBattlerAbility(battler) != ABILITY_LIGHT_METAL)
         {
             if (CanBePoisoned(gBattlerAttacker, battler, GetBattlerAbility(gBattlerAttacker), GetBattlerAbility(battler)))
@@ -8497,6 +8500,7 @@ static bool32 DoSwitchInEffectsForBattler(u32 battler)
         }
     }
     else if (GetBattlerAbility(battler) != ABILITY_SHIELD_DUST
+        && GetBattlerAbility(battler) != ABILITY_POWDER_SHIELD
         && GetBattlerAbility(battler) != ABILITY_LIGHT_METAL
         && !(gDisableStructs[battler].stickyWebDone)
         && (gSideStatuses[GetBattlerSide(battler)] & SIDE_STATUS_STICKY_WEB)
@@ -8514,6 +8518,7 @@ static bool32 DoSwitchInEffectsForBattler(u32 battler)
         && IsBattlerAffectedByHazards(battler, FALSE)
         && GetBattlerAbility(battler) != ABILITY_MAGIC_GUARD
         && GetBattlerAbility(battler) != ABILITY_SHIELD_DUST
+        && GetBattlerAbility(battler) != ABILITY_POWDER_SHIELD
         && GetBattlerAbility(battler) != ABILITY_LIGHT_METAL)
     {
         gDisableStructs[battler].steelSurgeDone = TRUE;

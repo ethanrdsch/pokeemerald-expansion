@@ -589,8 +589,9 @@
 #define B_ANIM_POWER_CONSTRUCT          53
 #define B_ANIM_SAFEGUARD                54
 #define B_ANIM_MAGNETRISE               55
+#define B_ANIM_POWDER                   56
 
-#define NUM_B_ANIMS_GENERAL             56
+#define NUM_B_ANIMS_GENERAL             57
 
 // special animations table (sBattleAnims_Special)
 #define B_ANIM_LVL_UP                   0

@@ -16883,12 +16883,12 @@ Music: Male
 Double Battle: No
 AI: Basic Trainer
 
-Hydreigon
+Probopass
+Level: 1
+Ability: ABILITY_ELECTROMAGNET
+- Nuzzle
 - Stealth Rock
-- Spikes
-- Sticky Web
 
 Blissey
-- Stealth Rock
-- Spikes
-- Sticky Web
+Level: 1
+- Flamethrower

@@ -40,8 +40,8 @@ static const u8 sHyperBeamDescription[] = _(
 #endif
 
 static const u8 sRevengeDescription[] = _(
-    "An attack that moves last\n"
-    "and gains power if hit.");
+    "Massivley reduced priority,\n"
+    "but doubles power if hit.");
 
 static const u8 sPluckDescription[] = _(
     "Eats the foe's held Berry\n"
@@ -448,7 +448,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
             "A wind attack with a high\n"
             "critical-hit ratio."),
         .effect = EFFECT_HIT,
-        .power = 80,
+        .power = 90,
         .type = TYPE_FLYING,
         .accuracy = 100,
         .criticalHitStage = 1,
@@ -7082,8 +7082,8 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
     {
         .name = COMPOUND_STRING("Nature Power"),
         .description = COMPOUND_STRING(
-            "The type of attack varies\n"
-            "depending on the location."),
+            "The attack varies based on\n"
+            "Terrain or location."),
         .effect = EFFECT_NATURE_POWER,
         .power = 1,
         .type = TYPE_NORMAL,
@@ -18468,8 +18468,8 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
     {
         .name = COMPOUND_STRING("Steel Roller"),
         .description = COMPOUND_STRING(
-            "Destroys terrain. Fails if\n"
-            "ground isn't terrain."),
+            "Destroys Terrain. Fails if\n"
+            "ground isn't Terrain."),
         .effect = EFFECT_HIT_SET_REMOVE_TERRAIN,
         .power = 130,
         .type = TYPE_STEEL,
@@ -19907,7 +19907,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
         .name = COMPOUND_STRING("Ice Spinner"),
         .description = COMPOUND_STRING(
             "Ice-covered feet hit a foe\n"
-            "and destroy the terrain."),
+            "and destroy the Terrain."),
         .effect = EFFECT_HIT_SET_REMOVE_TERRAIN,
         .power = 80,
         .type = TYPE_ICE,
@@ -21574,7 +21574,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
         .name = COMPOUND_STRING("Genesis Supernova"),
         .description = COMPOUND_STRING(
             "Mew attacks with full force.\n"
-            "Psychically charges terrain."),
+            "Psychically charges Terrain."),
         .effect = EFFECT_HIT_SET_REMOVE_TERRAIN,
         .power = 185,
         .type = TYPE_PSYCHIC,
@@ -21639,7 +21639,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
         .name = COMPOUND_STRING("Splintered Stormshards"),
         .description = COMPOUND_STRING(
             "Lycanroc attacks with full\n"
-            "force. Removes all terrain."),
+            "force. Removes all Terrain."),
         .effect = EFFECT_HIT_SET_REMOVE_TERRAIN,
         .power = 190,
         .type = TYPE_ROCK,
@@ -21840,7 +21840,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
         .name = COMPOUND_STRING("Max Lightning"),
         .description = COMPOUND_STRING(
             "Electric Dynamax attack.\n"
-            "Turns the terrain electric."),
+            "Turns the Terrain electric."),
         .effect = EFFECT_MAX_MOVE,
         .power = 1,
         .type = TYPE_ELECTRIC,
@@ -22016,7 +22016,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
         .name = COMPOUND_STRING("Max Starfall"),
         .description = COMPOUND_STRING(
             "Fairy Dynamax attack.\n"
-            "Turns the terrain misty."),
+            "Turns the Terrain misty."),
         .effect = EFFECT_MAX_MOVE,
         .power = 1,
         .type = TYPE_FAIRY,
@@ -22060,7 +22060,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
         .name = COMPOUND_STRING("Max Mindstorm"),
         .description = COMPOUND_STRING(
             "Psychic Dynamax attack.\n"
-            "Turns the terrain psychic."),
+            "Turns the Terrain psychic."),
         .effect = EFFECT_MAX_MOVE,
         .power = 1,
         .type = TYPE_PSYCHIC,
@@ -22149,7 +22149,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
         .name = COMPOUND_STRING("Max Overgrowth"),
         .description = COMPOUND_STRING(
             "Grass Dynamax attack.\n"
-            "Turns the terrain grassy."),
+            "Turns the Terrain grassy."),
         .effect = EFFECT_MAX_MOVE,
         .power = 10,
         .type = TYPE_GRASS,

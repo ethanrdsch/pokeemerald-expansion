@@ -3043,7 +3043,7 @@ static bool32 PartyBattlerShouldAvoidHazards(u32 currBattler, u32 switchBattler)
     if (flags == 0)
         return FALSE;
 
-    if (ability == ABILITY_MAGIC_GUARD || ability == ABILITY_SHIELD_DUST || ability == ABILITY_LIGHT_METAL)
+    if (ability == ABILITY_MAGIC_GUARD || ability == ABILITY_SHIELD_DUST || ability == ABILITY_LIGHT_METAL || ability == ABILITY_POWDER_SHIELD)
         return FALSE;
     if (gFieldStatuses & STATUS_FIELD_MAGIC_ROOM || ability == ABILITY_KLUTZ)
         holdEffect = HOLD_EFFECT_NONE;
@@ -3479,7 +3479,10 @@ bool32 AI_CanBeInfatuated(u32 battlerAtk, u32 battlerDef, u32 defAbility)
 u32 ShouldTryToFlinch(u32 battlerAtk, u32 battlerDef, u32 atkAbility, u32 defAbility, u32 move)
 {
     if (((!IsMoldBreakerTypeAbility(battlerAtk, gAiLogicData->abilities[battlerAtk]) 
-      && (defAbility == ABILITY_SHIELD_DUST || defAbility == ABILITY_INNER_FOCUS || defAbility == ABILITY_ZEN_MODE))
+      && (defAbility == ABILITY_SHIELD_DUST 
+        || defAbility == ABILITY_INNER_FOCUS 
+        || defAbility == ABILITY_ZEN_MODE
+        || defAbility == ABILITY_POWDER_SHIELD))
       || gAiLogicData->holdEffects[battlerDef] == HOLD_EFFECT_COVERT_CLOAK
       || DoesSubstituteBlockMove(battlerAtk, battlerDef, move)
       || AI_IsSlower(battlerAtk, battlerDef, move))) // Opponent goes first
@@ -3528,6 +3531,7 @@ bool32 ShouldFakeOut(u32 battlerAtk, u32 battlerDef, u32 move)
     || DoesSubstituteBlockMove(battlerAtk, battlerDef, move)
     || (!IsMoldBreakerTypeAbility(battlerAtk, gAiLogicData->abilities[battlerAtk])
     && (gAiLogicData->abilities[battlerDef] == ABILITY_SHIELD_DUST 
+        || gAiLogicData->abilities[battlerDef] == ABILITY_POWDER_SHIELD
         || gAiLogicData->abilities[battlerDef] == ABILITY_INNER_FOCUS
         || gAiLogicData->abilities[battlerDef] == ABILITY_ZEN_MODE)))
         return FALSE;
