@@ -15750,7 +15750,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
         .description = COMPOUND_STRING(
             "Attacks the entire field,\n"
             "removing active Terrain."),
-        .effect = EFFECT_HIT_SET_REMOVE_TERRAIN,
+        .effect = EFFECT_ICE_SPINNER,
         .power = 90,
         .type = TYPE_GROUND,
         .accuracy = 100,
