@@ -16875,11 +16875,11 @@ Level: 5
 IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_TEST_MAN ===
-Name: Test Man
-Class: Hiker
-Pic: Hiker
-Gender: Male
-Music: Male
+Name: Test Woman
+Class: Beauty
+Pic: Beauty
+Gender: Female
+Music: Female
 Double Battle: No
 AI: Basic Trainer
 

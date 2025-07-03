@@ -78,7 +78,7 @@ static const u8 sEvolutionStoneDesc[] = _("Makes certain\n"
 
 static const u8 sNectarDesc[]         = _("Flower nectar that\n"
                                           "changes the form\n"
-                                          "of certain Pokémon.");
+                                          "of Oricorio.");
 
 static const u8 sCharizarditeDesc[]   = _("This stone enables\n"
                                           "Charizard to Mega\n"

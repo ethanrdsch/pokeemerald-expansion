@@ -42182,14 +42182,16 @@ F_TRAINER_FEMALE |
     [DIFFICULTY_NORMAL][TRAINER_TEST_MAN] =
     {
 #line 16878
-        .trainerName = _("Test Man"),
+        .trainerName = _("Test Woman"),
 #line 16879
-        .trainerClass = TRAINER_CLASS_HIKER,
+        .trainerClass = TRAINER_CLASS_BEAUTY,
 #line 16880
-        .trainerPic = TRAINER_PIC_HIKER,
+        .trainerPic = TRAINER_PIC_BEAUTY,
         .encounterMusic_gender =
+#line 16881
+F_TRAINER_FEMALE | 
 #line 16882
-            TRAINER_ENCOUNTER_MUSIC_MALE,
+            TRAINER_ENCOUNTER_MUSIC_FEMALE,
 #line 16883
         .battleType = TRAINER_BATTLE_TYPE_SINGLES,
 #line 16884
