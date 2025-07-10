@@ -1159,3 +1159,7 @@ EventScript_VsSeekerChargingDone::
 	.include "data/scripts/dexnav.inc"
 
 	.include "data/maps/PorytilesPrimaryTutorial/scripts.inc"
+
+	.include "data/maps/LittlerootTown_HouseRight/scripts.inc"
+
+	.include "data/maps/LittlerootTown_HouseLeft/scripts.inc"

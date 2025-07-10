@@ -94,8 +94,8 @@
     {
       "id": "LAYOUT_LITTLEROOT_TOWN",
       "name": "LittlerootTown_Layout",
-      "width": 20,
-      "height": 20,
+      "width": 30,
+      "height": 30,
       "primary_tileset": "gTileset_General",
       "secondary_tileset": "gTileset_Petalburg",
       "border_filepath": "data/layouts/LittlerootTown/border.bin",
@@ -4420,6 +4420,26 @@
       "secondary_tileset": "gTileset_Petalburg",
       "border_filepath": "data/layouts/PorytilesPrimaryTutorial/border.bin",
       "blockdata_filepath": "data/layouts/PorytilesPrimaryTutorial/map.bin"
+    },
+    {
+      "id": "LAYOUT_LITTLEROOT_TOWN_HOUSE_RIGHT",
+      "name": "LittlerootTown_HouseRight_Layout",
+      "width": 8,
+      "height": 6,
+      "primary_tileset": "gTileset_Building",
+      "secondary_tileset": "gTileset_GenericBuilding",
+      "border_filepath": "data/layouts/LittlerootTown_HouseRight/border.bin",
+      "blockdata_filepath": "data/layouts/LittlerootTown_HouseRight/map.bin"
+    },
+    {
+      "id": "LAYOUT_LITTLEROOT_TOWN_HOUSE_LEFT",
+      "name": "LittlerootTown_HouseLeft_Layout",
+      "width": 8,
+      "height": 6,
+      "primary_tileset": "gTileset_Building",
+      "secondary_tileset": "gTileset_GenericBuilding",
+      "border_filepath": "data/layouts/LittlerootTown_HouseLeft/border.bin",
+      "blockdata_filepath": "data/layouts/LittlerootTown_HouseLeft/map.bin"
     }
   ]
 }
