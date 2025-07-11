@@ -29,6 +29,10 @@ OldaleTown_EventScript_TownSign::
 	msgbox OldaleTown_Text_TownSign, MSGBOX_SIGN
 	end
 
+OldaleTown_EventScript_SpectraSign::
+	msgbox OldaleTown_Text_SpectraSign, MSGBOX_SIGN
+	end
+
 OldaleTown_EventScript_Girl::
 	msgbox OldaleTown_Text_SavingMyProgress, MSGBOX_NPC
 	end
@@ -392,6 +396,10 @@ OldaleTown_Text_BrendanLetsGoBack:
 	.string "{PLAYER}, you should hustle back, too.$"
 
 OldaleTown_Text_TownSign:
-	.string "OLDALE TOWN\n"
-	.string "“Where things start off scarce.”$"
+	.string "Riverside Town\n"
+	.string "“A free-flowing community.”$"
+
+OldaleTown_Text_SpectraSign:
+	.string "Spectra Cave\n"
+	.string "BEWARE OF GHOSTS$"
 

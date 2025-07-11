@@ -1163,3 +1163,7 @@ EventScript_VsSeekerChargingDone::
 	.include "data/maps/LittlerootTown_HouseRight/scripts.inc"
 
 	.include "data/maps/LittlerootTown_HouseLeft/scripts.inc"
+
+	.include "data/maps/WildflowerFields/scripts.inc"
+
+	.include "data/maps/WildflowerFields_House/scripts.inc"

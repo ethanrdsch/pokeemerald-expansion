@@ -353,7 +353,7 @@ enum {
 };
 
 #define POPUP_OFFSCREEN_Y  ((OW_POPUP_GENERATION == GEN_5) ? 24 : 40)
-#define POPUP_SLIDE_SPEED  2
+#define POPUP_SLIDE_SPEED  3
 
 #define tState         data[0]
 #define tOnscreenTimer data[1]
@@ -427,7 +427,7 @@ static void Task_MapNamePopUpWindow(u8 taskId)
         break;
     case STATE_WAIT:
         // Wait while the window is fully onscreen.
-        if (++task->tOnscreenTimer > 120)
+        if (++task->tOnscreenTimer > 60)
         {
             task->tOnscreenTimer = 0;
             task->tState = STATE_SLIDE_OUT;
