@@ -2454,6 +2454,11 @@
 	manipulatedamage DMG_1_6_TARGET_HP
 	.endm
 
+	.macro handledreamdrain jumpInstr:req
+	callnative BS_HandleDreamDrain
+	.4byte \jumpInstr
+	.endm
+
 	.macro dmgtomaxattackerhp
 	manipulatedamage DMG_FULL_ATTACKER_HP
 	.endm

@@ -1630,6 +1630,7 @@ u32 GetTotalAccuracy(u32 battlerAtk, u32 battlerDef, u32 move, u32 atkAbility, u
     switch (atkAbility)
     {
     case ABILITY_COMPOUND_EYES:
+    case ABILITY_AERIAL_SCOUT:
         calc = (calc * 130) / 100; // 1.3 compound eyes boost
         break;
     case ABILITY_KEEN_EYE:
@@ -19150,4 +19151,21 @@ void BS_jumptomovebasedonability(void)
     ResetValuesForCalledMove();
 
     gBattlescriptCurrInstr = GetMoveBattleScript(move);
+}
+
+void BS_HandleDreamDrain(void)
+{
+    NATIVE_ARGS(const u8 *jumpInstr);
+
+    gBattleScripting.animArg1 = gBattlerTarget;
+    gBattleScripting.animArg2 = gBattlerAttacker;
+    gBattleStruct->moveDamage[gBattlerAttacker] = max(1, GetNonDynamaxMaxHP(gBattlerAttacker) / 8);
+    gBattleStruct->moveDamage[gBattlerTarget] = GetDrainedBigRootHp(gBattlerTarget, gBattleStruct->moveDamage[gBattlerAttacker]);
+    gHitMarker |= HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE;
+    if (GetBattlerAbility(gBattlerTarget) == ABILITY_LIQUID_OOZE)
+    {
+        gBattleStruct->moveDamage[gBattlerTarget] = gBattleStruct->moveDamage[gBattlerTarget] * -1;
+        gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_LEECH_SEED_OOZE;
+    }
+    gBattlescriptCurrInstr = cmd->jumpInstr;
 }

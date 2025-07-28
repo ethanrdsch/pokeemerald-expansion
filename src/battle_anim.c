@@ -256,6 +256,7 @@ static const u8* const sBattleAnims_General[NUM_B_ANIMS_GENERAL] =
     [B_ANIM_SAFEGUARD]              = gBattleAnimMove_Safeguard,
     [B_ANIM_MAGNETRISE]             = gBattleAnimMove_MagnetRise,
     [B_ANIM_POWDER]                 = gBattleAnimMove_Powder,
+    [B_ANIM_LEECH_SEED]             = gBattleAnimMove_LeechSeed,
 };
 
 static const u8* const sBattleAnims_Special[NUM_B_ANIMS_SPECIAL] =

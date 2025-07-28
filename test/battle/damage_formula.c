@@ -172,7 +172,7 @@ SINGLE_BATTLE_TEST("Punching Glove vs Muscle Band Damage calculation")
     PARAMETRIZE { expectedDamagePlayer = 174, expectedDamageOpponent = 172; }
     PARAMETRIZE { expectedDamagePlayer = 172, expectedDamageOpponent = 169; }
     GIVEN {
-        PLAYER(SPECIES_MAKUHITA) { Item(ITEM_PUNCHING_GLOVE); }
+        PLAYER(SPECIES_MAKUHITA) { Item(ITEM_OVE); }
         OPPONENT(SPECIES_MAKUHITA) { Item(ITEM_MUSCLE_BAND); }
     } WHEN {
         TURN {

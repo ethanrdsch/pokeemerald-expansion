@@ -16883,12 +16883,12 @@ Music: Female
 Double Battle: No
 AI: Basic Trainer
 
-Probopass
-Level: 1
-Ability: ABILITY_ELECTROMAGNET
-- Nuzzle
-- Stealth Rock
+Pikachu
+- Recycle
 
-Blissey
-Level: 1
-- Flamethrower
+Tentacruel
+Ability: Liquid Ooze
+- Recycle
+
+Grimer
+- Heal Block

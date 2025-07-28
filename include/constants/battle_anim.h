@@ -590,8 +590,9 @@
 #define B_ANIM_SAFEGUARD                54
 #define B_ANIM_MAGNETRISE               55
 #define B_ANIM_POWDER                   56
+#define B_ANIM_LEECH_SEED               57
 
-#define NUM_B_ANIMS_GENERAL             57
+#define NUM_B_ANIMS_GENERAL             58
 
 // special animations table (sBattleAnims_Special)
 #define B_ANIM_LVL_UP                   0

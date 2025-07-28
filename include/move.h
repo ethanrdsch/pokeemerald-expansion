@@ -106,6 +106,8 @@ struct MoveInfo
     bool32 beakMove:1;
     bool32 throwMove:1;
     bool32 fieldMove:1;
+    bool32 piercingMove:1;
+    bool32 slamMove:1;
     bool32 lazyMove:1; // can be used on loafing turns of Truant
     bool32 wakesUser:1; // moves that immmediate awaken the user if sleeping (Spark, Wild Charge, Volt Tackle)
     bool32 minimizeDoubleDamage:1;
@@ -365,6 +367,16 @@ static inline bool32 IsThrowMove(u32 moveId)
 static inline bool32 IsFieldMove(u32 moveId)
 {
     return gMovesInfo[SanitizeMoveId(moveId)].fieldMove;
+}
+
+static inline bool32 IsPiercingMove(u32 moveId)
+{
+    return gMovesInfo[SanitizeMoveId(moveId)].piercingMove;
+}
+
+static inline bool32 IsSlamMove(u32 moveId)
+{
+    return gMovesInfo[SanitizeMoveId(moveId)].slamMove;
 }
 
 static inline bool32 MoveNoRechargeOnKo(u32 moveId)

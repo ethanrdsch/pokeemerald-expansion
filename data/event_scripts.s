@@ -1167,3 +1167,5 @@ EventScript_VsSeekerChargingDone::
 	.include "data/maps/WildflowerFields/scripts.inc"
 
 	.include "data/maps/WildflowerFields_House/scripts.inc"
+
+	.include "data/maps/PetalburgCity_House1_F2/scripts.inc"

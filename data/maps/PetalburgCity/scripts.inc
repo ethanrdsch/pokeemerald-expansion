@@ -83,7 +83,7 @@ PetalburgCity_EventScript_WalkToWallyHouse::
 PetalburgCity_EventScript_Boy::
 	lock
 	faceplayer
-	msgbox PetalburgCity_Text_WaterReflection, MSGBOX_DEFAULT
+	msgbox PetalburgCity_Text_BabyPokemon, MSGBOX_DEFAULT
 	closemessage
 	applymovement LOCALID_PETALBURG_BOY, Common_Movement_FaceOriginalDirection
 	waitmovement 0
@@ -232,6 +232,10 @@ PetalburgCity_EventScript_Gentleman::
 
 PetalburgCity_EventScript_WallyHouseSign::
 	msgbox PetalburgCity_Text_WallyHouseSign, MSGBOX_SIGN
+	end
+
+PetalburgCity_EventScript_JoHouseSign::
+	msgbox PetalburgCity_Text_JoHouseSign, MSGBOX_SIGN
 	end
 
 PetalburgCity_EventScript_ShowGymToPlayer0::
@@ -718,12 +722,14 @@ PetalburgCity_Text_ThisIsGymSign:
 	.string "This is the GYM's sign. Look for it\n"
 	.string "whenever you're looking for a GYM.$"
 
-PetalburgCity_Text_WaterReflection:
-	.string "My face is reflected in the water.\p"
-	.string "It's a shining grin full of hope…\p"
-	.string "Or it could be a look of somber silence\n"
-	.string "struggling with fear…\p"
-	.string "What do you see reflected in your face?$"
+PetalburgCity_Text_BabyPokemon:
+	.string "Raising baby Pokémon is no easy task.\p"
+	.string "They're full of adventurous spirit,\n"
+	.string "but at my age it's hard to keep up.\p"
+	.string "Say, if you're a trainer, why don't\n"
+	.string "you have a go at catching some?\p"
+	.string "I'm sure they'd love to join you on\n"
+	.string "your journey!$"
 
 PetalburgCity_Text_FullPartyExplanation:
 	.string "Let's say you have six POKéMON.\n"
@@ -732,16 +738,19 @@ PetalburgCity_Text_FullPartyExplanation:
 	.string "BOX over a PC connection.$"
 
 PetalburgCity_Text_GymSign:
-	.string "PETALBURG CITY POKéMON GYM\n"
-	.string "LEADER: NORMAN\l"
-	.string "“A man in pursuit of power!”$"
+	.string "Morrow City Pokémon Gym\n"
+	.string "Leader: Jo\l"
+	.string "“A top-percentage trainer!”$"
 
 PetalburgCity_Text_CitySign:
-	.string "PETALBURG CITY\n"
-	.string "“Where people mingle with nature.”$"
+	.string "Morrow City\n"
+	.string "“A place full of change.”$"
 
 PetalburgCity_Text_WallyHouseSign:
-	.string "WALLY'S HOUSE$"
+	.string "Morrow City Trainer School$"
+
+PetalburgCity_Text_JoHouseSign:
+	.string "Leader Jo's House$"
 
 PetalburgCity_Text_AreYouATrainer:
 	.string "Excuse me!\p"

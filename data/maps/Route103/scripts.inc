@@ -199,6 +199,10 @@ Route103_EventScript_RouteSign::
 	msgbox Route103_Text_RouteSign, MSGBOX_SIGN
 	end
 
+Route103_EventScript_CaveSign::
+	msgbox Route103_Text_CaveSign, MSGBOX_SIGN
+	end
+
 Route103_EventScript_Daisy::
 	trainerbattle_single TRAINER_DAISY, Route103_Text_DaisyIntro, Route103_Text_DaisyDefeated
 	msgbox Route103_Text_DaisyPostBattle, MSGBOX_AUTOCLOSE
@@ -348,6 +352,8 @@ Route103_Text_ShortcutToOldale:
 	.string "Fufufu, that's useful, isn't it?$"
 
 Route103_Text_RouteSign:
-	.string "ROUTE 103\n"
-	.string "{DOWN_ARROW} OLDALE TOWN$"
+	.string "Route 3\n"
+	.string "{LEFT_ARROW} Contra Caverns, {RIGHT_ARROW} Morrow City$"
 
+Route103_Text_CaveSign:
+	.string "Contra Caverns$"

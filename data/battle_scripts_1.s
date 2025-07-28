@@ -6040,9 +6040,20 @@ BattleScript_LeechSeedTurnDrainLiquidOoze::
 	copybyte gBattlerAttacker, gBattlerTarget   @ needed to get liquid ooze message correct
 	goto BattleScript_LeechSeedTurnDrainGainHp
 
+BattleScript_DreamDrainTurnDrainLiquidOoze::
+	call BattleScript_DreamDrainTurnDrain
+	copybyte gBattlerAbility, gBattlerAttacker
+	call BattleScript_AbilityPopUp
+	copybyte gBattlerAttacker, gBattlerTarget   @ needed to get liquid ooze message correct
+	goto BattleScript_DreamDrainTurnDrainGainHp
+
 BattleScript_LeechSeedTurnDrainHealBlock::
 	call BattleScript_LeechSeedTurnDrain
 	end2
+
+BattleScript_DreamDrainTurnDrainHealBlock::
+	call BattleScript_DreamDrainTurnDrain
+	goto BattleScript_BadDreamDrainIncrement
 
 BattleScript_LeechSeedTurnDrainRecovery::
 	call BattleScript_LeechSeedTurnDrain
@@ -6055,6 +6066,23 @@ BattleScript_LeechSeedTurnDrainGainHp:
 	end2
 
 BattleScript_LeechSeedTurnDrain:
+	playanimation BS_ATTACKER, B_ANIM_LEECH_SEED_DRAIN, sB_ANIM_ARG1
+	healthbarupdate BS_ATTACKER
+	datahpupdate BS_ATTACKER
+	tryfaintmon BS_ATTACKER
+	return
+
+BattleScript_DreamDrainTurnDrainRecovery::
+	call BattleScript_DreamDrainTurnDrain
+BattleScript_DreamDrainTurnDrainGainHp:
+	healthbarupdate BS_TARGET
+	datahpupdate BS_TARGET
+	printstring STRINGID_PKMNSAPPEDBYDREAMDRAIN
+	waitmessage B_WAIT_TIME_LONG
+	tryfaintmon BS_TARGET
+	goto BattleScript_BadDreamDrainIncrement
+
+BattleScript_DreamDrainTurnDrain:
 	playanimation BS_ATTACKER, B_ANIM_LEECH_SEED_DRAIN, sB_ANIM_ARG1
 	healthbarupdate BS_ATTACKER
 	datahpupdate BS_ATTACKER
@@ -6493,6 +6521,17 @@ BattleScript_SpikyDebrisRet:
 	copybyte gBattlerAttacker, sBATTLER
 	return
 
+BattleScript_LooseRocksActivates::
+	call BattleScript_AbilityPopUp
+	pause B_WAIT_TIME_SHORT
+	setstealthrock BattleScript_LooseRocksRet
+	printstring STRINGID_POINTEDSTONESFLOAT
+	waitmessage B_WAIT_TIME_LONG
+BattleScript_LooseRocksRet:
+	copybyte sBATTLER, gBattlerTarget
+	copybyte gBattlerTarget, gBattlerAttacker
+	copybyte gBattlerAttacker, sBATTLER
+	return
 BattleScript_EarthEaterActivates::
 	call BattleScript_AbilityPopUp
 	pause B_WAIT_TIME_LONG
@@ -8352,6 +8391,42 @@ BattleScript_BadDreams_HidePopUp:
 	tryfaintmon BS_TARGET
 	goto BattleScript_BadDreamsIncrement
 
+BattleScript_DreamDrainActivates::
+	setbyte gBattlerTarget, 0
+BattleScript_DreamDrainLoop:
+	jumpiftargetally BattleScript_DreamDrainIncrement
+	jumpifability BS_TARGET, ABILITY_MAGIC_GUARD, BattleScript_DreamDrainIncrement
+	jumpifability BS_TARGET, ABILITY_COMATOSE, BattleScript_DreamDrain_Dmg
+	jumpifstatus BS_TARGET, STATUS1_SLEEP, BattleScript_DreamDrain_Dmg
+	goto BattleScript_DreamDrainIncrement
+BattleScript_DreamDrain_Dmg:
+	jumpifbyteequal sFIXED_ABILITY_POPUP, sZero, BattleScript_DreamDrain_ShowPopUp
+BattleScript_DreamDrain_DmgAfterPopUp:
+	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
+	handledreamdrain BattleScript_DreamDrain_AfterHandling
+BattleScript_DreamDrain_AfterHandling:
+	jumpifability BS_TARGET, ABILITY_LIQUID_OOZE, BattleScript_DreamDrainTurnDrainLiquidOoze
+	jumpifstatus3 BS_TARGET, STATUS3_HEAL_BLOCK, BattleScript_DreamDrainTurnDrainHealBlock
+	goto BattleScript_DreamDrainTurnDrainRecovery
+	jumpifhasnohp BS_TARGET, BattleScript_DreamDrain_HidePopUp
+BattleScript_BadDreamDrainIncrement:
+	addbyte gBattlerTarget, 1
+	jumpifbytenotequal gBattlerTarget, gBattlersCount, BattleScript_DreamDrainLoop
+	jumpifbyteequal sFIXED_ABILITY_POPUP, sZero, BattleScript_DreamDrainEnd
+	destroyabilitypopup
+	pause 15
+BattleScript_DreamDrainEnd:
+	end3
+BattleScript_DreamDrain_ShowPopUp:
+	copybyte gBattlerAbility, gBattlerAttacker
+	call BattleScript_AbilityPopUp
+	setbyte sFIXED_ABILITY_POPUP, TRUE
+	goto BattleScript_DreamDrain_DmgAfterPopUp
+BattleScript_DreamDrain_HidePopUp:
+	destroyabilitypopup
+	tryfaintmon BS_TARGET
+	goto BattleScript_DreamDrainIncrement
+
 BattleScript_TookAttack::
 	attackstring
 	pause B_WAIT_TIME_SHORT
@@ -8830,6 +8905,14 @@ BattleScript_AbilityStatusEffect::
 	waitstate
 	call BattleScript_AbilityPopUp
 	seteffectsecondary
+	return
+
+BattleScript_AbilityLeechSeed::
+	waitstate
+	call BattleScript_AbilityPopUp
+	playanimation BS_TARGET, B_ANIM_LEECH_SEED
+	printstring STRINGID_PKMNSEEDED
+	waitmessage B_WAIT_TIME_LONG
 	return
 
 BattleScript_SoundTherapy::

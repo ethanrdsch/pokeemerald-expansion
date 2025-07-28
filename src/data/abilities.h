@@ -2601,4 +2601,69 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
         .aiRating = 6,
         .breakable = TRUE,
     },
+
+    [ABILITY_AERIAL_SCOUT] =
+    {
+        .name = _("Aerial Scout"),
+        .description = COMPOUND_STRING("Levitates, gains a 25% boost\nto Flying moves, +30% accuracy."),
+        .aiRating = 8,
+        .breakable = TRUE,
+    },
+
+    [ABILITY_PINPOINT] =
+    {
+        .name = _("Pinpoint"),
+        .description = COMPOUND_STRING("Piercing moves: +30% power, and\n2x secondary effect chance."),
+        .aiRating = 7,
+    },
+
+    [ABILITY_HIGH_VOLTAGE] =
+    {
+        .name = _("High Voltage"),
+        .description = COMPOUND_STRING("Electric moves have 20% burn chance and\nare super-effective on Electric-types."),
+        .aiRating = 3,
+    },
+
+    [ABILITY_CONTACT_FREEZE] =
+    {
+        .name = _("Contact Freeze"),
+        .description = COMPOUND_STRING("The Pokémon's contact moves\nhave a 30% frostbite chance."),
+        .aiRating = 4,
+    },
+
+    [ABILITY_PARASITIC_PLANT] =
+    {
+        .name = _("Parasitic Plant"),
+        .description = COMPOUND_STRING("The Pokémon's Grass-type\nmoves set Leech Seed."),
+        .aiRating = 4,
+    },
+
+    [ABILITY_LOOSE_ROCKS] =
+    {
+        .name = _("Loose Rocks"),
+        .description = COMPOUND_STRING("Sets Stealth Rock if hit\nby a phyisical move."),
+        .aiRating = 4,
+    },
+
+    [ABILITY_DREAM_DRAIN] =
+    {
+        .name = _("Dream Drain"),
+        .description = COMPOUND_STRING("Saps 1/8 of a sleeping\nPokémon's max HP per turn."),
+        .aiRating = 4,
+    },
+
+    [ABILITY_HEAVY_IMPACT] =
+    {
+        .name = _("Heavy Impact"),
+        .description = COMPOUND_STRING("Moves based on user's weight deal\nmax damage. 50% boost to slam moves."),
+        .aiRating = 4,
+    },
+
+    [ABILITY_ICE_FEATHERS] =
+    {
+        .name = _("Ice Feathers"),
+        .description = COMPOUND_STRING("Halves damage of special\nmoves targetted at it."),
+        .aiRating = 7,
+        .breakable = TRUE,
+    },
 };
