@@ -42193,7 +42193,7 @@ F_TRAINER_FEMALE |
 #line 16882
             TRAINER_ENCOUNTER_MUSIC_FEMALE,
 #line 16883
-        .battleType = TRAINER_BATTLE_TYPE_SINGLES,
+        .battleType = TRAINER_BATTLE_TYPE_DOUBLES,
 #line 16884
         .aiFlags = AI_FLAG_BASIC_TRAINER,
         .partySize = 3,
@@ -42201,48 +42201,50 @@ F_TRAINER_FEMALE |
         {
             {
 #line 16886
-            .species = SPECIES_PIKACHU,
+            .species = SPECIES_SHIFTRY,
             .gender = TRAINER_MON_RANDOM_GENDER,
-#line 16887
+#line 16888
             .iv = TRAINER_PARTY_IVS(31, 31, 31, 31, 31, 31),
 #line 16887
+            .ability = ABILITY_WIND_RIDER,
+#line 16888
             .lvl = 100,
             .nature = NATURE_HARDY,
             .dynamaxLevel = MAX_DYNAMAX_LEVEL,
             .moves = {
-#line 16887
+#line 16888
                 MOVE_RECYCLE,
             },
             },
             {
-#line 16889
+#line 16890
             .species = SPECIES_TENTACRUEL,
             .gender = TRAINER_MON_RANDOM_GENDER,
-#line 16891
+#line 16892
             .iv = TRAINER_PARTY_IVS(31, 31, 31, 31, 31, 31),
-#line 16890
-            .ability = ABILITY_LIQUID_OOZE,
 #line 16891
+            .ability = ABILITY_LIQUID_OOZE,
+#line 16892
             .lvl = 100,
             .nature = NATURE_HARDY,
             .dynamaxLevel = MAX_DYNAMAX_LEVEL,
             .moves = {
-#line 16891
+#line 16892
                 MOVE_RECYCLE,
             },
             },
             {
-#line 16893
+#line 16894
             .species = SPECIES_GRIMER,
             .gender = TRAINER_MON_RANDOM_GENDER,
-#line 16894
+#line 16895
             .iv = TRAINER_PARTY_IVS(31, 31, 31, 31, 31, 31),
-#line 16894
+#line 16895
             .lvl = 100,
             .nature = NATURE_HARDY,
             .dynamaxLevel = MAX_DYNAMAX_LEVEL,
             .moves = {
-#line 16894
+#line 16895
                 MOVE_HEAL_BLOCK,
             },
             },

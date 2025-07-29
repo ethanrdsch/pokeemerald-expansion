@@ -2666,4 +2666,30 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
         .aiRating = 7,
         .breakable = TRUE,
     },
+
+    [ABILITY_FLAMING_SOUL] =
+    {
+        .name = _("Flaming Soul"),
+        .description = COMPOUND_STRING("Increased priority for\nFire moves at full HP."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_JET_STREAM] =
+    {
+        .name = _("Jet Stream"),
+        .description = COMPOUND_STRING("Upon switching in, sets\nTailwind for 4 turns."),
+        .aiRating = 8,
+    },
+
+    [ABILITY_SPECIAL_DELIVERY] =
+    {
+        .name = _("Special Delivery"),
+        .description = COMPOUND_STRING("Gives a negative item to\nfoes without items."),
+        .aiRating = 9,
+        .cantBeCopied = TRUE,
+        .cantBeSwapped = TRUE,
+        .cantBeTraced = TRUE,
+        .cantBeSuppressed = TRUE,
+        .cantBeOverwritten = TRUE,
+    },
 };

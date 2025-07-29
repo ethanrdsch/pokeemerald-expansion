@@ -1429,6 +1429,7 @@ static bool32 HandleEndTurnThirdEventBlock(u32 battler)
         case ABILITY_HONEY_GATHER:
         case ABILITY_SELF_SUFFICIENT:
         case ABILITY_POWER_OF_ALCHEMY:
+        case ABILITY_SPECIAL_DELIVERY:
             if (AbilityBattleEffects(ABILITYEFFECT_ENDTURN, battler, ability, 0, MOVE_NONE))
                 effect = TRUE;
             break;

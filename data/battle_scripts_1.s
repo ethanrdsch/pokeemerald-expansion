@@ -2728,6 +2728,24 @@ BattleScript_EffectEmbargo::
 	waitmessage B_WAIT_TIME_LONG
 	goto BattleScript_MoveEnd
 
+BattleScript_EffectTailwindAbility::
+	settailwind BattleScript_EffectTailwindAbilityEnd
+	call BattleScript_AbilityPopUp
+	waitstate
+	printstring STRINGID_TAILWINDBLEW
+	waitmessage B_WAIT_TIME_LONG
+	call BattleScript_TryTailwindAbilitiesLoop
+BattleScript_EffectTailwindAbilityEnd:
+	end3
+
+BattleScript_EffectTailwindAbilityNoLoop::
+	settailwind BattleScript_EffectTailwindAbilityNoLoopEnd
+	call BattleScript_AbilityPopUp
+	waitstate
+	printstring STRINGID_TAILWINDBLEW
+	waitmessage B_WAIT_TIME_LONG
+BattleScript_EffectTailwindAbilityNoLoopEnd:
+	end3
 BattleScript_EffectTailwind::
 	attackcanceler
 	attackstring
@@ -6053,7 +6071,7 @@ BattleScript_LeechSeedTurnDrainHealBlock::
 
 BattleScript_DreamDrainTurnDrainHealBlock::
 	call BattleScript_DreamDrainTurnDrain
-	goto BattleScript_BadDreamDrainIncrement
+	goto BattleScript_DreamDrainIncrement
 
 BattleScript_LeechSeedTurnDrainRecovery::
 	call BattleScript_LeechSeedTurnDrain
@@ -6080,7 +6098,7 @@ BattleScript_DreamDrainTurnDrainGainHp:
 	printstring STRINGID_PKMNSAPPEDBYDREAMDRAIN
 	waitmessage B_WAIT_TIME_LONG
 	tryfaintmon BS_TARGET
-	goto BattleScript_BadDreamDrainIncrement
+	goto BattleScript_DreamDrainIncrement
 
 BattleScript_DreamDrainTurnDrain:
 	playanimation BS_ATTACKER, B_ANIM_LEECH_SEED_DRAIN, sB_ANIM_ARG1
@@ -8409,7 +8427,7 @@ BattleScript_DreamDrain_AfterHandling:
 	jumpifstatus3 BS_TARGET, STATUS3_HEAL_BLOCK, BattleScript_DreamDrainTurnDrainHealBlock
 	goto BattleScript_DreamDrainTurnDrainRecovery
 	jumpifhasnohp BS_TARGET, BattleScript_DreamDrain_HidePopUp
-BattleScript_BadDreamDrainIncrement:
+BattleScript_DreamDrainIncrement:
 	addbyte gBattlerTarget, 1
 	jumpifbytenotequal gBattlerTarget, gBattlersCount, BattleScript_DreamDrainLoop
 	jumpifbyteequal sFIXED_ABILITY_POPUP, sZero, BattleScript_DreamDrainEnd
@@ -8426,6 +8444,42 @@ BattleScript_DreamDrain_HidePopUp:
 	destroyabilitypopup
 	tryfaintmon BS_TARGET
 	goto BattleScript_DreamDrainIncrement
+
+BattleScript_SpeicalDeliveryActivates::
+	setbyte gBattlerTarget, 0
+BattleScript_SpeicalDeliveryLoop:
+	jumpiftargetally BattleScript_SpeicalDeliveryIncrement
+	jumpifability BS_TARGET, ABILITY_MAGIC_GUARD, BattleScript_SpeicalDeliveryIncrement
+	jumpifability BS_TARGET, ABILITY_COMATOSE, BattleScript_SpeicalDelivery_Dmg
+	jumpifstatus BS_TARGET, STATUS1_SLEEP, BattleScript_SpeicalDelivery_Dmg
+	goto BattleScript_SpeicalDeliveryIncrement
+BattleScript_SpeicalDelivery_Dmg:
+	jumpifbyteequal sFIXED_ABILITY_POPUP, sZero, BattleScript_SpeicalDelivery_ShowPopUp
+BattleScript_SpeicalDelivery_DmgAfterPopUp:
+	printstring STRINGID_BADDREAMSDMG
+	waitmessage B_WAIT_TIME_LONG
+	dmg_1_6_targethp
+	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
+	healthbarupdate BS_TARGET
+	datahpupdate BS_TARGET
+	jumpifhasnohp BS_TARGET, BattleScript_SpeicalDelivery_HidePopUp
+BattleScript_SpeicalDeliveryIncrement:
+	addbyte gBattlerTarget, 1
+	jumpifbytenotequal gBattlerTarget, gBattlersCount, BattleScript_SpeicalDeliveryLoop
+	jumpifbyteequal sFIXED_ABILITY_POPUP, sZero, BattleScript_SpeicalDeliveryEnd
+	destroyabilitypopup
+	pause 15
+BattleScript_SpeicalDeliveryEnd:
+	end3
+BattleScript_SpeicalDelivery_ShowPopUp:
+	copybyte gBattlerAbility, gBattlerAttacker
+	call BattleScript_AbilityPopUp
+	setbyte sFIXED_ABILITY_POPUP, TRUE
+	goto BattleScript_SpeicalDelivery_DmgAfterPopUp
+BattleScript_SpeicalDelivery_HidePopUp:
+	destroyabilitypopup
+	tryfaintmon BS_TARGET
+	goto BattleScript_SpeicalDeliveryIncrement
 
 BattleScript_TookAttack::
 	attackstring

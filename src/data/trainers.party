@@ -16880,10 +16880,11 @@ Class: Beauty
 Pic: Beauty
 Gender: Female
 Music: Female
-Double Battle: No
+Double Battle: Yes
 AI: Basic Trainer
 
-Pikachu
+Shiftry
+Ability: Wind Rider
 - Recycle
 
 Tentacruel

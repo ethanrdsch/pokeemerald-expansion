@@ -4104,6 +4104,18 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                 effect++;
             }
             break;
+        case ABILITY_JET_STREAM:
+            if (!gSpecialStatuses[battler].switchInAbilityDone)
+            {
+                gBattlerAttacker = battler;
+                gSpecialStatuses[battler].switchInAbilityDone = TRUE;
+                if (gBattleTurnCounter == 0)
+                    BattleScriptPushCursorAndCallback(BattleScript_EffectTailwindAbilityNoLoop);
+                else
+                    BattleScriptPushCursorAndCallback(BattleScript_EffectTailwindAbility);
+                effect++;
+            }
+            break;
         case ABILITY_INTIMIDATE:
             if (!gSpecialStatuses[battler].switchInAbilityDone)
             {
@@ -4587,6 +4599,10 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                 break;
             case ABILITY_DREAM_DRAIN:
                 BattleScriptPushCursorAndCallback(BattleScript_DreamDrainActivates);
+                effect++;
+                break;
+            case ABILITY_SPECIAL_DELIVERY:
+                BattleScriptPushCursorAndCallback(BattleScript_SpecialDeliveryActivates);
                 effect++;
                 break;
             case ABILITY_SOLAR_POWER:
