@@ -16880,16 +16880,11 @@ Class: Beauty
 Pic: Beauty
 Gender: Female
 Music: Female
-Double Battle: Yes
+Double Battle: No
 AI: Basic Trainer
 
-Shiftry
-Ability: Wind Rider
+Latios
 - Recycle
 
-Tentacruel
-Ability: Liquid Ooze
+Latias
 - Recycle
-
-Grimer
-- Heal Block

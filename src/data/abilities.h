@@ -2692,4 +2692,41 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
         .cantBeSuppressed = TRUE,
         .cantBeOverwritten = TRUE,
     },
+
+    [ABILITY_ADRENALINE] =
+    {
+        .name = _("Adrenaline"),
+        .description = COMPOUND_STRING("+1 Speed after knocking out\nanother Pokémon."),
+        .aiRating = 7,
+    },
+
+    [ABILITY_NOCTURNAL] =
+    {
+        .name = _("Nocturnal"),
+        .description = COMPOUND_STRING("Dark moves deal 50% more damage.\nTake 50% less from Dark and Fairy."),
+        .aiRating = 7,
+        .breakable = TRUE,
+    },
+
+    [ABILITY_INSECTOID] =
+    {
+        .name = _("Insectoid"),
+        .description = COMPOUND_STRING("Immune to Ground attacks.\nBoosts own Bug moves by 50%."),
+        .aiRating = 7,
+        .breakable = TRUE,
+    },
+
+    [ABILITY_AVENGER] =
+    {
+        .name = _("Avenger"),
+        .description = COMPOUND_STRING("50% damage boost if an ally\nfainted the previous turn."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_PURE_LOVE] =
+    {
+        .name = _("Pure Love"),
+        .description = COMPOUND_STRING("Infatuates the target on-hit,\nregardless of gender."),
+        .aiRating = 6,
+    },
 };

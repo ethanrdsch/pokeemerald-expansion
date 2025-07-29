@@ -3058,7 +3058,7 @@ static bool32 PartyBattlerShouldAvoidHazards(u32 currBattler, u32 switchBattler)
         hazardDamage += GetStealthHazardDamageByTypesAndHP(TYPE_SIDE_HAZARD_SHARP_STEEL, type1, type2, maxHp);
 
     if (flags & SIDE_STATUS_SPIKES && ((type1 != TYPE_FLYING && type2 != TYPE_FLYING
-        && ability != ABILITY_LEVITATE && ability != ABILITY_AERIAL_SCOUT && holdEffect != HOLD_EFFECT_AIR_BALLOON)
+        && ability != ABILITY_LEVITATE && ability != ABILITY_AERIAL_SCOUT && ability != ABILITY_INSECTOID && holdEffect != HOLD_EFFECT_AIR_BALLOON)
         || holdEffect == HOLD_EFFECT_IRON_BALL || gFieldStatuses & STATUS_FIELD_GRAVITY))
     {
         s32 spikesDmg = maxHp / ((5 - gSideTimers[GetBattlerSide(currBattler)].spikesAmount) * 2);
@@ -4735,6 +4735,7 @@ bool32 IsMoxieTypeAbility(u32 ability)
     case ABILITY_AS_ONE_ICE_RIDER:
     case ABILITY_GRIM_NEIGH:
     case ABILITY_AS_ONE_SHADOW_RIDER:
+    case ABILITY_ADRENALINE:
         return TRUE;
     default:
         return FALSE;
@@ -4773,6 +4774,7 @@ bool32 ShouldTriggerAbility(u32 battler, u32 ability)
             return (BattlerStatCanRise(battler, ability, STAT_SPATK) && HasMoveWithCategory(battler, DAMAGE_CATEGORY_SPECIAL));
 
         case ABILITY_VITAL_SPIRIT:
+        case ABILITY_ADRENALINE:
             return BattlerStatCanRise(battler, ability, STAT_SPEED);
 
         case ABILITY_CONTRARY:

@@ -13258,7 +13258,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
     {
         .name = COMPOUND_STRING("Retaliate"),
         .description = COMPOUND_STRING(
-            "Double in power if an ally\n"
+            "Doubles in power if an ally\n"
             "fainted the previous turn."),
         .effect = EFFECT_RETALIATE,
         .power = 70,

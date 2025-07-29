@@ -6329,6 +6329,7 @@ static bool32 HandleMoveEndAbilityBlock(u32 battlerAtk, u32 battlerDef, u32 move
     case ABILITY_GRIM_NEIGH:
     case ABILITY_AS_ONE_SHADOW_RIDER:
     case ABILITY_BEAST_BOOST:
+    case ABILITY_ADRENALINE:
         {
             if (!IsBattlerAlive(battlerAtk) || NoAliveMonsForEitherParty())
                 break;
@@ -6340,6 +6341,8 @@ static bool32 HandleMoveEndAbilityBlock(u32 battlerAtk, u32 battlerDef, u32 move
                 stat = GetHighestStatId(battlerAtk);
             else if (abilityAtk == ABILITY_GRIM_NEIGH || abilityAtk == ABILITY_AS_ONE_SHADOW_RIDER)
                 stat = STAT_SPATK;
+            else if (abilityAtk == ABILITY_ADRENALINE)
+                stat = STAT_SPEED;
 
             if (numMonsFainted && CompareStat(battlerAtk, stat, MAX_STAT_STAGE, CMP_LESS_THAN))
             {

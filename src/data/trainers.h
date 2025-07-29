@@ -42193,59 +42193,40 @@ F_TRAINER_FEMALE |
 #line 16882
             TRAINER_ENCOUNTER_MUSIC_FEMALE,
 #line 16883
-        .battleType = TRAINER_BATTLE_TYPE_DOUBLES,
+        .battleType = TRAINER_BATTLE_TYPE_SINGLES,
 #line 16884
         .aiFlags = AI_FLAG_BASIC_TRAINER,
-        .partySize = 3,
+        .partySize = 2,
         .party = (const struct TrainerMon[])
         {
             {
 #line 16886
-            .species = SPECIES_SHIFTRY,
+            .species = SPECIES_LATIOS,
             .gender = TRAINER_MON_RANDOM_GENDER,
-#line 16888
+#line 16887
             .iv = TRAINER_PARTY_IVS(31, 31, 31, 31, 31, 31),
 #line 16887
-            .ability = ABILITY_WIND_RIDER,
-#line 16888
             .lvl = 100,
             .nature = NATURE_HARDY,
             .dynamaxLevel = MAX_DYNAMAX_LEVEL,
             .moves = {
-#line 16888
+#line 16887
                 MOVE_RECYCLE,
             },
             },
             {
+#line 16889
+            .species = SPECIES_LATIAS,
+            .gender = TRAINER_MON_RANDOM_GENDER,
 #line 16890
-            .species = SPECIES_TENTACRUEL,
-            .gender = TRAINER_MON_RANDOM_GENDER,
-#line 16892
             .iv = TRAINER_PARTY_IVS(31, 31, 31, 31, 31, 31),
-#line 16891
-            .ability = ABILITY_LIQUID_OOZE,
-#line 16892
+#line 16890
             .lvl = 100,
             .nature = NATURE_HARDY,
             .dynamaxLevel = MAX_DYNAMAX_LEVEL,
             .moves = {
-#line 16892
+#line 16890
                 MOVE_RECYCLE,
-            },
-            },
-            {
-#line 16894
-            .species = SPECIES_GRIMER,
-            .gender = TRAINER_MON_RANDOM_GENDER,
-#line 16895
-            .iv = TRAINER_PARTY_IVS(31, 31, 31, 31, 31, 31),
-#line 16895
-            .lvl = 100,
-            .nature = NATURE_HARDY,
-            .dynamaxLevel = MAX_DYNAMAX_LEVEL,
-            .moves = {
-#line 16895
-                MOVE_HEAL_BLOCK,
             },
             },
         },

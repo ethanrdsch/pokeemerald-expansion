@@ -8445,7 +8445,7 @@ BattleScript_DreamDrain_HidePopUp:
 	tryfaintmon BS_TARGET
 	goto BattleScript_DreamDrainIncrement
 
-BattleScript_SpeicalDeliveryActivates::
+BattleScript_SpecialDeliveryActivates::
 	setbyte gBattlerTarget, 0
 BattleScript_SpeicalDeliveryLoop:
 	jumpiftargetally BattleScript_SpeicalDeliveryIncrement
@@ -8945,6 +8945,14 @@ BattleScript_CuteCharmActivates::
 	printstring STRINGID_PKMNSXINFATUATEDY
 	waitmessage B_WAIT_TIME_LONG
 	call BattleScript_TryDestinyKnotTarget
+	return
+
+BattleScript_PureLoveActivates::
+	call BattleScript_AbilityPopUp
+	status2animation BS_TARGET, STATUS2_INFATUATION
+	printstring STRINGID_PKMNSXINFATUATEDYPURELOVE
+	waitmessage B_WAIT_TIME_LONG
+	call BattleScript_TryDestinyKnotAttacker
 	return
 
 BattleScript_GooeyActivates::
