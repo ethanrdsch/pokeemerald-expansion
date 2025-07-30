@@ -1096,6 +1096,7 @@ static s32 AI_CheckBadMove(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
         switch (abilityDef)
         {
         case ABILITY_MAGIC_GUARD:
+        case ABILITY_IMPENETRABLE:
             switch (moveEffect)
             {
             case EFFECT_LEECH_SEED:
@@ -2118,7 +2119,8 @@ static s32 AI_CheckBadMove(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
                 ADJUST_SCORE(-8); //No point in healing, but should at least do it if nothing better
             break;
         case EFFECT_RECOIL_IF_MISS:
-            if (aiData->abilities[battlerAtk] != ABILITY_MAGIC_GUARD && gAiLogicData->moveAccuracy[battlerAtk][battlerDef][gAiThinkingStruct->movesetIndex] < 75
+            if (aiData->abilities[battlerAtk] != ABILITY_MAGIC_GUARD && aiData->abilities[battlerAtk] != ABILITY_IMPENETRABLE
+            && gAiLogicData->moveAccuracy[battlerAtk][battlerDef][gAiThinkingStruct->movesetIndex] < 75
             && !(gAiThinkingStruct->aiFlags[battlerAtk] & AI_FLAG_RISKY))
                 ADJUST_SCORE(-6);
             break;
@@ -4066,6 +4068,7 @@ static u32 AI_CalcMoveEffectScore(u32 battlerAtk, u32 battlerDef, u32 move)
     case EFFECT_POPULATION_BOMB:
         if (AI_MoveMakesContact(aiData->abilities[battlerAtk], aiData->holdEffects[battlerAtk], move)
           && aiData->abilities[battlerAtk] != ABILITY_MAGIC_GUARD
+          && aiData->abilities[battlerAtk] != ABILITY_IMPENETRABLE
           && aiData->holdEffects[battlerDef] == HOLD_EFFECT_ROCKY_HELMET)
             ADJUST_SCORE(-2);
         break;
@@ -4175,7 +4178,8 @@ static u32 AI_CalcMoveEffectScore(u32 battlerAtk, u32 battlerDef, u32 move)
           || gStatuses3[battlerDef] & STATUS3_LEECHSEED
           || HasMoveWithEffect(battlerDef, EFFECT_RAPID_SPIN)
           || aiData->abilities[battlerDef] == ABILITY_LIQUID_OOZE
-          || aiData->abilities[battlerDef] == ABILITY_MAGIC_GUARD)
+          || aiData->abilities[battlerDef] == ABILITY_MAGIC_GUARD
+          || aiData->abilities[battlerDef] == ABILITY_IMPENETRABLE)
             break;
         ADJUST_SCORE(GOOD_EFFECT);
         if (!HasDamagingMove(battlerDef)
@@ -4601,7 +4605,9 @@ static u32 AI_CalcMoveEffectScore(u32 battlerAtk, u32 battlerDef, u32 move)
                 ADJUST_SCORE(DECENT_EFFECT);
             break;
         case HOLD_EFFECT_BLACK_SLUDGE:
-            if (!IS_BATTLER_OF_TYPE(battlerDef, TYPE_POISON) && aiData->abilities[battlerDef] != ABILITY_MAGIC_GUARD)
+            if (!IS_BATTLER_OF_TYPE(battlerDef, TYPE_POISON) 
+                && aiData->abilities[battlerDef] != ABILITY_MAGIC_GUARD
+                && aiData->abilities[battlerDef] != ABILITY_IMPENETRABLE)
                 ADJUST_SCORE(DECENT_EFFECT);
             break;
         case HOLD_EFFECT_IRON_BALL:
@@ -4651,7 +4657,9 @@ static u32 AI_CalcMoveEffectScore(u32 battlerAtk, u32 battlerDef, u32 move)
                         ADJUST_SCORE(DECENT_EFFECT);
                     break;
                 case HOLD_EFFECT_BLACK_SLUDGE:
-                    if (IS_BATTLER_OF_TYPE(battlerAtk, TYPE_POISON) || aiData->abilities[battlerAtk] == ABILITY_MAGIC_GUARD)
+                    if (IS_BATTLER_OF_TYPE(battlerAtk, TYPE_POISON) 
+                        || aiData->abilities[battlerAtk] == ABILITY_MAGIC_GUARD
+                        || aiData->abilities[battlerAtk] == ABILITY_IMPENETRABLE)
                         ADJUST_SCORE(DECENT_EFFECT);
                     break;
                 case HOLD_EFFECT_IRON_BALL:

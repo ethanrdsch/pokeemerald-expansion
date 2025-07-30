@@ -293,6 +293,7 @@ extern const u8 BattleScript_AttackerAbilityStatRaise[];
 extern const u8 BattleScript_AttackerAbilityStatRaiseEnd3[];
 extern const u8 BattleScript_PoisonHealActivates[];
 extern const u8 BattleScript_BadDreamsActivates[];
+extern const u8 BattleScript_LightsBaneActivates[];
 extern const u8 BattleScript_DreamDrainActivates[];
 extern const u8 BattleScript_SpecialDeliveryActivates[];
 extern const u8 BattleScript_SwitchInAbilityMsg[];

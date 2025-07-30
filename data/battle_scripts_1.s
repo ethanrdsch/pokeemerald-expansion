@@ -3456,6 +3456,7 @@ BattleScript_RecoilIfMiss::
 	printstring STRINGID_PKMNCRASHED
 	waitmessage B_WAIT_TIME_LONG
 	jumpifability BS_ATTACKER, ABILITY_MAGIC_GUARD, BattleScript_RecoilEnd
+	jumpifability BS_ATTACKER, ABILITY_IMPENETRABLE, BattleScript_RecoilEnd
 	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE | HITMARKER_IGNORE_DISGUISE
 	healthbarupdate BS_ATTACKER
 	datahpupdate BS_ATTACKER
@@ -6417,6 +6418,7 @@ BattleScript_GulpMissileGorging::
 	hitanimation BS_ATTACKER
 	waitstate
 	jumpifability BS_ATTACKER, ABILITY_MAGIC_GUARD, BattleScript_GulpMissileNoDmgGorging
+	jumpifability BS_ATTACKER, ABILITY_IMPENETRABLE, BattleScript_GulpMissileNoDmgGorging
 	healthbarupdate BS_ATTACKER
 	datahpupdate BS_ATTACKER
 	tryfaintmon BS_ATTACKER
@@ -6444,6 +6446,7 @@ BattleScript_GulpMissileGulping::
 	hitanimation BS_ATTACKER
 	waitstate
 	jumpifability BS_ATTACKER, ABILITY_MAGIC_GUARD, BattleScript_GulpMissileNoDmgGulping
+	jumpifability BS_ATTACKER, ABILITY_IMPENETRABLE, BattleScript_GulpMissileNoDmgGulping
 	healthbarupdate BS_ATTACKER
 	datahpupdate BS_ATTACKER
 	tryfaintmon BS_ATTACKER
@@ -7328,6 +7331,7 @@ BattleScript_AftermathDmg::
 	pause B_WAIT_TIME_SHORT
 	call BattleScript_AbilityPopUpScripting
 	jumpifability BS_ATTACKER, ABILITY_MAGIC_GUARD, BattleScript_AftermathDmgRet
+	jumpifability BS_ATTACKER, ABILITY_IMPENETRABLE, BattleScript_AftermathDmgRet
 	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
 	healthbarupdate BS_ATTACKER
 	datahpupdate BS_ATTACKER
@@ -7541,6 +7545,7 @@ BattleScript_PrintPayDayMoneyString::
 
 BattleScript_WrapTurnDmg::
 	jumpifability BS_ATTACKER, ABILITY_MAGIC_GUARD, BattleScript_DoTurnDmgEnd
+	jumpifability BS_ATTACKER, ABILITY_IMPENETRABLE, BattleScript_DoTurnDmgEnd
 	playanimation BS_ATTACKER, B_ANIM_TURN_TRAP, sB_ANIM_ARG1
 	printstring STRINGID_PKMNHURTBY
 	waitmessage B_WAIT_TIME_LONG
@@ -7710,6 +7715,7 @@ BattleScript_MoveEffectRecoil::
 	jumpifmove MOVE_STRUGGLE, BattleScript_DoRecoil
 	jumpifability BS_ATTACKER, ABILITY_ROCK_HEAD, BattleScript_RecoilEnd
 	jumpifability BS_ATTACKER, ABILITY_MAGIC_GUARD, BattleScript_RecoilEnd
+	jumpifability BS_ATTACKER, ABILITY_IMPENETRABLE, BattleScript_RecoilEnd
 BattleScript_DoRecoil::
 	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE | HITMARKER_IGNORE_DISGUISE
 	healthbarupdate BS_ATTACKER
@@ -8377,7 +8383,9 @@ BattleScript_BadDreamsActivates::
 	setbyte gBattlerTarget, 0
 BattleScript_BadDreamsLoop:
 	jumpiftargetally BattleScript_BadDreamsIncrement
+	jumpiftargetally BattleScript_BadDreamsIncrement
 	jumpifability BS_TARGET, ABILITY_MAGIC_GUARD, BattleScript_BadDreamsIncrement
+	jumpifability BS_TARGET, ABILITY_IMPENETRABLE, BattleScript_BadDreamsIncrement
 	jumpifability BS_TARGET, ABILITY_COMATOSE, BattleScript_BadDreams_Dmg
 	jumpifstatus BS_TARGET, STATUS1_SLEEP, BattleScript_BadDreams_Dmg
 	goto BattleScript_BadDreamsIncrement
@@ -8414,6 +8422,7 @@ BattleScript_DreamDrainActivates::
 BattleScript_DreamDrainLoop:
 	jumpiftargetally BattleScript_DreamDrainIncrement
 	jumpifability BS_TARGET, ABILITY_MAGIC_GUARD, BattleScript_DreamDrainIncrement
+	jumpifability BS_TARGET, ABILITY_IMPENETRABLE, BattleScript_DreamDrainIncrement
 	jumpifability BS_TARGET, ABILITY_COMATOSE, BattleScript_DreamDrain_Dmg
 	jumpifstatus BS_TARGET, STATUS1_SLEEP, BattleScript_DreamDrain_Dmg
 	goto BattleScript_DreamDrainIncrement
@@ -8445,11 +8454,49 @@ BattleScript_DreamDrain_HidePopUp:
 	tryfaintmon BS_TARGET
 	goto BattleScript_DreamDrainIncrement
 
+BattleScript_LightsBaneActivates::
+	setbyte gBattlerTarget, 0
+BattleScript_LightsBaneLoop:
+	jumpiftargetally BattleScript_LightsBaneIncrement
+	jumpiffainted BS_TARGET, TRUE, BattleScript_LightsBaneIncrement
+	jumpifability BS_TARGET, ABILITY_MAGIC_GUARD, BattleScript_LightsBaneIncrement
+	jumpifability BS_TARGET, ABILITY_IMPENETRABLE, BattleScript_LightsBaneIncrement
+	jumpiftype BS_TARGET, TYPE_FAIRY, BattleScript_LightsBane_Dmg
+	goto BattleScript_LightsBaneIncrement
+BattleScript_LightsBane_Dmg:
+	jumpifbyteequal sFIXED_ABILITY_POPUP, sZero, BattleScript_LightsBane_ShowPopUp
+BattleScript_LightsBane_DmgAfterPopUp:
+	printstring STRINGID_BADDREAMSDMG
+	waitmessage B_WAIT_TIME_LONG
+	dmg_1_8_targethp
+	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
+	healthbarupdate BS_TARGET
+	datahpupdate BS_TARGET
+	jumpifhasnohp BS_TARGET, BattleScript_LightsBane_HidePopUp
+BattleScript_LightsBaneIncrement:
+	addbyte gBattlerTarget, 1
+	jumpifbytenotequal gBattlerTarget, gBattlersCount, BattleScript_LightsBaneLoop
+	jumpifbyteequal sFIXED_ABILITY_POPUP, sZero, BattleScript_LightsBaneEnd
+	destroyabilitypopup
+	pause 15
+BattleScript_LightsBaneEnd:
+	end3
+BattleScript_LightsBane_ShowPopUp:
+	copybyte gBattlerAbility, gBattlerAttacker
+	call BattleScript_AbilityPopUp
+	setbyte sFIXED_ABILITY_POPUP, TRUE
+	goto BattleScript_LightsBane_DmgAfterPopUp
+BattleScript_LightsBane_HidePopUp:
+	destroyabilitypopup
+	tryfaintmon BS_TARGET
+	goto BattleScript_LightsBaneIncrement
+
 BattleScript_SpecialDeliveryActivates::
 	setbyte gBattlerTarget, 0
 BattleScript_SpeicalDeliveryLoop:
 	jumpiftargetally BattleScript_SpeicalDeliveryIncrement
 	jumpifability BS_TARGET, ABILITY_MAGIC_GUARD, BattleScript_SpeicalDeliveryIncrement
+	jumpifability BS_TARGET, ABILITY_IMPENETRABLE, BattleScript_SpeicalDeliveryIncrement
 	jumpifability BS_TARGET, ABILITY_COMATOSE, BattleScript_SpeicalDelivery_Dmg
 	jumpifstatus BS_TARGET, STATUS1_SLEEP, BattleScript_SpeicalDelivery_Dmg
 	goto BattleScript_SpeicalDeliveryIncrement

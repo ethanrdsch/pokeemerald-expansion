@@ -2729,4 +2729,40 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
         .description = COMPOUND_STRING("Infatuates the target on-hit,\nregardless of gender."),
         .aiRating = 6,
     },
+
+    [ABILITY_SHARP_NOISE] =
+    {
+        .name = _("Sharp Noise"),
+        .description = COMPOUND_STRING("Sound moves use physical Attack, gain\na 30% power boost, and +1 crit rate."),
+        .aiRating = 4,
+    },
+
+    [ABILITY_IMPENETRABLE] =
+    {
+        .name = _("Impenetrable"),
+        .description = COMPOUND_STRING("Only take damage from\ndirect attacks."),
+        .aiRating = 9,
+    },
+
+    [ABILITY_COMPOSER] =
+    {
+        .name = _("Composer"),
+        .description = COMPOUND_STRING("Boosts sound moves by 20% each\ntime one is used consecutively."),
+        .aiRating = 4,
+    },
+
+    [ABILITY_LIGHTS_BANE] =
+    {
+        .name = _("Light's Bane"),
+        .description = COMPOUND_STRING("Resists Fairy. Fairy-type foes\ntake 1/8 max HP damage per turn."),
+        .aiRating = 6,
+        .breakable = TRUE,
+    },
+
+    [ABILITY_BINDING_GRIP] =
+    {
+        .name = _("Binding Grip"),
+        .description = COMPOUND_STRING("Binding moves last 5 turns,\ndeal 1/6 max HP in damage."),
+        .aiRating = 4,
+    },
 };

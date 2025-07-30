@@ -1872,6 +1872,8 @@ static void Cmd_ppreduce(void)
         // For item Metronome, echoed voice
         if (gCurrentMove != gLastResultingMoves[gBattlerAttacker] || WasUnableToUseMove(gBattlerAttacker))
             gBattleStruct->sameMoveTurns[gBattlerAttacker] = 0;
+        if (!(IsSoundMove(gCurrentMove)) || !(IsSoundMove(gLastResultingMoves[gBattlerAttacker])) || WasUnableToUseMove(gBattlerAttacker))
+            gBattleStruct->soundMoveTurns[gBattlerAttacker] = 0;
 
         if (gBattleMons[gBattlerAttacker].pp[gCurrMovePos] > ppToDeduct)
             gBattleMons[gBattlerAttacker].pp[gCurrMovePos] -= ppToDeduct;
@@ -1970,6 +1972,7 @@ s32 CalcCritChanceStage(u32 battlerAtk, u32 battlerDef, u32 move, bool32 recordA
                     + (abilityAtk == ABILITY_SUPER_LUCK)
                     + (abilityAtk == ABILITY_HYPER_CUTTER && MoveMakesContact(move))
                     + (abilityAtk == ABILITY_STARRY_FIST && IsPunchingMove(move))
+                    + (abilityAtk == ABILITY_SHARP_NOISE && IsSoundMove(move))
                     + gBattleStruct->bonusCritStages[gBattlerAttacker];
 
         if (critChance >= ARRAY_COUNT(sCriticalHitOdds))
@@ -3565,6 +3568,8 @@ void SetMoveEffect(bool32 primary, bool32 certain)
                     gBattleMons[gEffectBattler].status2 |= STATUS2_WRAPPED;
                     if (GetBattlerHoldEffect(gBattlerAttacker, TRUE) == HOLD_EFFECT_GRIP_CLAW)
                         gDisableStructs[gEffectBattler].wrapTurns = B_BINDING_TURNS >= GEN_5 ? 7 : 5;
+                    else if (GetBattlerAbility(gBattlerAttacker) == ABILITY_BINDING_GRIP)
+                        gDisableStructs[gEffectBattler].wrapTurns = 5;
                     else
                         gDisableStructs[gEffectBattler].wrapTurns = B_BINDING_TURNS >= GEN_5 ? (Random() % 2) + 4 : (Random() % 4) + 2;
 
@@ -3807,7 +3812,8 @@ void SetMoveEffect(bool32 primary, bool32 certain)
             case MOVE_EFFECT_FLAME_BURST:
                 if (IsBattlerAlive(BATTLE_PARTNER(gBattlerTarget))
                  && !(gStatuses3[BATTLE_PARTNER(gBattlerTarget)] & STATUS3_SEMI_INVULNERABLE)
-                 && GetBattlerAbility(BATTLE_PARTNER(gBattlerTarget)) != ABILITY_MAGIC_GUARD)
+                 && GetBattlerAbility(BATTLE_PARTNER(gBattlerTarget)) != ABILITY_MAGIC_GUARD
+                 && GetBattlerAbility(BATTLE_PARTNER(gBattlerTarget)) != ABILITY_IMPENETRABLE)
                 {
                     i = BATTLE_PARTNER(gBattlerTarget);
                     gBattleScripting.savedBattler = i;
@@ -4426,6 +4432,8 @@ void SetMoveEffect(bool32 primary, bool32 certain)
                         gBattleMons[battler].status2 |= STATUS2_WRAPPED;
                         if (GetBattlerHoldEffect(gBattlerAttacker, TRUE) == HOLD_EFFECT_GRIP_CLAW)
                             gDisableStructs[battler].wrapTurns = (B_BINDING_TURNS >= GEN_5) ? 7 : 5;
+                        else if (GetBattlerAbility(gBattlerAttacker) == ABILITY_BINDING_GRIP)
+                            gDisableStructs[gEffectBattler].wrapTurns = 5;
                         else
                             gDisableStructs[battler].wrapTurns = (Random() % 2) + 4;
                         // The Wrap effect does not expire when the user switches, so here's some cheese.
@@ -7145,7 +7153,8 @@ static void Cmd_moveend(void)
             case EFFECT_MIND_BLOWN:
                 if (IsBattlerAlive(gBattlerAttacker)
                  && !(gBattleStruct->moveResultFlags[gBattlerTarget] & MOVE_RESULT_FAILED)
-                 && GetBattlerAbility(gBattlerAttacker) != ABILITY_MAGIC_GUARD)
+                 && GetBattlerAbility(gBattlerAttacker) != ABILITY_MAGIC_GUARD
+                 && GetBattlerAbility(gBattlerAttacker) != ABILITY_IMPENETRABLE)
                 {
                     if (GetBattlerAbility(gBattlerAttacker) == ABILITY_LIMBER)
                         gBattleStruct->moveDamage[gBattlerAttacker] = (GetNonDynamaxMaxHP(gBattlerAttacker) + 1) / 4; // 25% of Max HP Rounded UP (bc of Limber)
@@ -7599,6 +7608,16 @@ static void Cmd_moveend(void)
                 gBattleStruct->sameMoveTurns[gBattlerAttacker] = 0;
             else if (gCurrentMove == gLastResultingMoves[gBattlerAttacker] && gSpecialStatuses[gBattlerAttacker].parentalBondState != PARENTAL_BOND_1ST_HIT)
                 gBattleStruct->sameMoveTurns[gBattlerAttacker]++;
+            gBattleScripting.moveendState++;
+            break;
+        case MOVEEND_SOUND_MOVE_TURNS:
+            if (!(IsSoundMove(gCurrentMove)) || !(IsSoundMove(gLastResultingMoves[gBattlerAttacker]))
+             || gBattleStruct->moveResultFlags[gBattlerTarget] & MOVE_RESULT_NO_EFFECT
+             || gHitMarker & HITMARKER_UNABLE_TO_USE_MOVE)
+                gBattleStruct->soundMoveTurns[gBattlerAttacker] = 0;
+            else if (IsSoundMove(gCurrentMove) && IsSoundMove(gLastResultingMoves[gBattlerAttacker])
+             && gCurrentMove != gLastResultingMoves[gBattlerAttacker])
+                gBattleStruct->soundMoveTurns[gBattlerAttacker]++;
             gBattleScripting.moveendState++;
             break;
         case MOVEEND_CHANGED_ITEMS:
@@ -8466,6 +8485,7 @@ static bool32 DoSwitchInEffectsForBattler(u32 battler)
         && GetBattlerAbility(battler) != ABILITY_SHIELD_DUST
         && GetBattlerAbility(battler) != ABILITY_POWDER_SHIELD
         && GetBattlerAbility(battler) != ABILITY_LIGHT_METAL
+        && GetBattlerAbility(battler) != ABILITY_IMPENETRABLE
         && IsBattlerAffectedByHazards(battler, FALSE)
         && IsBattlerGrounded(battler))
     {
@@ -8483,7 +8503,8 @@ static bool32 DoSwitchInEffectsForBattler(u32 battler)
         && GetBattlerAbility(battler) != ABILITY_MAGIC_GUARD
         && GetBattlerAbility(battler) != ABILITY_SHIELD_DUST
         && GetBattlerAbility(battler) != ABILITY_POWDER_SHIELD
-        && GetBattlerAbility(battler) != ABILITY_LIGHT_METAL)
+        && GetBattlerAbility(battler) != ABILITY_LIGHT_METAL
+        && GetBattlerAbility(battler) != ABILITY_IMPENETRABLE)
     {
         gDisableStructs[battler].stealthRockDone = TRUE;
         gBattleStruct->moveDamage[battler] = GetStealthHazardDamage(TYPE_SIDE_HAZARD_POINTED_STONES, battler);
@@ -8549,7 +8570,8 @@ static bool32 DoSwitchInEffectsForBattler(u32 battler)
         && GetBattlerAbility(battler) != ABILITY_MAGIC_GUARD
         && GetBattlerAbility(battler) != ABILITY_SHIELD_DUST
         && GetBattlerAbility(battler) != ABILITY_POWDER_SHIELD
-        && GetBattlerAbility(battler) != ABILITY_LIGHT_METAL)
+        && GetBattlerAbility(battler) != ABILITY_LIGHT_METAL
+        && GetBattlerAbility(battler) != ABILITY_IMPENETRABLE)
     {
         gDisableStructs[battler].steelSurgeDone = TRUE;
         gBattleStruct->moveDamage[battler] = GetStealthHazardDamage(TYPE_SIDE_HAZARD_SHARP_STEEL, battler);
@@ -18235,7 +18257,8 @@ void BS_TryActivateGulpMissile(void)
         && gBattleMons[gBattlerTarget].species != SPECIES_CRAMORANT
         && GetBattlerAbility(gBattlerTarget) == ABILITY_GULP_MISSILE)
     {
-        if (GetBattlerAbility(gBattlerAttacker) != ABILITY_MAGIC_GUARD)
+        if (GetBattlerAbility(gBattlerAttacker) != ABILITY_MAGIC_GUARD
+            || GetBattlerAbility(gBattlerAttacker) != ABILITY_IMPENETRABLE)
         {
             gBattleStruct->moveDamage[gBattlerTarget] = GetNonDynamaxMaxHP(gBattlerAttacker) / 4;
             if (gBattleStruct->moveDamage[gBattlerTarget] == 0)

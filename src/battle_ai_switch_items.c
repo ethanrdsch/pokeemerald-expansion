@@ -713,7 +713,7 @@ static bool32 ShouldSwitchIfBadlyStatused(u32 battler)
         }
 
         // Secondary Damage
-        if (monAbility != ABILITY_MAGIC_GUARD
+        if (monAbility != ABILITY_MAGIC_GUARD && monAbility != ABILITY_IMPENETRABLE
             && !AiExpectsToFaintPlayer(battler)
             && gAiLogicData->mostSuitableMonId[battler] != PARTY_SIZE)
         {
@@ -1560,7 +1560,8 @@ static u32 GetSwitchinHazardsDamage(u32 battler, struct BattlePokemon *battleMon
     u32 hazardFlags = gSideStatuses[GetBattlerSide(battler)] & (SIDE_STATUS_SPIKES | SIDE_STATUS_STEALTH_ROCK | SIDE_STATUS_STICKY_WEB | SIDE_STATUS_TOXIC_SPIKES | SIDE_STATUS_SAFEGUARD);
 
     // Check ways mon might avoid all hazards
-    if (ability != ABILITY_MAGIC_GUARD 
+    if (ability != ABILITY_MAGIC_GUARD
+        || ability != ABILITY_IMPENETRABLE
         || ability != ABILITY_SHIELD_DUST 
         || ability != ABILITY_LIGHT_METAL 
         || ability != ABILITY_POWDER_SHIELD
@@ -1620,7 +1621,7 @@ static s32 GetSwitchinWeatherImpact(void)
     if (HasWeatherEffect())
     {
         // Damage
-        if (holdEffect != HOLD_EFFECT_SAFETY_GOGGLES && ability != ABILITY_MAGIC_GUARD && ability != ABILITY_OVERCOAT)
+        if (holdEffect != HOLD_EFFECT_SAFETY_GOGGLES && ability != ABILITY_MAGIC_GUARD && ability != ABILITY_OVERCOAT && ability != ABILITY_IMPENETRABLE)
         {
             if ((gBattleWeather & B_WEATHER_HAILSTORM)
              && (gAiLogicData->switchinCandidate.battleMon.types[0] != TYPE_ICE || gAiLogicData->switchinCandidate.battleMon.types[1] != TYPE_ICE)
@@ -1716,7 +1717,7 @@ static u32 GetSwitchinRecurringDamage(void)
     enum ItemHoldEffect holdEffect = GetItemHoldEffect(gAiLogicData->switchinCandidate.battleMon.item);
 
     // Items
-    if (ability != ABILITY_MAGIC_GUARD && ability != ABILITY_KLUTZ)
+    if (ability != ABILITY_MAGIC_GUARD && ability != ABILITY_KLUTZ && ability != ABILITY_IMPENETRABLE)
     {
         if (holdEffect == HOLD_EFFECT_BLACK_SLUDGE && gAiLogicData->switchinCandidate.battleMon.types[0] != TYPE_POISON && gAiLogicData->switchinCandidate.battleMon.types[1] != TYPE_POISON)
         {
@@ -1750,7 +1751,9 @@ static u32 GetSwitchinStatusDamage(u32 battler)
     u32 statusDamage = 0;
 
     // Status condition damage
-    if ((status != 0) && gAiLogicData->switchinCandidate.battleMon.ability != ABILITY_MAGIC_GUARD)
+    if ((status != 0) 
+        && gAiLogicData->switchinCandidate.battleMon.ability != ABILITY_MAGIC_GUARD
+        && gAiLogicData->switchinCandidate.battleMon.ability != ABILITY_IMPENETRABLE)
     {
         if (status & STATUS1_BURN)
         {

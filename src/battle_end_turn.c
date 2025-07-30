@@ -110,7 +110,7 @@ enum FourthEventBlock
 
 static inline bool32 IsBattlerProtectedByMagicGuard(u32 battler, u32 ability)
 {
-    if (ability != ABILITY_MAGIC_GUARD)
+    if (ability != ABILITY_MAGIC_GUARD && ability != ABILITY_IMPENETRABLE)
         return FALSE;
 
     RecordAbilityBattle(battler, ability);
@@ -779,7 +779,8 @@ static bool32 HandleEndTurnWrap(u32 battler)
             gBattleScripting.animArg2 = gBattleStruct->wrappedMove[battler] >> 8;
             PREPARE_MOVE_BUFFER(gBattleTextBuff1, gBattleStruct->wrappedMove[battler]);
             BattleScriptExecute(BattleScript_WrapTurnDmg);
-            if (GetBattlerHoldEffect(gBattleStruct->wrappedBy[battler], TRUE) == HOLD_EFFECT_BINDING_BAND)
+            if (GetBattlerHoldEffect(gBattleStruct->wrappedBy[battler], TRUE) == HOLD_EFFECT_BINDING_BAND
+                || GetBattlerAbility(gBattleStruct->wrappedBy[battler]) == ABILITY_BINDING_GRIP)
                 gBattleStruct->moveDamage[battler] = GetNonDynamaxMaxHP(battler) / (B_BINDING_DAMAGE >= GEN_6 ? 6 : 8);
             else
                 gBattleStruct->moveDamage[battler] = GetNonDynamaxMaxHP(battler) / (B_BINDING_DAMAGE >= GEN_6 ? 8 : 16);
@@ -1420,6 +1421,7 @@ static bool32 HandleEndTurnThirdEventBlock(u32 battler)
         case ABILITY_SLOW_START:
         case ABILITY_BAD_DREAMS:
         case ABILITY_DREAM_DRAIN:
+        case ABILITY_LIGHTS_BANE:
         case ABILITY_BALL_FETCH:
         case ABILITY_HARVEST:
         case ABILITY_MOODY:

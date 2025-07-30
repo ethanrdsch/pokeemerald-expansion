@@ -42201,7 +42201,7 @@ F_TRAINER_FEMALE |
         {
             {
 #line 16886
-            .species = SPECIES_LATIOS,
+            .species = SPECIES_SLURPUFF,
             .gender = TRAINER_MON_RANDOM_GENDER,
 #line 16887
             .iv = TRAINER_PARTY_IVS(31, 31, 31, 31, 31, 31),
@@ -42211,7 +42211,7 @@ F_TRAINER_FEMALE |
             .dynamaxLevel = MAX_DYNAMAX_LEVEL,
             .moves = {
 #line 16887
-                MOVE_RECYCLE,
+                MOVE_BABY_DOLL_EYES,
             },
             },
             {

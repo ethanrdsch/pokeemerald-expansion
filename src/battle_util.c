@@ -1712,7 +1712,7 @@ s32 GetDrainedBigRootHp(u32 battler, s32 hp)
 // This should always be the last check. Otherwise the ability might be recorded when it is not supposed to be
 bool32 IsMagicGuardProtected(u32 battler, u32 ability)
 {
-    if (ability != ABILITY_MAGIC_GUARD)
+    if (ability != ABILITY_MAGIC_GUARD || ability != ABILITY_IMPENETRABLE)
         return FALSE;
 
     RecordAbilityBattle(battler, ability);
@@ -2205,6 +2205,7 @@ static void CancellerParalysed(u32 *effect)
     if (!gBattleStruct->isAtkCancelerForCalledMove
         && (gBattleMons[gBattlerAttacker].status1 & STATUS1_PARALYSIS)
         && !(B_MAGIC_GUARD == GEN_4 && GetBattlerAbility(gBattlerAttacker) == ABILITY_MAGIC_GUARD)
+        && !(B_MAGIC_GUARD == GEN_4 && GetBattlerAbility(gBattlerAttacker) == ABILITY_IMPENETRABLE)
         && !RandomPercentage(RNG_PARALYSIS, 75))
     {
         gProtectStructs[gBattlerAttacker].nonVolatileStatusImmobility = TRUE;
@@ -2334,7 +2335,7 @@ static void CancellerPowderStatus(u32 *effect)
     if (TryActivatePowderStatus(gCurrentMove))
     {
         gProtectStructs[gBattlerAttacker].powderSelfDmg = TRUE;
-        if (GetBattlerAbility(gBattlerAttacker) != ABILITY_MAGIC_GUARD)
+        if (GetBattlerAbility(gBattlerAttacker) != ABILITY_MAGIC_GUARD && GetBattlerAbility(gBattlerAttacker) != ABILITY_IMPENETRABLE)
             gBattleStruct->moveDamage[gBattlerAttacker] = GetNonDynamaxMaxHP(gBattlerAttacker) / 4;
 
         if (GetActiveGimmick(gBattlerAttacker) != GIMMICK_Z_MOVE
@@ -4601,6 +4602,10 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                 BattleScriptPushCursorAndCallback(BattleScript_DreamDrainActivates);
                 effect++;
                 break;
+            case ABILITY_LIGHTS_BANE:
+                BattleScriptPushCursorAndCallback(BattleScript_LightsBaneActivates);
+                effect++;
+                break;
             case ABILITY_SPECIAL_DELIVERY:
                 BattleScriptPushCursorAndCallback(BattleScript_SpecialDeliveryActivates);
                 effect++;
@@ -5184,7 +5189,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
              && IsBattlerAlive(gBattlerAttacker)
              && gBattleMons[gBattlerTarget].species != SPECIES_CRAMORANT)
             {
-                if (GetBattlerAbility(gBattlerAttacker) != ABILITY_MAGIC_GUARD)
+                if (GetBattlerAbility(gBattlerAttacker) != ABILITY_MAGIC_GUARD && GetBattlerAbility(gBattlerAttacker) != ABILITY_IMPENETRABLE)
                 {
                     gBattleStruct->moveDamage[gBattlerAttacker] = GetNonDynamaxMaxHP(gBattlerAttacker) / 4;
                     if (gBattleStruct->moveDamage[gBattlerAttacker] == 0)
@@ -7415,7 +7420,7 @@ u32 ItemBattleEffects(enum ItemCaseId caseID, u32 battler, bool32 moveTurn)
                 {
                     goto LEFTOVERS;
                 }
-                else if (GetBattlerAbility(battler) != ABILITY_MAGIC_GUARD && !moveTurn)
+                else if (GetBattlerAbility(battler) != ABILITY_MAGIC_GUARD && GetBattlerAbility(battler) != ABILITY_IMPENETRABLE && !moveTurn)
                 {
                     gBattleStruct->moveDamage[battler] = GetNonDynamaxMaxHP(battler) / 8;
                     if (gBattleStruct->moveDamage[battler] == 0)
@@ -7696,6 +7701,7 @@ u32 ItemBattleEffects(enum ItemCaseId caseID, u32 battler, bool32 moveTurn)
                 && !IsBattleMoveStatus(gCurrentMove)
                 && (IsBattlerTurnDamaged(gBattlerTarget) || !(gBattleStruct->moveResultFlags[gBattlerTarget] & MOVE_RESULT_NO_EFFECT)) // Needs the second check in case of Substitute
                 && GetBattlerAbility(gBattlerAttacker) != ABILITY_MAGIC_GUARD
+                && GetBattlerAbility(gBattlerAttacker) != ABILITY_IMPENETRABLE
                 && !gProtectStructs[gBattlerAttacker].confusionSelfDmg
                 && !IsFutureSightAttackerInParty(gBattlerAttacker, gBattlerTarget, gCurrentMove))
             {
@@ -7745,7 +7751,8 @@ u32 ItemBattleEffects(enum ItemCaseId caseID, u32 battler, bool32 moveTurn)
                 if (IsBattlerTurnDamaged(gBattlerTarget)
                     && !CanBattlerAvoidContactEffects(gBattlerAttacker, gBattlerTarget, GetBattlerAbility(gBattlerAttacker), GetBattlerHoldEffect(gBattlerAttacker, TRUE), gCurrentMove)
                     && IsBattlerAlive(gBattlerAttacker)
-                    && GetBattlerAbility(gBattlerAttacker) != ABILITY_MAGIC_GUARD)
+                    && GetBattlerAbility(gBattlerAttacker) != ABILITY_MAGIC_GUARD
+                    && GetBattlerAbility(gBattlerAttacker) != ABILITY_IMPENETRABLE)
                 {
                     gBattleStruct->moveDamage[gBattlerAttacker] = GetNonDynamaxMaxHP(gBattlerAttacker) / 6;
                     if (gBattleStruct->moveDamage[gBattlerAttacker] == 0)
@@ -7819,7 +7826,8 @@ u32 ItemBattleEffects(enum ItemCaseId caseID, u32 battler, bool32 moveTurn)
                  && IsBattlerTurnDamaged(gBattlerTarget)
                  && !DoesSubstituteBlockMove(gBattlerAttacker, battler, gCurrentMove)
                  && IsBattleMovePhysical(gCurrentMove)
-                 && GetBattlerAbility(gBattlerAttacker) != ABILITY_MAGIC_GUARD)
+                 && GetBattlerAbility(gBattlerAttacker) != ABILITY_MAGIC_GUARD
+                 && GetBattlerAbility(gBattlerAttacker) != ABILITY_IMPENETRABLE)
                 {
                     gBattleStruct->moveDamage[gBattlerAttacker] = GetNonDynamaxMaxHP(gBattlerAttacker) / 8;
                     if (gBattleStruct->moveDamage[gBattlerAttacker] == 0)
@@ -7839,7 +7847,8 @@ u32 ItemBattleEffects(enum ItemCaseId caseID, u32 battler, bool32 moveTurn)
                  && IsBattlerTurnDamaged(gBattlerTarget)
                  && !DoesSubstituteBlockMove(gBattlerAttacker, battler, gCurrentMove)
                  && IsBattleMoveSpecial(gCurrentMove)
-                 && GetBattlerAbility(gBattlerAttacker) != ABILITY_MAGIC_GUARD)
+                 && GetBattlerAbility(gBattlerAttacker) != ABILITY_MAGIC_GUARD
+                 && GetBattlerAbility(gBattlerAttacker) != ABILITY_IMPENETRABLE)
                 {
                     gBattleStruct->moveDamage[gBattlerAttacker] = GetNonDynamaxMaxHP(gBattlerAttacker) / 8;
                     if (gBattleStruct->moveDamage[gBattlerAttacker] == 0)
@@ -7918,7 +7927,7 @@ u32 ItemBattleEffects(enum ItemCaseId caseID, u32 battler, bool32 moveTurn)
             }
             break;
         case HOLD_EFFECT_STICKY_BARB:   // Not an orb per se, but similar effect, and needs to NOT activate with pickpocket
-            if (battlerAbility != ABILITY_MAGIC_GUARD)
+            if (battlerAbility != ABILITY_MAGIC_GUARD && battlerAbility != ABILITY_IMPENETRABLE)
             {
                 gBattleStruct->moveDamage[battler] = GetNonDynamaxMaxHP(battler) / 8;
                 if (gBattleStruct->moveDamage[battler] == 0)
@@ -8994,6 +9003,14 @@ static inline u32 CalcMoveBasePowerAfterModifiers(struct DamageCalculationData *
         if (IsPunchingMove(move))
            modifier = uq4_12_multiply(modifier, UQ_4_12(1.5));
         break;
+    case ABILITY_SHARP_NOISE:
+        if (IsSoundMove(move))
+           modifier = uq4_12_multiply(modifier, UQ_4_12(1.3));
+        break;
+    case ABILITY_COMPOSER:
+        if (IsSoundMove(move))
+           modifier = uq4_12_add(UQ_4_12(1.0), UQ_4_12(200) * min(gBattleStruct->soundMoveTurns[battlerAtk], 5));
+        break;
     case ABILITY_STRIKER:
         if (IsKickingMove(move))
            modifier = uq4_12_multiply(modifier, UQ_4_12(1.3));
@@ -9339,6 +9356,11 @@ static inline u32 CalcAttackStat(struct DamageCalculationData *damageCalcData, u
     {
         atkStat  = gBattleMons[battlerAtk].spAttack;
         atkStage = gBattleMons[battlerAtk].statStages[STAT_SPATK];
+    }
+    else if (atkAbility == ABILITY_SHARP_NOISE && IsSoundMove(move))
+    {
+        atkStat  = gBattleMons[battlerAtk].attack;
+        atkStage = gBattleMons[battlerAtk].statStages[STAT_ATK];
     }
     else
     {
@@ -10471,6 +10493,13 @@ static inline void MulByTypeEffectiveness(uq4_12_t *modifier, u32 move, u32 move
             gSpecialStatuses[battlerDef].distortedTypeMatchups = TRUE;
             gSpecialStatuses[battlerDef].teraShellAbilityDone = TRUE;
         }
+    }
+
+    if (defAbility == ABILITY_LIGHTS_BANE && moveType == TYPE_FAIRY)
+    {
+        mod = UQ_4_12(0.5);
+        if (recordAbilities)
+            RecordAbilityBattle(battlerDef, defAbility);
     }
 
     *modifier = uq4_12_multiply(*modifier, mod);
