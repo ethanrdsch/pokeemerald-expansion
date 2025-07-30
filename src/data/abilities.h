@@ -2765,4 +2765,18 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
         .description = COMPOUND_STRING("Binding moves last 5 turns,\ndeal 1/6 max HP in damage."),
         .aiRating = 4,
     },
+
+    [ABILITY_WOODWORKER] =
+    {
+        .name = _("Woodworker"),
+        .description = COMPOUND_STRING("Boosts the power of Grass\nmoves by 50%."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_MIND_WIPE] =
+    {
+        .name = _("Mind Wipe"),
+        .description = COMPOUND_STRING("Casts Disable when hit\nbelow half of max HP."),
+        .aiRating = 5,
+    },
 };

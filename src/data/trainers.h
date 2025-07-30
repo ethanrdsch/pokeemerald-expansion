@@ -42211,7 +42211,7 @@ F_TRAINER_FEMALE |
             .dynamaxLevel = MAX_DYNAMAX_LEVEL,
             .moves = {
 #line 16887
-                MOVE_BABY_DOLL_EYES,
+                MOVE_FAIRY_WIND,
             },
             },
             {
