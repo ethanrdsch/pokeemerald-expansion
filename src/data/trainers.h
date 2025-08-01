@@ -42193,7 +42193,7 @@ F_TRAINER_FEMALE |
 #line 16882
             TRAINER_ENCOUNTER_MUSIC_FEMALE,
 #line 16883
-        .battleType = TRAINER_BATTLE_TYPE_SINGLES,
+        .battleType = TRAINER_BATTLE_TYPE_DOUBLES,
 #line 16884
         .aiFlags = AI_FLAG_BASIC_TRAINER,
         .partySize = 2,
@@ -42211,21 +42211,23 @@ F_TRAINER_FEMALE |
             .dynamaxLevel = MAX_DYNAMAX_LEVEL,
             .moves = {
 #line 16887
-                MOVE_FAIRY_WIND,
+                MOVE_RECYCLE,
             },
             },
             {
 #line 16889
-            .species = SPECIES_LATIAS,
+            .species = SPECIES_MALAMAR,
             .gender = TRAINER_MON_RANDOM_GENDER,
-#line 16890
+#line 16891
             .iv = TRAINER_PARTY_IVS(31, 31, 31, 31, 31, 31),
 #line 16890
+            .ability = ABILITY_CONTRARY,
+#line 16891
             .lvl = 100,
             .nature = NATURE_HARDY,
             .dynamaxLevel = MAX_DYNAMAX_LEVEL,
             .moves = {
-#line 16890
+#line 16891
                 MOVE_RECYCLE,
             },
             },

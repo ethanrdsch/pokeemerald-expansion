@@ -8140,6 +8140,89 @@ BattleScript_SupersweetSyrupContrary_WontIncrease:
 	printstring STRINGID_TARGETSTATWONTGOHIGHER
 	goto BattleScript_SupersweetSyrupEffect_WaitString
 
+BattleScript_AlluringOdorActivates::
+ 	savetarget
+.if B_ABILITY_POP_UP == TRUE
+	showabilitypopup BS_ATTACKER
+	pause B_WAIT_TIME_LONG
+	destroyabilitypopup
+.endif
+	playmoveanimation BS_ATTACKER, MOVE_SWEET_SCENT
+	printstring STRINGID_SUPERSWEETAROMAWAFTS
+	waitmessage B_WAIT_TIME_LONG
+	healpartystatus
+	updatestatusicon BS_ATTACKER_WITH_PARTNER
+	setbyte gBattlerTarget, 0
+BattleScript_AlluringOdorLoop:
+	jumpifbyteequal gBattlerTarget, gBattlerAttacker, BattleScript_AlluringOdorLoopIncrement
+	jumpiftargetally BattleScript_AlluringOdorLoopIncrement
+	jumpifabsent BS_TARGET, BattleScript_AlluringOdorLoopIncrement
+	jumpifstatus2 BS_TARGET, STATUS2_SUBSTITUTE, BattleScript_AlluringOdorLoopIncrement
+BattleScript_AlluringOdorEffect:
+	copybyte sBATTLER, gBattlerAttacker
+	setstatchanger STAT_EVASION, 2, TRUE
+	statbuffchange STAT_CHANGE_NOT_PROTECT_AFFECTED | STAT_CHANGE_ALLOW_PTR, BattleScript_AlluringOdorLoopIncrement
+	setgraphicalstatchangevalues
+	jumpifability BS_TARGET, ABILITY_CONTRARY, BattleScript_AlluringOdorContrary
+	jumpifbyte CMP_EQUAL, cMULTISTRING_CHOOSER, B_MSG_STAT_WONT_DECREASE, BattleScript_AlluringOdorWontDecrease
+	playanimation BS_TARGET, B_ANIM_STATS_CHANGE, sB_ANIM_ARG1
+	printfromtable gStatDownStringIds
+BattleScript_AlluringOdorEffect_WaitString:
+	waitmessage B_WAIT_TIME_LONG
+	copybyte sBATTLER, gBattlerTarget
+	call BattleScript_TryIntimidateHoldEffects
+BattleScript_AlluringOdorLoopIncrement:
+	addbyte gBattlerTarget, 1
+	jumpifbytenotequal gBattlerTarget, gBattlersCount, BattleScript_AlluringOdorLoop
+	copybyte sBATTLER, gBattlerAttacker
+	destroyabilitypopup
+	restoretarget
+	pause B_WAIT_TIME_MED
+	tryintimidateejectpack
+	end3
+
+BattleScript_AlluringOdorWontDecrease:
+	printstring STRINGID_STATSWONTDECREASE
+	goto BattleScript_AlluringOdorEffect_WaitString
+
+BattleScript_AlluringOdorContrary:
+	call BattleScript_AbilityPopUpTarget
+	jumpifbyte CMP_EQUAL, cMULTISTRING_CHOOSER, B_MSG_STAT_WONT_INCREASE, BattleScript_AlluringOdorContrary_WontIncrease
+	playanimation BS_TARGET, B_ANIM_STATS_CHANGE, sB_ANIM_ARG1
+	printfromtable gStatUpStringIds
+	goto BattleScript_AlluringOdorEffect_WaitString
+BattleScript_AlluringOdorContrary_WontIncrease:
+	printstring STRINGID_TARGETSTATWONTGOHIGHER
+	goto BattleScript_AlluringOdorEffect_WaitString
+
+BattleScript_MonsterMashActivates::
+ 	savetarget
+.if B_ABILITY_POP_UP == TRUE
+	showabilitypopup BS_ATTACKER
+	pause B_WAIT_TIME_LONG
+	destroyabilitypopup
+.endif
+	setbyte gBattlerTarget, 0
+BattleScript_MonsterMashLoop:
+	jumpifbyteequal gBattlerTarget, gBattlerAttacker, BattleScript_MonsterMashLoopIncrement
+	jumpiftargetally BattleScript_MonsterMashLoopIncrement
+	playmoveanimation BS_ATTACKER, MOVE_TRICK_OR_TREAT
+	jumpifabsent BS_TARGET, BattleScript_MonsterMashLoopIncrement
+	jumpifstatus2 BS_TARGET, STATUS2_SUBSTITUTE, BattleScript_MonsterMashLoopIncrement
+BattleScript_MonsterMashEffect:
+	copybyte sBATTLER, gBattlerAttacker
+	trysetthirdtypeghost BS_TARGET, BattleScript_MonsterMashLoopIncrement
+	printstring STRINGID_THIRDTYPEADDED
+	waitmessage B_WAIT_TIME_LONG
+	copybyte sBATTLER, gBattlerTarget
+BattleScript_MonsterMashLoopIncrement:
+	addbyte gBattlerTarget, 1
+	jumpifbytenotequal gBattlerTarget, gBattlersCount, BattleScript_MonsterMashLoop
+	copybyte sBATTLER, gBattlerAttacker
+	destroyabilitypopup
+	restoretarget
+	pause B_WAIT_TIME_MED
+	end3
 BattleScript_DroughtActivates::
 	pause B_WAIT_TIME_SHORT
 	call BattleScript_AbilityPopUp

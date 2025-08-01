@@ -330,6 +330,7 @@ const u8 gText_EnjoyCycling[] = _("Let's enjoy cycling!");
 const u8 gText_InUseAlready_PM[] = _("This is in use already.");
 const u8 gText_AlreadyHoldingOne[] = _("{STR_VAR_1} is already holding\none {STR_VAR_2}.");
 const u8 gText_WhichAppliance[] = _("Order which\nappliance?");
+const u8 gText_WhichStyle[] = _("Which style?");
 const u8 gText_NoUse[] = _("No use.");
 const u8 gText_Able[] = _("Able");
 const u8 gText_First_PM[] = _("First");

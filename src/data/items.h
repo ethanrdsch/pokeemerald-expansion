@@ -14284,4 +14284,20 @@ const struct Item gItemsInfo[] =
         .iconPic = gItemIcon_PokeshiDoll,
         .iconPalette = gItemIconPalette_PokeshiDoll,
     },
+
+    [ITEM_STYLE_KIT] =
+    {
+        .name = _("Style Kit"),
+        .price = 0,
+        .importance = 1,
+        .description = COMPOUND_STRING(
+            "A case full of\n"
+            "supplies for\n"
+            "styling Furfrou."),
+        .pocket = POCKET_KEY_ITEMS,
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_StyleKit,
+        .iconPic = gItemIcon_StyleKit,
+        .iconPalette = gItemIconPalette_StyleKit,
+    },
 };

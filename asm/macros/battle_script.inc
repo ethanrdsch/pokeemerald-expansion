@@ -2100,6 +2100,11 @@
 	.4byte \failInstr
 	.endm
 
+	.macro trysetthirdtypeghost battler:req, failInstr:req
+	various \battler, VARIOUS_TRY_THIRD_TYPE_GHOST
+	.4byte \failInstr
+	.endm
+
 	.macro tryaccupressure battler:req, failInstr:req
 	various \battler, VARIOUS_ACUPRESSURE
 	.4byte \failInstr

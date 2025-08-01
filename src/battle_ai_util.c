@@ -4738,6 +4738,7 @@ bool32 IsMoxieTypeAbility(u32 ability)
     switch (ability)
     {
     case ABILITY_MOXIE:
+    case ABILITY_HUBRIS:
     case ABILITY_BEAST_BOOST:
     case ABILITY_CHILLING_NEIGH:
     case ABILITY_AS_ONE_ICE_RIDER:
@@ -4779,6 +4780,7 @@ bool32 ShouldTriggerAbility(u32 battler, u32 ability)
             return (BattlerStatCanRise(battler, ability, STAT_ATK) && HasMoveWithCategory(battler, DAMAGE_CATEGORY_PHYSICAL));
 
         case ABILITY_COMPETITIVE:
+        case ABILITY_HUBRIS:
             return (BattlerStatCanRise(battler, ability, STAT_SPATK) && HasMoveWithCategory(battler, DAMAGE_CATEGORY_SPECIAL));
 
         case ABILITY_VITAL_SPIRIT:

@@ -2779,4 +2779,33 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
         .description = COMPOUND_STRING("Casts Disable when hit\nbelow half of max HP."),
         .aiRating = 5,
     },
+
+    [ABILITY_HUBRIS] =
+    {
+        .name = _("Hubris"),
+        .description = COMPOUND_STRING("+1 Sp. Atk after knocking out\nanother Pokémon."),
+        .aiRating = 7,
+    },
+
+    [ABILITY_ALLURING_ODOR] =
+    {
+        .name = _("Alluring Odor"),
+        .description = COMPOUND_STRING("On switch-in, heals the party's status\nand sharply drops foes' evasion."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_PRIMAL_ARMOR] =
+    {
+        .name = _("Primal Armor"),
+        .description = COMPOUND_STRING("Take 50% less damage from\n“supereffective” attacks."),
+        .aiRating = 8,
+        .breakable = TRUE,
+    },
+
+    [ABILITY_MONSTER_MASH] =
+    {
+        .name = _("Monster Mash"),
+        .description = COMPOUND_STRING("On switch-in, adds the\nGhost type to foes."),
+        .aiRating = 6,
+    },
 };

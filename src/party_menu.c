@@ -104,6 +104,16 @@ enum {
     MENU_CATALOG_FRIDGE,
     MENU_CATALOG_FAN,
     MENU_CATALOG_MOWER,
+    MENU_STYLE_NATURAL,
+    MENU_STYLE_HEART,
+    MENU_STYLE_STAR,
+    MENU_STYLE_DIAMOND,
+    MENU_STYLE_DEBUTANTE,
+    MENU_STYLE_MATRON,
+    MENU_STYLE_DANDY,
+    MENU_STYLE_LAREINE,
+    MENU_STYLE_KABUKI,
+    MENU_STYLE_PHARAOH,
     MENU_CHANGE_FORM,
     MENU_CHANGE_ABILITY,
     MENU_FIELD_MOVES
@@ -127,6 +137,7 @@ enum {
     ACTIONS_TAKEITEM_TOSS,
     ACTIONS_ROTOM_CATALOG,
     ACTIONS_ZYGARDE_CUBE,
+    ACTIONS_STYLE_KIT,
 };
 
 // In CursorCb_FieldMove, field moves <= FIELD_MOVE_WATERFALL are assumed to line up with the badge flags.
@@ -219,7 +230,7 @@ struct PartyMenuInternal
     u32 spriteIdCancelPokeball:7;
     u32 messageId:14;
     u8 windowId[3];
-    u8 actions[8];
+    u8 actions[11];
     u8 numActions;
     // In vanilla Emerald, only the first 0xB0 hwords (0x160 bytes) are actually used.
     // However, a full 0x100 hwords (0x200 bytes) are allocated.
@@ -512,6 +523,16 @@ static void CursorCb_CatalogWashing(u8);
 static void CursorCb_CatalogFridge(u8);
 static void CursorCb_CatalogFan(u8);
 static void CursorCb_CatalogMower(u8);
+static void CursorCb_StyleNatural(u8);
+static void CursorCb_StyleHeart(u8);
+static void CursorCb_StyleStar(u8);
+static void CursorCb_StyleDiamond(u8);
+static void CursorCb_StyleDebutante(u8);
+static void CursorCb_StyleMatron(u8);
+static void CursorCb_StyleDandy(u8);
+static void CursorCb_StyleLaReine(u8);
+static void CursorCb_StyleKabuki(u8);
+static void CursorCb_StylePharaoh(u8);
 static void CursorCb_ChangeForm(u8);
 static void CursorCb_ChangeAbility(u8);
 static bool8 SetUpFieldMove_Surf(void);
@@ -2699,6 +2720,7 @@ static void PartyMenuRemoveWindow(u8 *ptr)
 void DisplayPartyMenuStdMessage(u32 stringId)
 {
     u8 *windowPtr = &sPartyMenuInternal->windowId[1];
+    u8 font = FONT_NORMAL;
 
     if (*windowPtr != WINDOW_NONE)
         PartyMenuRemoveWindow(windowPtr);
@@ -2726,6 +2748,10 @@ void DisplayPartyMenuStdMessage(u32 stringId)
         case PARTY_MSG_WHICH_APPLIANCE:
             *windowPtr = AddWindow(&sOrderWhichApplianceMsgWindowTemplate);
             break;
+        case PARTY_MSG_WHICH_STYLE:
+            *windowPtr = AddWindow(&sWhichStyleMsgWindowTemplate);
+            font = FONT_SMALL;
+            break;
         default:
             *windowPtr = AddWindow(&sDefaultPartyMsgWindowTemplate);
             break;
@@ -2743,7 +2769,7 @@ void DisplayPartyMenuStdMessage(u32 stringId)
         }
         DrawStdFrameWithCustomTileAndPalette(*windowPtr, FALSE, 0x4F, 13);
         StringExpandPlaceholders(gStringVar4, sActionStringTable[stringId]);
-        AddTextPrinterParameterized(*windowPtr, FONT_NORMAL, gStringVar4, 0, 1, 0, 0);
+        AddTextPrinterParameterized(*windowPtr, font, gStringVar4, 0, 1, 0, 0);
         ScheduleBgCopyTilemapToVram(2);
     }
 }
@@ -2770,8 +2796,9 @@ static bool8 ShouldUseChooseMonText(void)
 static u8 DisplaySelectionWindow(u8 windowType)
 {
     struct WindowTemplate window;
-    u8 cursorDimension;
-    u8 letterSpacing;
+    u8 font = FONT_NORMAL;
+    u8 cursorDimension = GetMenuCursorDimensionByFont(FONT_NORMAL, 0);
+    u8 letterSpacing= GetFontAttribute(FONT_NORMAL, FONTATTR_LETTER_SPACING);
     u8 i;
 
     switch (windowType)
@@ -2791,6 +2818,12 @@ static u8 DisplaySelectionWindow(u8 windowType)
     case SELECTWINDOW_ZYGARDECUBE:
         window = sZygardeCubeSelectWindowTemplate;
         break;
+    case SELECTWINDOW_STYLEKIT:
+        window = sStyleKitSelectWindowTemplate;
+        font = FONT_SMALL;
+        cursorDimension = GetMenuCursorDimensionByFont(FONT_SMALL, 0);
+        letterSpacing = GetFontAttribute(FONT_SMALL, FONTATTR_LETTER_SPACING);
+        break;
     default: // SELECTWINDOW_MOVES
         window = sMoveSelectWindowTemplate;
         break;
@@ -2800,8 +2833,6 @@ static u8 DisplaySelectionWindow(u8 windowType)
     DrawStdFrameWithCustomTileAndPalette(sPartyMenuInternal->windowId[0], FALSE, 0x4F, 13);
     if (windowType == SELECTWINDOW_MOVES)
         return sPartyMenuInternal->windowId[0];
-    cursorDimension = GetMenuCursorDimensionByFont(FONT_NORMAL, 0);
-    letterSpacing = GetFontAttribute(FONT_NORMAL, FONTATTR_LETTER_SPACING);
 
     for (i = 0; i < sPartyMenuInternal->numActions; i++)
     {
@@ -2812,7 +2843,7 @@ static u8 DisplaySelectionWindow(u8 windowType)
         else
             text = sCursorOptions[sPartyMenuInternal->actions[i]].text;
 
-        AddTextPrinterParameterized4(sPartyMenuInternal->windowId[0], FONT_NORMAL, cursorDimension, (i * 16) + 1, letterSpacing, 0, sFontColorTable[fontColorsId], 0, text);
+        AddTextPrinterParameterized4(sPartyMenuInternal->windowId[0], font, cursorDimension, (i * 16) + 1, letterSpacing, 0, sFontColorTable[fontColorsId], 0, text);
     }
 
     InitMenuInUpperLeftCorner(sPartyMenuInternal->windowId[0], sPartyMenuInternal->numActions, 0, TRUE);
@@ -6552,13 +6583,27 @@ static void Task_TryItemUseFormChange(u8 taskId)
     case 6:
         if (!IsPartyMenuTextPrinterActive())
         {
-            if (gSpecialVar_ItemId == ITEM_ROTOM_CATALOG) //only for Rotom currently
+            if (gSpecialVar_ItemId == ITEM_ROTOM_CATALOG) //for Rotom
             {
                 u32 i;
                 for (i = 0; i < ARRAY_COUNT(sRotomFormChangeMoves); i++)
                     DeleteMove(mon, sRotomFormChangeMoves[i]);
 
                 if (I_ROTOM_CATALOG_THUNDER_SHOCK < GEN_9 && gSpecialVar_0x8000 == ROTOM_BASE_MOVE)
+                {
+                    if (!DoesMonHaveAnyMoves(mon))
+                        FormChangeTeachMove(taskId, gSpecialVar_0x8000, gPartyMenu.slotId);
+                }
+                else
+                    FormChangeTeachMove(taskId, gSpecialVar_0x8000, gPartyMenu.slotId);
+            }
+            else if (gSpecialVar_ItemId == ITEM_STYLE_KIT) //for Furfrou
+            {
+                u32 i;
+                for (i = 0; i < ARRAY_COUNT(sFurfrouFormChangeMoves); i++)
+                    DeleteMove(mon, sFurfrouFormChangeMoves[i]);
+
+                if (I_ROTOM_CATALOG_THUNDER_SHOCK < GEN_9 && gSpecialVar_0x8000 == FURFROU_BASE_MOVE)
                 {
                     if (!DoesMonHaveAnyMoves(mon))
                         FormChangeTeachMove(taskId, gSpecialVar_0x8000, gPartyMenu.slotId);
@@ -6621,6 +6666,17 @@ void ItemUseCB_RotomCatalog(u8 taskId, TaskFunc task)
     SetPartyMonSelectionActions(gPlayerParty, gPartyMenu.slotId, ACTIONS_ROTOM_CATALOG);
     DisplaySelectionWindow(SELECTWINDOW_CATALOG);
     DisplayPartyMenuStdMessage(PARTY_MSG_WHICH_APPLIANCE);
+    gTasks[taskId].data[0] = 0xFF;
+    gTasks[taskId].func = Task_HandleSelectionMenuInput;
+}
+
+void ItemUseCB_StyleKit(u8 taskId, TaskFunc task)
+{
+    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[0]);
+    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
+    SetPartyMonSelectionActions(gPlayerParty, gPartyMenu.slotId, ACTIONS_STYLE_KIT);
+    DisplaySelectionWindow(SELECTWINDOW_STYLEKIT);
+    DisplayPartyMenuStdMessage(PARTY_MSG_WHICH_STYLE);
     gTasks[taskId].data[0] = 0xFF;
     gTasks[taskId].func = Task_HandleSelectionMenuInput;
 }
@@ -6694,6 +6750,76 @@ static void CursorCb_CatalogMower(u8 taskId)
 {
     gSpecialVar_Result = 5;
     gSpecialVar_0x8000 = ROTOM_MOW_MOVE;
+    TryMultichoiceFormChange(taskId);
+}
+
+static void CursorCb_StyleNatural(u8 taskId)
+{
+    gSpecialVar_Result = 0;
+    gSpecialVar_0x8000 = FURFROU_BASE_MOVE;
+    TryMultichoiceFormChange(taskId);
+}
+
+static void CursorCb_StyleHeart(u8 taskId)
+{
+    gSpecialVar_Result = 1;
+    gSpecialVar_0x8000 = FURFROU_HEART_MOVE;
+    TryMultichoiceFormChange(taskId);
+}
+
+static void CursorCb_StyleStar(u8 taskId)
+{
+    gSpecialVar_Result = 2;
+    gSpecialVar_0x8000 = FURFROU_STAR_MOVE;
+    TryMultichoiceFormChange(taskId);
+}
+
+static void CursorCb_StyleDiamond(u8 taskId)
+{
+    gSpecialVar_Result = 3;
+    gSpecialVar_0x8000 = FURFROU_DIAMOND_MOVE;
+    TryMultichoiceFormChange(taskId);
+}
+
+static void CursorCb_StyleDebutante(u8 taskId)
+{
+    gSpecialVar_Result = 4;
+    gSpecialVar_0x8000 = FURFROU_DEBUTANTE_MOVE;
+    TryMultichoiceFormChange(taskId);
+}
+
+static void CursorCb_StyleMatron(u8 taskId)
+{
+    gSpecialVar_Result = 5;
+    gSpecialVar_0x8000 = FURFROU_MATRON_MOVE;
+    TryMultichoiceFormChange(taskId);
+}
+
+static void CursorCb_StyleDandy(u8 taskId)
+{
+    gSpecialVar_Result = 6;
+    gSpecialVar_0x8000 = FURFROU_DANDY_MOVE;
+    TryMultichoiceFormChange(taskId);
+}
+
+static void CursorCb_StyleLaReine(u8 taskId)
+{
+    gSpecialVar_Result = 7;
+    gSpecialVar_0x8000 = FURFROU_LAREINE_MOVE;
+    TryMultichoiceFormChange(taskId);
+}
+
+static void CursorCb_StyleKabuki(u8 taskId)
+{
+    gSpecialVar_Result = 8;
+    gSpecialVar_0x8000 = FURFROU_KABUKI_MOVE;
+    TryMultichoiceFormChange(taskId);
+}
+
+static void CursorCb_StylePharaoh(u8 taskId)
+{
+    gSpecialVar_Result = 9;
+    gSpecialVar_0x8000 = FURFROU_PHARAOH_MOVE;
     TryMultichoiceFormChange(taskId);
 }
 

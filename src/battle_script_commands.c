@@ -6332,6 +6332,7 @@ static bool32 HandleMoveEndAbilityBlock(u32 battlerAtk, u32 battlerDef, u32 move
         }
         break;
     case ABILITY_MOXIE:
+    case ABILITY_HUBRIS:
     case ABILITY_CHILLING_NEIGH:
     case ABILITY_AS_ONE_ICE_RIDER:
     case ABILITY_GRIM_NEIGH:
@@ -6347,7 +6348,7 @@ static bool32 HandleMoveEndAbilityBlock(u32 battlerAtk, u32 battlerDef, u32 move
 
             if (abilityAtk == ABILITY_BEAST_BOOST)
                 stat = GetHighestStatId(battlerAtk);
-            else if (abilityAtk == ABILITY_GRIM_NEIGH || abilityAtk == ABILITY_AS_ONE_SHADOW_RIDER)
+            else if (abilityAtk == ABILITY_GRIM_NEIGH || abilityAtk == ABILITY_AS_ONE_SHADOW_RIDER || abilityAtk == ABILITY_HUBRIS)
                 stat = STAT_SPATK;
             else if (abilityAtk == ABILITY_ADRENALINE)
                 stat = STAT_SPEED;
@@ -11467,6 +11468,22 @@ static void Cmd_various(void)
     {
         VARIOUS_ARGS(const u8 *failInstr);
         u32 type = GetMoveArgType(gCurrentMove);
+        if (IS_BATTLER_OF_TYPE(battler, type) || GetActiveGimmick(battler) == GIMMICK_TERA)
+        {
+            gBattlescriptCurrInstr = cmd->failInstr;
+        }
+        else
+        {
+            gBattleMons[battler].types[2] = type;
+            PREPARE_TYPE_BUFFER(gBattleTextBuff1, type);
+            gBattlescriptCurrInstr = cmd->nextInstr;
+        }
+        return;
+    }
+    case VARIOUS_TRY_THIRD_TYPE_GHOST:
+    {
+        VARIOUS_ARGS(const u8 *failInstr);
+        u32 type = TYPE_GHOST;
         if (IS_BATTLER_OF_TYPE(battler, type) || GetActiveGimmick(battler) == GIMMICK_TERA)
         {
             gBattlescriptCurrInstr = cmd->failInstr;

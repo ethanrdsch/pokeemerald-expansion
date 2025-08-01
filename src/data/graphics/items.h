@@ -1791,6 +1791,9 @@ const u16 gItemIconPalette_NLunarizer[] = INCBIN_U16("graphics/items/icon_palett
 const u32 gItemIcon_ReinsOfUnity[] = INCBIN_U32("graphics/items/icons/reins_of_unity.4bpp.lz");
 const u16 gItemIconPalette_ReinsOfUnity[] = INCBIN_U16("graphics/items/icon_palettes/reins_of_unity.gbapal");
 
+const u32 gItemIcon_StyleKit[] = INCBIN_U32("graphics/items/icons/style_kit.4bpp.lz");
+const u16 gItemIconPalette_StyleKit[] = INCBIN_U16("graphics/items/icon_palettes/style_kit.gbapal");
+
 // Battle Mechanic Key Items
 
 const u32 gItemIcon_MegaRing[] = INCBIN_U32("graphics/items/icons/mega_ring.4bpp.lz");

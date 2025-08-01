@@ -592,6 +592,28 @@ static const struct WindowTemplate sUnusedWindowTemplate2 =
     .baseBlock = 0x39D,
 };
 
+static const struct WindowTemplate sWhichStyleMsgWindowTemplate =
+{
+    .bg = 2,
+    .tilemapLeft = 1,
+    .tilemapTop = 15,
+    .width = 14,
+    .height = 4,
+    .paletteNum = 15,
+    .baseBlock = 0x299,
+};
+
+static const struct WindowTemplate sStyleKitSelectWindowTemplate =
+{
+    .bg = 2,
+    .tilemapLeft = 17,
+    .tilemapTop = 0,
+    .width = 12,
+    .height = 20,
+    .paletteNum = 14,
+    .baseBlock = 0x2E9,
+};
+
 // Plain tilemaps for party menu slots.
 // The versions with no HP bar are used by eggs, and in certain displays like registering at a battle facility.
 // There is no empty version of the main slot because it shouldn't ever be empty.
@@ -658,6 +680,7 @@ static const u8 *const sActionStringTable[] =
     [PARTY_MSG_DO_WHAT_WITH_MAIL]      = gText_DoWhatWithMail,
     [PARTY_MSG_ALREADY_HOLDING_ONE]    = gText_AlreadyHoldingOne,
     [PARTY_MSG_WHICH_APPLIANCE]        = gText_WhichAppliance,
+    [PARTY_MSG_WHICH_STYLE]            = gText_WhichStyle,
     [PARTY_MSG_CHOOSE_SECOND_FUSION]   = gText_NextFusionMon,
     [PARTY_MSG_NO_POKEMON]             = COMPOUND_STRING("You have no POKéMON."),
     [PARTY_MSG_CHOOSE_MON_FOR_BOX]     = gText_SendWhichMonToPC,
@@ -723,7 +746,17 @@ struct
     [MENU_CATALOG_FRIDGE]  = {COMPOUND_STRING("Refrigerator"),    CursorCb_CatalogFridge},
     [MENU_CATALOG_FAN]     = {COMPOUND_STRING("Electric fan"),    CursorCb_CatalogFan},
     [MENU_CATALOG_MOWER]   = {COMPOUND_STRING("Lawn mower"),      CursorCb_CatalogMower},
-    [MENU_CHANGE_FORM]     = {COMPOUND_STRING("Change form"),     CursorCb_ChangeForm},
+    [MENU_STYLE_NATURAL]   = {COMPOUND_STRING("Natural"),         CursorCb_StyleNatural},
+    [MENU_STYLE_HEART]     = {COMPOUND_STRING("Heart"),           CursorCb_StyleHeart},
+    [MENU_STYLE_STAR]      = {COMPOUND_STRING("Star"),            CursorCb_StyleStar},
+    [MENU_STYLE_DIAMOND]   = {COMPOUND_STRING("Diamond"),         CursorCb_StyleDiamond},
+    [MENU_STYLE_DEBUTANTE] = {COMPOUND_STRING("Debutante"),       CursorCb_StyleDebutante},
+    [MENU_STYLE_MATRON]    = {COMPOUND_STRING("Matron"),          CursorCb_StyleMatron},
+    [MENU_STYLE_DANDY]     = {COMPOUND_STRING("Dandy"),           CursorCb_StyleDandy},
+    [MENU_STYLE_LAREINE]   = {COMPOUND_STRING("La Reine"),        CursorCb_StyleLaReine},
+    [MENU_STYLE_KABUKI]    = {COMPOUND_STRING("Kabuki"),          CursorCb_StyleKabuki},
+    [MENU_STYLE_PHARAOH]   = {COMPOUND_STRING("Pharaoh"),         CursorCb_StylePharaoh},
+    [MENU_CHANGE_FORM]     = {COMPOUND_STRING("Change Form"),     CursorCb_ChangeForm},
     [MENU_CHANGE_ABILITY]  = {COMPOUND_STRING("Change Ability"),  CursorCb_ChangeAbility},
 };
 
@@ -742,6 +775,7 @@ static const u8 sPartyMenuAction_TradeSummaryCancel2[] = {MENU_TRADE2, MENU_SUMM
 static const u8 sPartyMenuAction_TakeItemTossCancel[] = {MENU_TAKE_ITEM, MENU_TOSS, MENU_CANCEL1};
 static const u8 sPartyMenuAction_RotomCatalog[] = {MENU_CATALOG_BULB, MENU_CATALOG_OVEN, MENU_CATALOG_WASHING, MENU_CATALOG_FRIDGE, MENU_CATALOG_FAN, MENU_CATALOG_MOWER, MENU_CANCEL1};
 static const u8 sPartyMenuAction_ZygardeCube[] = {MENU_CHANGE_FORM, MENU_CHANGE_ABILITY, MENU_CANCEL1};
+static const u8 sPartyMenuAction_StyleKit[] = {MENU_STYLE_NATURAL, MENU_STYLE_HEART, MENU_STYLE_STAR, MENU_STYLE_DIAMOND, MENU_STYLE_DEBUTANTE, MENU_STYLE_MATRON, MENU_STYLE_DANDY, MENU_STYLE_LAREINE, MENU_STYLE_KABUKI, MENU_STYLE_PHARAOH};
 
 
 
@@ -763,6 +797,7 @@ static const u8 *const sPartyMenuActions[] =
     [ACTIONS_TAKEITEM_TOSS] = sPartyMenuAction_TakeItemTossCancel,
     [ACTIONS_ROTOM_CATALOG] = sPartyMenuAction_RotomCatalog,
     [ACTIONS_ZYGARDE_CUBE]  = sPartyMenuAction_ZygardeCube,
+    [ACTIONS_STYLE_KIT]     = sPartyMenuAction_StyleKit,
 };
 
 static const u8 sPartyMenuActionCounts[] =
@@ -783,6 +818,7 @@ static const u8 sPartyMenuActionCounts[] =
     [ACTIONS_TAKEITEM_TOSS] = ARRAY_COUNT(sPartyMenuAction_TakeItemTossCancel),
     [ACTIONS_ROTOM_CATALOG] = ARRAY_COUNT(sPartyMenuAction_RotomCatalog),
     [ACTIONS_ZYGARDE_CUBE]  = ARRAY_COUNT(sPartyMenuAction_ZygardeCube),
+    [ACTIONS_STYLE_KIT]     = ARRAY_COUNT(sPartyMenuAction_StyleKit),
 };
 
 static const u16 sFieldMoves[FIELD_MOVES_COUNT + 1] =
@@ -1166,4 +1202,28 @@ static const u16 sRotomFormChangeMoves[5] =
     ROTOM_FROST_MOVE,
     ROTOM_FAN_MOVE,
     ROTOM_MOW_MOVE,
+};
+
+#define FURFROU_BASE_MOVE MOVE_RETURN
+#define FURFROU_HEART_MOVE MOVE_SPARKLY_SWIRL
+#define FURFROU_STAR_MOVE MOVE_FLOATY_FALL
+#define FURFROU_DIAMOND_MOVE MOVE_DIAMOND_STORM
+#define FURFROU_DEBUTANTE_MOVE MOVE_BUZZY_BUZZ
+#define FURFROU_MATRON_MOVE MOVE_GLITZY_GLOW
+#define FURFROU_DANDY_MOVE MOVE_SAPPY_SEED
+#define FURFROU_LAREINE_MOVE MOVE_FREEZY_FROST
+#define FURFROU_KABUKI_MOVE MOVE_SIZZLY_SLIDE
+#define FURFROU_PHARAOH_MOVE MOVE_BOUNCY_BUBBLE
+
+static const u16 sFurfrouFormChangeMoves[9] =
+{
+    FURFROU_HEART_MOVE,
+    FURFROU_STAR_MOVE,
+    FURFROU_DIAMOND_MOVE,
+    FURFROU_DEBUTANTE_MOVE,
+    FURFROU_MATRON_MOVE,
+    FURFROU_DANDY_MOVE,
+    FURFROU_LAREINE_MOVE,
+    FURFROU_KABUKI_MOVE,
+    FURFROU_PHARAOH_MOVE,
 };

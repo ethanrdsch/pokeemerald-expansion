@@ -2,6 +2,8 @@
 #define GUARD_BATTLE_SCRIPTS_H
 
 extern const u8 BattleScript_SupersweetSyrupActivates[];
+extern const u8 BattleScript_AlluringOdorActivates[];
+extern const u8 BattleScript_MonsterMashActivates[];
 extern const u8 BattleScript_OpportunistCopyStatChange[];
 extern const u8 BattleScript_MirrorHerbCopyStatChange[];
 extern const u8 BattleScript_MirrorHerbCopyStatChangeEnd2[];
