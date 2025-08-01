@@ -1508,13 +1508,21 @@ static bool32 AccuracyCalcHelper(u32 move, u32 battler)
     {
         effect = TRUE;
     }
+    // If the attacker has the ability Deadeye and they aren't targeting a Pokemon involved in a Sky Drop with the move Sky Drop, move hits.
+    else if (GetBattlerAbility(gBattlerAttacker) == ABILITY_DEADEYE
+          && !(gStatuses3[battler] & STATUS3_COMMANDER)
+          && (moveEffect != EFFECT_SKY_DROP || gBattleStruct->skyDropTargets[battler] == SKY_DROP_NO_TARGET))
+    {
+        effect = TRUE;
+        ability = ABILITY_DEADEYE;
+    }
     // If the attacker has the ability Victory Star and they aren't targeting a Pokemon involved in a Sky Drop with the move Sky Drop, move hits.
     else if (GetBattlerAbility(gBattlerAttacker) == ABILITY_VICTORY_STAR
           && !(gStatuses3[battler] & STATUS3_COMMANDER)
           && (moveEffect != EFFECT_SKY_DROP || gBattleStruct->skyDropTargets[battler] == SKY_DROP_NO_TARGET))
     {
         effect = TRUE;
-        ability = ABILITY_NO_GUARD;
+        ability = ABILITY_VICTORY_STAR;
     }
     // If the attacker has the ability No Guard and they aren't targeting a Pokemon involved in a Sky Drop with the move Sky Drop, move hits.
     else if (GetBattlerAbility(gBattlerAttacker) == ABILITY_NO_GUARD
@@ -1576,9 +1584,6 @@ static bool32 AccuracyCalcHelper(u32 move, u32 battler)
         if (effect)
             return effect;
     }
-
-    if (ability != ABILITY_NONE)
-        RecordAbilityBattle(gBattlerAttacker, ABILITY_NO_GUARD);
 
     return effect;
 }
@@ -13385,7 +13390,8 @@ static void Cmd_tryKO(void)
                 && gDisableStructs[gBattlerTarget].battlerWithSureHit == gBattlerAttacker)
             || GetBattlerAbility(gBattlerAttacker) == ABILITY_NO_GUARD
             || targetAbility == ABILITY_NO_GUARD
-            || GetBattlerAbility(gBattlerAttacker) == ABILITY_VICTORY_STAR)
+            || GetBattlerAbility(gBattlerAttacker) == ABILITY_VICTORY_STAR
+            || GetBattlerAbility(gBattlerAttacker) == ABILITY_DEADEYE)
             && gBattleMons[gBattlerAttacker].level >= gBattleMons[gBattlerTarget].level)
         {
             lands = TRUE;

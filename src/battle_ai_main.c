@@ -534,6 +534,7 @@ static u32 Ai_SetMoveAccuracy(struct AiLogicData *aiData, u32 battlerAtk, u32 ba
     if (abilityAtk == ABILITY_NO_GUARD 
         || abilityDef == ABILITY_NO_GUARD
         || abilityAtk == ABILITY_VICTORY_STAR
+        || abilityAtk == ABILITY_DEADEYE
         || GetMoveAccuracy(move) == 0) // Moves with accuracy 0 or no guard ability always hit.
         accuracy = 100;
     else
@@ -2154,6 +2155,7 @@ static s32 AI_CheckBadMove(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
               || aiData->abilities[battlerAtk] == ABILITY_NO_GUARD
               || aiData->abilities[battlerDef] == ABILITY_NO_GUARD
               || aiData->abilities[battlerAtk] == ABILITY_VICTORY_STAR
+              || aiData->abilities[battlerAtk] == ABILITY_DEADEYE
               || DoesPartnerHaveSameMoveEffect(BATTLE_PARTNER(battlerAtk), battlerDef, move, aiData->partnerMove))
                 ADJUST_SCORE(-10);
             break;
@@ -4029,7 +4031,8 @@ static u32 AI_CalcMoveEffectScore(u32 battlerAtk, u32 battlerDef, u32 move)
             ADJUST_SCORE(WEAK_EFFECT);
         if (gBattleMons[battlerDef].statStages[STAT_EVASION] < 7 
             || aiData->abilities[battlerAtk] == ABILITY_NO_GUARD
-            || aiData->abilities[battlerAtk] == ABILITY_VICTORY_STAR)
+            || aiData->abilities[battlerAtk] == ABILITY_VICTORY_STAR
+            || aiData->abilities[battlerAtk] == ABILITY_DEADEYE)
             ADJUST_SCORE(-2);
         break;
     case EFFECT_SPICY_EXTRACT:

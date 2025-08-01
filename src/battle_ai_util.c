@@ -1757,7 +1757,8 @@ bool32 IsMoveEncouragedToHit(u32 battlerAtk, u32 battlerDef, u32 move)
 
     if (gAiLogicData->abilities[battlerDef] == ABILITY_NO_GUARD 
         || gAiLogicData->abilities[battlerAtk] == ABILITY_NO_GUARD
-        || gAiLogicData->abilities[battlerAtk] == ABILITY_VICTORY_STAR)
+        || gAiLogicData->abilities[battlerAtk] == ABILITY_VICTORY_STAR
+        || gAiLogicData->abilities[battlerAtk] == ABILITY_DEADEYE)
         return TRUE;
 
     u32 nonVolatileStatus = GetMoveNonVolatileStatus(move);
@@ -1802,7 +1803,7 @@ bool32 ShouldTryOHKO(u32 battlerAtk, u32 battlerDef, u32 atkAbility, u32 defAbil
 
     if ((((gStatuses3[battlerDef] & STATUS3_ALWAYS_HITS)
         && gDisableStructs[battlerDef].battlerWithSureHit == battlerAtk)
-        || atkAbility == ABILITY_NO_GUARD || defAbility == ABILITY_NO_GUARD || atkAbility == ABILITY_VICTORY_STAR)
+        || atkAbility == ABILITY_NO_GUARD || defAbility == ABILITY_NO_GUARD || atkAbility == ABILITY_VICTORY_STAR || atkAbility == ABILITY_DEADEYE)
         && gBattleMons[battlerAtk].level >= gBattleMons[battlerDef].level)
     {
         return TRUE;

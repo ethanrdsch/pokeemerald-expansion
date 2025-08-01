@@ -391,7 +391,7 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
     {
         .name = _("Keen Eye"),
         .description = COMPOUND_STRING("Stops accuracy drops. +20% accuracy.\nIgnores foes' evasion boosts."),
-        .aiRating = 2,
+        .aiRating = 3,
         .breakable = TRUE,
     },
 
@@ -2807,5 +2807,12 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
         .name = _("Monster Mash"),
         .description = COMPOUND_STRING("On switch-in, adds the\nGhost type to foes."),
         .aiRating = 6,
+    },
+
+    [ABILITY_DEADEYE] =
+    {
+        .name = _("Deadeye"),
+        .description = COMPOUND_STRING("This Pokémon's moves\nwill never miss."),
+        .aiRating = 5,
     },
 };
