@@ -6497,9 +6497,9 @@ BattleScript_AngerShellActivates::
 	jumpifstat BS_TARGET, CMP_EQUAL, STAT_SPDEF, MIN_STAT_STAGE, BattleScript_RestoreAttackerButItFailed
 BattleScript_AngerShellTryDef::
 	setbyte sSTAT_ANIM_PLAYED, FALSE
-	modifybattlerstatstage BS_ATTACKER, STAT_DEF, DECREASE, 2, BattleScript_AngerShellTrySpDef, ANIM_ON
+	modifybattlerstatstage BS_ATTACKER, STAT_DEF, DECREASE, 1, BattleScript_AngerShellTrySpDef, ANIM_ON
 BattleScript_AngerShellTrySpDef:
-	modifybattlerstatstage BS_ATTACKER, STAT_SPDEF, DECREASE, 2, BattleScript_AngerShellTryAttack, ANIM_ON
+	modifybattlerstatstage BS_ATTACKER, STAT_SPDEF, DECREASE, 1, BattleScript_AngerShellTryAttack, ANIM_ON
 BattleScript_AngerShellTryAttack:
 	setbyte sSTAT_ANIM_PLAYED, FALSE
 	modifybattlerstatstage BS_ATTACKER, STAT_ATK, INCREASE, 2, BattleScript_AngerShellTrySpAtk, ANIM_ON

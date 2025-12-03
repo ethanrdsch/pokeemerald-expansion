@@ -784,7 +784,7 @@ struct BattleStruct
     u8 trainerSlideSpriteIds[MAX_BATTLERS_COUNT];
     u16 opponentMonCanTera:6;
     u16 opponentMonCanDynamax:6;
-    u8 soundMoveTurns[MAX_BATTLERS_COUNT]; // For Composer, number of times a sound move has been used in succession
+    u8 soundMoveTurns[MAX_BATTLERS_COUNT]; // For Composer, number of times a sound move has been successfully used in succession
     u16 padding:4;
 };
 

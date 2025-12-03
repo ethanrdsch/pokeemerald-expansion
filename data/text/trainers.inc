@@ -1,36 +1,77 @@
-Route102_Text_CalvinIntro:
+GraniteCave_B1F_Text_DamianIntro:
+	.string "Gah! I'm not getting any bites!\p"
+	.string "Oh well, I guess I'll just battle\n"
+	.string "you, instead.$"
+
+GraniteCave_B1F_Text_DamianDefeated:
+	.string "Haha! What a great battle!\n"
+	.string "Sure beats what I was doing.$"
+
+GraniteCave_B1F_Text_DamianPostBattle:
+	.string "Now that I think about it, fishing\n"
+	.string "in a ghost-infested cave was not\l"
+	.string "the best idea…$"
+
+GraniteCave_B1F_Text_YukiIntro:
+	.string "My Fighting-type Pokémon aren't\n"
+	.string "scared of ghosts!$"
+
+GraniteCave_B1F_Text_YukiDefeated:
+	.string "I see…\n"
+	.string "We have more training to do!$"
+
+GraniteCave_B1F_Text_YukiPostBattle:
+	.string "Just like my Pokémon, I also have\n"
+	.string "a Scrappy fighting style!$"
+
+GraniteCave_B1F_Text_DaveIntro:
+	.string "I've been investigating why this\n"
+	.string "cave is full of ghosts.\p$"
+	.string "But I can take a break for a battle!$"
+
+GraniteCave_B1F_Text_DaveDefeated:
+	.string "Well fought!\n"
+	.string "Now, back to my research.$"
+
+GraniteCave_B1F_Text_DavePostBattle:
+	.string "I have a theory an especially\n"
+	.string "powerful Ghost Pokémon is drawing\l"
+	.string "the others here.\p"
+	.string "But I can't prove anything yet…$"
+
+Route102_Text_KevinIntro:
 	.string "If you have POKéMON with you, then\n"
 	.string "you're an official POKéMON TRAINER!\l"
 	.string "You can't say no to my challenge!$"
 
-Route102_Text_CalvinDefeated:
+Route102_Text_KevinDefeated:
 	.string "Arrgh, I lost…\n"
 	.string "I should have trained mine more…$"
 
-Route102_Text_CalvinPostBattle:
+Route102_Text_KevinPostBattle:
 	.string "Listen, you. If you're strong,\n"
 	.string "you should have told me before!$"
 
-Route102_Text_CalvinRegister:
+Route102_Text_KevinRegister:
 	.string "I've been working hard at this since\n"
 	.string "I saw you before.\p"
 	.string "I'd like to battle you again, so can\n"
 	.string "you register me in your POKéNAV?$"
 
-Route102_Text_CalvinRegisterShort:
+Route102_Text_KevinRegisterShort:
 	.string "I'd like to battle you again, so can\n"
 	.string "you register me in your POKéNAV?$"
 
-Route102_Text_CalvinRematchIntro:
+Route102_Text_KevinRematchIntro:
 	.string "Ever since I lost to you, I desperately\n"
 	.string "trained my POKéMON.\l"
 	.string "You can't say no to my challenge!$"
 
-Route102_Text_CalvinRematchDefeated:
+Route102_Text_KevinRematchDefeated:
 	.string "Arrgh, I lost…\n"
 	.string "Is my training method not right?$"
 
-Route102_Text_CalvinRematchPostBattle:
+Route102_Text_KevinRematchPostBattle:
 	.string "If you're going to get stronger,\n"
 	.string "I'll get stronger, too.$"
 

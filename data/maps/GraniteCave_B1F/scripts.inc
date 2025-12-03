@@ -9,3 +9,17 @@ GraniteCave_B1F_SetHoleWarp:
 	setholewarp MAP_GRANITE_CAVE_B2F
 	end
 
+GraniteCave_B1F_EventScript_Damian::
+	trainerbattle_single TRAINER_LOLA_2, GraniteCave_B1F_Text_DamianIntro, GraniteCave_B1F_Text_DamianDefeated
+	msgbox GraniteCave_B1F_Text_DamianPostBattle, MSGBOX_AUTOCLOSE
+	end
+
+GraniteCave_B1F_EventScript_Yuki::
+	trainerbattle_single TRAINER_LOLA_3, GraniteCave_B1F_Text_YukiIntro, GraniteCave_B1F_Text_YukiDefeated
+	msgbox GraniteCave_B1F_Text_YukiPostBattle, MSGBOX_AUTOCLOSE
+	end
+
+GraniteCave_B1F_EventScript_Dave::
+	trainerbattle_single TRAINER_LOLA_4, GraniteCave_B1F_Text_DaveIntro, GraniteCave_B1F_Text_DaveDefeated
+	msgbox GraniteCave_B1F_Text_DavePostBattle, MSGBOX_AUTOCLOSE
+	end

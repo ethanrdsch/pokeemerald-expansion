@@ -18,22 +18,15 @@ GraniteCave_1F_EventScript_ReceivedFlash::
 	end
 
 GraniteCave_1F_Text_GetsDarkAheadHereYouGo:
-	.string "Hey, you.\n"
-	.string "It gets awfully dark ahead.\l"
-	.string "It'll be tough trying to explore.\p"
-	.string "That guy who came by earlier…\n"
-	.string "STEVEN, I think it was.\p"
-	.string "He knew how to use FLASH, so he ought\n"
-	.string "to be all right, but…\p"
-	.string "Well, for us HIKERS, helping out those\n"
-	.string "that we meet is our motto.\p"
-	.string "Here you go, I'll pass this on to you.$"
+	.string "Hey, did you see the sign?\n"
+	.string "There are ghosts down there!\p"
+	.string "Well, if you're really set on going,\n"
+	.string "this may help you fend them off.$"
 
 GraniteCave_1F_Text_ExplainFlash:
-	.string "Teach that hidden move FLASH to\n"
-	.string "a POKéMON and use it.\p"
-	.string "It lights up even the inky darkness\n"
-	.string "of caves.\p"
-	.string "But, to use it, you need the GYM BADGE\n"
-	.string "from DEWFORD's POKéMON GYM.$"
+	.string "Or not…\p"
+	.string "I wouldn't actually know.\n"
+	.string "I'm too scared to go find out.$"
 
+GraniteCave_1F_Text_AfterTalking:
+	.string "Good luck down there.$"

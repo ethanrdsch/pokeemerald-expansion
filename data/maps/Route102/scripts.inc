@@ -17,45 +17,45 @@ Route102_EventScript_Boy::
 	msgbox Route102_Text_CatchWholeBunchOfPokemon, MSGBOX_NPC
 	end
 
-Route102_EventScript_Calvin::
-	trainerbattle_single TRAINER_CALVIN_1, Route102_Text_CalvinIntro, Route102_Text_CalvinDefeated, Route102_EventScript_CalvinRegisterMatchCallAfterBattle
+Route102_EventScript_Kevin::
+	trainerbattle_single TRAINER_KEVIN_1, Route102_Text_KevinIntro, Route102_Text_KevinDefeated, Route102_EventScript_KevinRegisterMatchCallAfterBattle
 	specialvar VAR_RESULT, ShouldTryRematchBattle
-	goto_if_eq VAR_RESULT, TRUE, Route102_EventScript_CalvinRematch
-	setvar VAR_0x8004, TRAINER_CALVIN_1
+	goto_if_eq VAR_RESULT, TRUE, Route102_EventScript_KevinRematch
+	setvar VAR_0x8004, TRAINER_KEVIN_1
 	specialvar VAR_RESULT, IsTrainerRegistered
-	goto_if_eq VAR_RESULT, FALSE, Route102_EventScript_CalvinTryRegister
-	msgbox Route102_Text_CalvinPostBattle, MSGBOX_DEFAULT
+	goto_if_eq VAR_RESULT, FALSE, Route102_EventScript_KevinTryRegister
+	msgbox Route102_Text_KevinPostBattle, MSGBOX_DEFAULT
 	release
 	end
 
-Route102_EventScript_CalvinRegisterMatchCallAfterBattle::
+Route102_EventScript_KevinRegisterMatchCallAfterBattle::
 	special PlayerFaceTrainerAfterBattle
 	waitmovement 0
-	goto_if_set FLAG_HAS_MATCH_CALL, Route102_EventScript_CalvinRegisterMatchCall
+	goto_if_set FLAG_HAS_MATCH_CALL, Route102_EventScript_KevinRegisterMatchCall
 	release
 	end
 
-Route102_EventScript_CalvinRegisterMatchCall::
-	msgbox Route102_Text_CalvinRegisterShort, MSGBOX_DEFAULT
-	register_matchcall TRAINER_CALVIN_1
+Route102_EventScript_KevinRegisterMatchCall::
+	msgbox Route102_Text_KevinRegisterShort, MSGBOX_DEFAULT
+	register_matchcall TRAINER_KEVIN_1
 	release
 	end
 
-Route102_EventScript_CalvinTryRegister::
-	goto_if_set FLAG_HAS_MATCH_CALL, Route102_EventScript_CalvinRegister
-	msgbox Route102_Text_CalvinPostBattle, MSGBOX_DEFAULT
+Route102_EventScript_KevinTryRegister::
+	goto_if_set FLAG_HAS_MATCH_CALL, Route102_EventScript_KevinRegister
+	msgbox Route102_Text_KevinPostBattle, MSGBOX_DEFAULT
 	release
 	end
 
-Route102_EventScript_CalvinRegister::
-	msgbox Route102_Text_CalvinRegister, MSGBOX_DEFAULT
-	register_matchcall TRAINER_CALVIN_1
+Route102_EventScript_KevinRegister::
+	msgbox Route102_Text_KevinRegister, MSGBOX_DEFAULT
+	register_matchcall TRAINER_KEVIN_1
 	release
 	end
 
-Route102_EventScript_CalvinRematch::
-	trainerbattle_rematch TRAINER_CALVIN_1, Route102_Text_CalvinRematchIntro, Route102_Text_CalvinRematchDefeated
-	msgbox Route102_Text_CalvinRematchPostBattle, MSGBOX_AUTOCLOSE
+Route102_EventScript_KevinRematch::
+	trainerbattle_rematch TRAINER_KEVIN_1, Route102_Text_KevinRematchIntro, Route102_Text_KevinRematchDefeated
+	msgbox Route102_Text_KevinRematchPostBattle, MSGBOX_AUTOCLOSE
 	end
 
 Route102_EventScript_Rick::

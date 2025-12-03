@@ -5549,7 +5549,6 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                 effect++;
             }
             break;
-        }
         case ABILITY_SOUND_THERAPY:
             if (IsSoundMove(move) 
                 && !(gHitMarker & HITMARKER_UNABLE_TO_USE_MOVE)
@@ -5566,11 +5565,14 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
             if (!(gHitMarker & HITMARKER_UNABLE_TO_USE_MOVE)
                 && IsBattlerAlive(gBattlerTarget)
                 && !gProtectStructs[gBattlerAttacker].confusionSelfDmg
-                && IsDanceMove(move))
+                && IsDanceMove(move)
+                && !gSpecialStatuses[battler].dancerUsedMove)
             {
-                // Set bit
+                // Set bit and save target
+                gSpecialStatuses[battler].dancerUsedMove = TRUE;
+                gSpecialStatuses[battler].dancerOriginalTarget = gBattleStruct->moveTarget[battler] | 0x4;
                 gBattlerAttacker = gBattlerAbility = battler;
-                gCalledMove = move;
+                gCalledMove = MOVE_REVELATION_DANCE_WEAKER;
 
                 // Edge case for dance moves that hit multiple targets
                 gHitMarker &= ~HITMARKER_NO_ATTACKSTRING;
@@ -5582,6 +5584,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
             }
             break;
         break;
+        }
     case ABILITYEFFECT_MOVE_END_OTHER: // Abilities that activate on *another* battler's moveend: Dancer, Soul-Heart, Receiver, Symbiosis
         switch (GetBattlerAbility(battler))
         {
@@ -9068,6 +9071,10 @@ static inline u32 CalcMoveBasePowerAfterModifiers(struct DamageCalculationData *
         if (IsFieldMove(move))
            modifier = uq4_12_multiply(modifier, UQ_4_12(1.3));
         break;
+    case ABILITY_HEAVY_IMPACT:
+        if (IsSlamMove(move))
+           modifier = uq4_12_multiply(modifier, UQ_4_12(1.2));
+        break;
     case ABILITY_SHEER_FORCE:
         if (MoveIsAffectedBySheerForce(move))
            modifier = uq4_12_multiply(modifier, UQ_4_12(1.3));
@@ -9164,7 +9171,7 @@ static inline u32 CalcMoveBasePowerAfterModifiers(struct DamageCalculationData *
         if (IsSoundMove(move))
             modifier = uq4_12_multiply(modifier, UQ_4_12(1.2));
         break;
-    case ABILITY_FLAMING_VOICE:
+    case ABILITY_GHASTLY_WAIL:
         if (IsSoundMove(move))
             modifier = uq4_12_multiply(modifier, UQ_4_12(1.2));
         break;
