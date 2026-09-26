@@ -1,5 +1,5 @@
 #ifdef __INTELLISENSE__
-const struct SpeciesInfo gSpeciesInfoGen6[] =
+const struct SpeciesInfo [] =
 {
 #endif
 
@@ -30,6 +30,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         .height = 4,
         .weight = 90,
         .description = COMPOUND_STRING(
+
             "The quills on its head are usually soft.\n"
             "When it flexes them, the points become\n"
             "so hard and sharp that they can pierce\n"
